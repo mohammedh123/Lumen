@@ -11,9 +11,12 @@ namespace Lumen
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private GameManager _gameManager;
+
         public GameDriver()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _gameManager = new GameManager();
 
             var graphicsOptions = new GraphicsOptions();
             graphicsOptions.ApplySettings(_graphics);
@@ -30,6 +33,7 @@ namespace Lumen
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            TextureManager.LoadContent(Content);
         }
 
         protected override void UnloadContent()
