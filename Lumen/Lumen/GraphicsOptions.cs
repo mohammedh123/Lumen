@@ -10,8 +10,8 @@ namespace Lumen
     {
         public virtual void ApplySettings(GraphicsDeviceManager graphics)
         {
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 768;
             graphics.PreferMultiSampling = true;
 
             graphics.ApplyChanges();
