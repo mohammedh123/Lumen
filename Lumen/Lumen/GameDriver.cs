@@ -59,7 +59,14 @@ namespace Lumen
                         var variableValue = line.Substring(line.IndexOf('=') + 1).Trim();
 
                         var actualVariable = typeof(GameVariables).GetField(variableName);
-                        actualVariable.SetValue(null, Convert.ChangeType(variableValue, actualVariable.FieldType));
+                        var actualVariableValue = Convert.ChangeType(variableValue, actualVariable.FieldType);
+                        actualVariable.SetValue(null, actualVariableValue);
+
+                        if(variableName == "PlayerLanternRadius")
+                        {
+                            foreach (var lantern in _gameManager.Props.Where(p => p is AttachedCandle))
+                                (lantern as AttachedCandle).Radius = (float)actualVariableValue;
+                        }
                     }
                 }
             }
