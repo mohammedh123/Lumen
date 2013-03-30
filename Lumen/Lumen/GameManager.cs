@@ -12,10 +12,11 @@ namespace Lumen
 {
     class GameManager
     {
-        protected List<Player> Players { get; set; }
+        public List<Player> Players { get; set; }
         public List<Enemy>  Enemies { get; set; }
         public List<Prop>   Props   { get; set; }
         public List<Block> Blocks { get; set; }
+        public List<Prop> PropsToBeAdded { get; set; }
 
         private readonly Vector2 _gameResolution;
 
@@ -25,6 +26,7 @@ namespace Lumen
             Enemies = new List<Enemy>();
             Props = new List<Prop>();
             Blocks = new List<Block>();
+            PropsToBeAdded = new List<Prop>();
 
             _gameResolution = gameResolution;
         }
@@ -42,6 +44,20 @@ namespace Lumen
 
             foreach(var prop in Props)
                 prop.Update(dt);
+
+            foreach(var kvp in PropsToBeAdded)
+            {
+                kvp.Lifetime += dt;
+            }
+
+            var kvpsToBeRemoved = PropsToBeAdded.Where(kvp => kvp.Lifetime > 0).ToList();
+
+            foreach(var kvp in kvpsToBeRemoved)
+            {
+                kvp.Lifetime = 0.0f;
+                Props.Add(kvp);
+                PropsToBeAdded.Remove(kvp);
+            }
 
             //now that all the deltas are collected, actually move the entities whilst checking for blocking collisions
             //blocking collisions are collisions that will actually stop/impede the entities movement
@@ -146,6 +162,7 @@ namespace Lumen
         {
             var collidingProps = new List<Prop>();
             var interactingProps = new List<Prop>();
+            var random = new Random();
 
             foreach (var player in Players)
             {
@@ -170,7 +187,15 @@ namespace Lumen
                     }
                 }
 
+                var coinsToBeRemoved = Props.Where(p => p.PropType == PropTypeEnum.Coin && p.IsToBeRemoved).ToList();
                 Props.RemoveAll(p => p.IsToBeRemoved);
+
+                foreach(var coin in coinsToBeRemoved)
+                {
+                    coin.IsToBeRemoved = false;
+                    coin.Lifetime = -1*(float) (random.NextDouble()*3.0f + 2.0f);
+                    PropsToBeAdded.Add(coin);
+                }
 
                 // interacting + no prop -> place candle
 

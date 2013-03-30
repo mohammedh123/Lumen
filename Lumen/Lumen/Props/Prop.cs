@@ -7,19 +7,20 @@ namespace Lumen.Props
     enum PropTypeEnum
     {
         Wax,
-        Candle
+        Candle,
+        Coin
     }
 
     class Prop : Entity
     {
-        public float Lifetime { get; protected set; }
+        public float Lifetime { get; set; }
         public PropTypeEnum PropType { get; set; }
 
         //these must be overridden
         public virtual bool CanCollide { get; protected set; }
         public virtual bool CanInteract { get; protected set; }
 
-        public bool IsToBeRemoved { get; protected set; }
+        public bool IsToBeRemoved { get; set; }
 
         public Prop(string textureKeyName, Vector2 position) : base(textureKeyName, position)
         {
