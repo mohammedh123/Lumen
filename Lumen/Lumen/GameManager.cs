@@ -225,7 +225,7 @@ namespace Lumen
             foreach (var enemy in Enemies)
                 enemy.Draw(sb);
 
-            foreach (var prop in Props.OrderBy(p => p.PropType))
+            foreach (var prop in Props.OrderByDescending(p => p.PropType))
                 prop.Draw(sb);
 
             foreach (var player in Players)
