@@ -25,10 +25,12 @@ namespace Lumen
         };
 
         private static Dictionary<string, TextureDetails> _textureDetails;
+        private static Dictionary<string, SpriteFont> _fontDetails;
  
         public static void LoadContent(ContentManager contentManager)
         {
             _textureDetails = new Dictionary<string, TextureDetails>();
+            _fontDetails = new Dictionary<string, SpriteFont>();
         
             LoadTextureInformation(contentManager);
         }
@@ -51,6 +53,15 @@ namespace Lumen
             throw new ArgumentException(String.Format("A texture origin with the name {0} has not been added to the texture details map yet.", name), "name");
         }
 
+        public static SpriteFont GetFont(string name)
+        {
+            SpriteFont f;
+            if (_fontDetails.TryGetValue(name, out f))
+                return f;
+            
+            throw new ArgumentException(String.Format("A font with the name {0} has not been added to the font map yet.", name), "name");
+        }
+
         private static void LoadTextureInformation(ContentManager contentManager)
         {
             _textureDetails.Add("player",   new TextureDetails(contentManager.Load<Texture2D>("player"),    new Vector2(16,16)));
@@ -60,6 +71,8 @@ namespace Lumen
             _textureDetails.Add("coin", new TextureDetails(contentManager.Load<Texture2D>("coin"), new Vector2(16, 16)));
             _textureDetails.Add("block", new TextureDetails(contentManager.Load<Texture2D>("block"), new Vector2(16, 16)));
             _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("background"), new Vector2(512, 384)));
+
+            _fontDetails.Add("debug", contentManager.Load<SpriteFont>("debug_font"));
         }
     }
 }

@@ -1,0 +1,10 @@
+- win/lose states
+	- bad guys are dead
+	- players are dead
+- push colored blocks into goal
+- walls/doors/traps/buttons
+- enemy wander -> chase
+- push players around
+- debug display (show coins)
+- add CanPickupCoins property to players
+- respawn coins 3-5 seconds
