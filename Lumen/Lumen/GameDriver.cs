@@ -89,9 +89,21 @@ namespace Lumen
             var rand = new Random();
             for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++ )
             {
-                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two)
-                    _gameManager.AddPlayer(new Player("player", new Vector2(150+(int)i*150, 100+(int)i*100)){Color = 
-           new Color(rand.Next(255), rand.Next(255), rand.Next(255))}, i);
+                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Three)
+                {
+                    _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100))
+                                               {
+                                                   Color =
+                                                       new Color(rand.Next(255), rand.Next(255), rand.Next(255))
+                                               }, i);
+
+                    if(i == PlayerIndex.Three)
+                    {
+                        _gameManager.Players.Last().CanPickUpCoins = false;
+                        var idx = _gameManager.Props.FindLastIndex(p => p is AttachedCandle);
+                        _gameManager.Props.RemoveAt(idx);
+                    }
+                }
             }
 
             for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
