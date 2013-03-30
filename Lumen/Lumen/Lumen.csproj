@@ -108,9 +108,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionType.cs" />
+    <Compile Include="Block.cs" />
     <Compile Include="Collider.cs" />
-    <Compile Include="Entities\AttachedCandle.cs" />
-    <Compile Include="Entities\Candle.cs" />
+    <Compile Include="Props\AttachedCandle.cs" />
+    <Compile Include="Props\Candle.cs" />
+    <Compile Include="Props\Coin.cs" />
     <Compile Include="Entities\Enemy.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="ErrorLog.cs" />
@@ -118,7 +120,7 @@
     <Compile Include="GameVariables.cs" />
     <Compile Include="GraphicsOptions.cs" />
     <Compile Include="Entities\Player.cs" />
-    <Compile Include="Entities\Prop.cs" />
+    <Compile Include="Props\Prop.cs" />
     <Compile Include="ILightProvider.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="LightManager.cs" />
@@ -126,7 +128,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="GameDriver.cs" />
     <Compile Include="TextureManager.cs" />
-    <Compile Include="Entities\Wax.cs" />
+    <Compile Include="Props\Wax.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

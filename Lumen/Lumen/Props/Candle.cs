@@ -1,7 +1,8 @@
 using System;
+using Lumen.Entities;
 using Microsoft.Xna.Framework;
 
-namespace Lumen.Entities
+namespace Lumen.Props
 {
     class Candle : Prop, ILightProvider
     {
@@ -12,6 +13,11 @@ namespace Lumen.Entities
         public float Radius { get; set; }
 
         private readonly float _baseRadius;
+
+        public override bool CanInteract
+        {
+            get { return true; }
+        }
 
         public Candle(string textureKeyName, Vector2 position, Player owner) : base(textureKeyName, position)
         {
@@ -30,6 +36,18 @@ namespace Lumen.Entities
                      (float) Math.Sin(Lifetime*MathHelper.Pi/GameVariables.CandleFlickerPeriod);
 
             base.Update(dt);
+        }
+
+        public override void OnInteract(Entity collider)
+        {
+            var player = collider as Player;
+
+            if (player != null) {
+                //pick up candle, increase player's candle count
+                player.NumCandlesLeft++;
+
+                IsToBeRemoved = true;
+            }
         }
     }
 }

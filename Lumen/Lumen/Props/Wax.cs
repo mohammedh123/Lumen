@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace Lumen.Entities
+namespace Lumen.Props
 {
     class Wax : Prop
     {
