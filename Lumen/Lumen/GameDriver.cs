@@ -86,10 +86,12 @@ namespace Lumen
             LoadVariables();
 #endif
 
+            var rand = new Random();
             for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++ )
             {
                 if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two)
-                    _gameManager.AddPlayer(new Player("player", new Vector2(150+(int)i*150, 100+(int)i*100)), i);
+                    _gameManager.AddPlayer(new Player("player", new Vector2(150+(int)i*150, 100+(int)i*100)){Color = 
+           new Color(rand.Next(255), rand.Next(255), rand.Next(255))}, i);
             }
 
             for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
@@ -159,6 +161,7 @@ namespace Lumen
                 _spriteBatch.Begin();
                 foreach(var player in _gameManager.Players)
                     _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", player.CoinCount), new Vector2(player.Position.X - 16, player.Position.Y - 32), Color.White);
+                _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", GameVariables.CameraZoom), Vector2.Zero, Color.White);
                 _spriteBatch.End();
             }
 #endif

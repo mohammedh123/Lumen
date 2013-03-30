@@ -20,6 +20,9 @@ namespace Lumen
         public static float CandleFlickerPeriod = 0.2f;
         public static float CandleFlickerAmount = 5.0f;
 
+        public static float CoinRespawnRateMin = 6.0f;
+        public static float CoinRespawnRateMax = 6.0f;
+
         public static float CameraZoom = 1.0f;
 
         public static Matrix CameraZoomMatrix

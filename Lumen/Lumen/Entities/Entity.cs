@@ -11,7 +11,7 @@ namespace Lumen.Entities
         public Vector2 Velocity { get; set; }
 
         protected float Angle = 0f;
-        protected Color Color = Color.White;
+        public Color Color = Color.White;
 
         public bool IsVisible = true;
 

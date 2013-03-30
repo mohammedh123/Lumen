@@ -28,8 +28,6 @@ namespace Lumen.Entities
                                 {Keys.Down, ActionType.MoveDown},
                                 {Keys.Space, ActionType.InteractWithProp}
                             };
-            var rand = new Random();
-            Color = new Color(rand.Next(255), rand.Next(255), rand.Next(255));
         }
 
         public override void Update(float dt)

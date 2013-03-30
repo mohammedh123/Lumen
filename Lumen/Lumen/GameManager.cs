@@ -193,7 +193,7 @@ namespace Lumen
                 foreach(var coin in coinsToBeRemoved)
                 {
                     coin.IsToBeRemoved = false;
-                    coin.Lifetime = -1*(float) (random.NextDouble()*3.0f + 2.0f);
+                    coin.Lifetime = -1*(float) (random.NextDouble()*(GameVariables.CoinRespawnRateMax-GameVariables.CoinRespawnRateMin) + GameVariables.CoinRespawnRateMin);
                     PropsToBeAdded.Add(coin);
                 }
 
