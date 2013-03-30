@@ -23,6 +23,10 @@ namespace Lumen
 
         public static readonly Vector2 DisplayResolution = new Vector2(1024,768);
 
+#if DEBUG
+        public bool IsShowingCoinCount = false;
+#endif
+
         public GameDriver()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -120,6 +124,15 @@ namespace Lumen
                 LoadVariables();
             var scale = 1.0f + Mouse.GetState().ScrollWheelValue/12000.0f;
             GameVariables.CameraZoom = scale;
+
+            if(Keyboard.GetState().IsKeyDown(Keys.Tab))
+            {
+                IsShowingCoinCount = true;
+            }
+            else
+            {
+                IsShowingCoinCount = false;
+            }
 #endif
 
             InputManager.BeginUpdate();
@@ -139,6 +152,16 @@ namespace Lumen
             DrawFullscreenQuad(_sceneRT, _spriteBatch);
             _spriteBatch.End();
             _lightManager.DrawLightDarkness(GraphicsDevice, _spriteBatch, _sceneRT);
+
+#if DEBUG
+            if(IsShowingCoinCount)
+            {
+                _spriteBatch.Begin();
+                foreach(var player in _gameManager.Players)
+                    _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", player.CoinCount), new Vector2(player.Position.X - 16, player.Position.Y - 32), Color.White);
+                _spriteBatch.End();
+            }
+#endif
 
             base.Draw(gameTime);
         }
