@@ -12,6 +12,7 @@ namespace Lumen.Entities
         public bool IsInteractingWithProp = false;
         public PlayerIndex PlayerNum;
         public int CoinCount = 0;
+        public bool CanPickUpCoins = true;
 
         private Dictionary<Keys, ActionType> _inputMap;
 

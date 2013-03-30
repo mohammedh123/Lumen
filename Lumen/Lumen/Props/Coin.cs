@@ -12,15 +12,19 @@ namespace Lumen.Props
 
         public Coin(Vector2 position) : base("coin", position)
         {
+            PropType = PropTypeEnum.Coin;
         }
 
         public override void OnCollide(Entity collider)
         {
             var player = collider as Player;
 
-            player.CoinCount++;
+            if (player != null && player.CanPickUpCoins) //if collider is a player, basically, and can pick up coins
+            {
+                player.CoinCount++;
 
-            IsToBeRemoved = true;
+                IsToBeRemoved = true;
+            }
         }
     }
 }
