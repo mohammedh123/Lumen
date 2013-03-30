@@ -151,8 +151,9 @@ namespace Lumen
                 if (screenBounds.Contains((int)(player.Position.X + player.Velocity.X), (int)(player.Position.Y + player.Velocity.Y)))
                 {
                     player.ApplyVelocity();
-                    player.ResetVelocity();
                 }
+
+                player.ResetVelocity();
             }
 
             //all entities have proper state updated now, now check for the following types of interactions
