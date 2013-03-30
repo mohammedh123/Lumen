@@ -58,7 +58,7 @@ namespace Lumen
                     }
                 }
 
-                for (int j = 0;     j < Players.Count; j++) {
+                for (int j = 0; j < Players.Count; j++) {
                     if (i == j)
                         continue;
 
