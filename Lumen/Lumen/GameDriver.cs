@@ -100,9 +100,16 @@ namespace Lumen
                 {
                     _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100))
                                                {
-                                                   Color =
-                                                       new Color(rand.Next(255), rand.Next(255), rand.Next(255))
                                                }, i);
+
+                    if (i == PlayerIndex.One)
+                        _gameManager.Players.Last().Color = Color.Red;
+                    if (i == PlayerIndex.Two)
+                        _gameManager.Players.Last().Color = Color.Green;
+                    if (i == PlayerIndex.Three)
+                        _gameManager.Players.Last().Color = Color.Blue;
+                    if (i == PlayerIndex.Four)
+                        _gameManager.Players.Last().Color = Color.Cyan;
 
                     if(i == PlayerIndex.Three)
                     {
