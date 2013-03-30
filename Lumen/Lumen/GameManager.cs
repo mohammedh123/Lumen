@@ -147,8 +147,12 @@ namespace Lumen
                     }
                 }
 
-                player.ApplyVelocity();
-                player.ResetVelocity();
+                Rectangle screenBounds = new Rectangle(0,0,(int)_gameResolution.X, (int)_gameResolution.Y);
+                if (screenBounds.Contains((int)(player.Position.X + player.Velocity.X), (int)(player.Position.Y + player.Velocity.Y)))
+                {
+                    player.ApplyVelocity();
+                    player.ResetVelocity();
+                }
             }
 
             //all entities have proper state updated now, now check for the following types of interactions
@@ -218,14 +222,14 @@ namespace Lumen
 
             DrawBackground(sb);
 
-            foreach (var player in Players)
-                player.Draw(sb);
-
             foreach (var enemy in Enemies)
                 enemy.Draw(sb);
 
             foreach (var prop in Props.OrderBy(p => p.PropType))
                 prop.Draw(sb);
+
+            foreach (var player in Players)
+                player.Draw(sb);
 
             foreach (var block in Blocks)
                 block.Draw(sb);
