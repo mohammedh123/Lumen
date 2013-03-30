@@ -8,6 +8,7 @@ namespace Lumen.Entities
         protected Texture2D Texture { get; set; }
         protected Vector2 TextureOrigin { get; set; }
         public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
 
         protected float Angle = 0f;
         protected Color Color = Color.White;
@@ -30,9 +31,19 @@ namespace Lumen.Entities
                 sb.Draw(Texture, Position, null, Color, Angle,TextureOrigin,1.0f,SpriteEffects.None,0);
         }
 
-        protected void Move(float dt, float dx, float dy)
+        protected void AdjustVelocity(float dx, float dy)
         {
-            Position += new Vector2(dx, dy)*dt;
+            Velocity += new Vector2(dx, dy);
+        }
+
+        public void ApplyVelocity()
+        {
+            Position += Velocity;
+        }
+
+        public void ResetVelocity()
+        {
+            Velocity = Vector2.Zero;
         }
     }
 }
