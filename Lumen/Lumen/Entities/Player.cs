@@ -11,6 +11,7 @@ namespace Lumen.Entities
         public int NumCandlesLeft;
         public bool IsInteractingWithProp = false;
         public PlayerIndex PlayerNum;
+        public int CoinCount = 0;
 
         private Dictionary<Keys, ActionType> _inputMap;
 
@@ -26,16 +27,19 @@ namespace Lumen.Entities
                                 {Keys.Down, ActionType.MoveDown},
                                 {Keys.Space, ActionType.InteractWithProp}
                             };
+            var rand = new Random();
+            Color = new Color(rand.Next(255), rand.Next(255), rand.Next(255));
         }
 
         public override void Update(float dt)
         {
+            if(PlayerNum == PlayerIndex.Two)
             foreach (var kvp in _inputMap) {
 #if DEBUG
-                if (Keyboard.GetState().IsKeyDown(kvp.Key)) {
+                if (InputManager.KeyDown(kvp.Key)) {
                     ProcessKeyDownAction(dt, kvp.Value);
                 }
-                else if (Keyboard.GetState().IsKeyUp(kvp.Key)) {
+                else if (InputManager.KeyUp(kvp.Key)) {
                     ProcessKeyUpAction(dt, kvp.Value);
                 }
 #endif
@@ -46,11 +50,14 @@ namespace Lumen.Entities
 
         private void ProcessControllerInput(float dt)
         {
-            var changeLeft = InputManager.GamepadLeft(PlayerNum);
+            if (GamePad.GetState(PlayerNum).IsConnected)
+            {
+                var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
-            Move(dt, changeLeft.X*GameVariables.PlayerSpeed,-changeLeft.Y*GameVariables.PlayerSpeed);
+                AdjustVelocity(changeLeft.X * GameVariables.PlayerSpeed * dt, -changeLeft.Y * GameVariables.PlayerSpeed * dt);
 
-            IsInteractingWithProp = InputManager.GamepadButtonPressed(PlayerNum, Buttons.A);
+                IsInteractingWithProp = InputManager.GamepadButtonPressed(PlayerNum, Buttons.A);
+            }
         }
 
         private void ProcessKeyDownAction(float dt, ActionType value)
@@ -58,19 +65,19 @@ namespace Lumen.Entities
             switch (value)
             {
                 case ActionType.MoveLeft:
-                    Move(dt, -GameVariables.PlayerSpeed, 0);
+                    AdjustVelocity(-GameVariables.PlayerSpeed*dt, 0);
 
                     break;
                 case ActionType.MoveRight:
-                    Move(dt, GameVariables.PlayerSpeed, 0);
+                    AdjustVelocity(GameVariables.PlayerSpeed * dt, 0);
 
                     break;
                 case ActionType.MoveUp:
-                    Move(dt, 0, -GameVariables.PlayerSpeed);
+                    AdjustVelocity(0, -GameVariables.PlayerSpeed * dt);
 
                     break;
                 case ActionType.MoveDown:
-                    Move(dt, 0, GameVariables.PlayerSpeed);
+                    AdjustVelocity(0, GameVariables.PlayerSpeed * dt);
 
                     break;
                 case ActionType.InteractWithProp:
