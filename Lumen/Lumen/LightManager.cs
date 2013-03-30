@@ -33,7 +33,7 @@ namespace Lumen
 
             foreach (var light in lights)
             {
-                sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFX);
+                sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFX, GameVariables.CameraZoomMatrix);
                 var normalizedPosition = new Vector2(light.Position.X/_accumulatorRT.Width,
                                                      light.Position.Y/_accumulatorRT.Height);
 

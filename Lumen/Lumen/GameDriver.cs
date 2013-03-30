@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Lumen.Entities;
+using Lumen.Props;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -76,11 +77,28 @@ namespace Lumen
 
             TextureManager.LoadContent(Content);
             _lightManager.LoadContent(_graphics, GraphicsDevice, Content);
+            
+#if DEBUG
+            LoadVariables();
+#endif
 
             for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++ )
             {
-                if (GamePad.GetState(i).IsConnected)
-                    _gameManager.AddPlayer(new Player("player", new Vector2(100, 50)), i);
+                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two)
+                    _gameManager.AddPlayer(new Player("player", new Vector2(150+(int)i*150, 100+(int)i*100)), i);
+            }
+
+            for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
+            {
+                for (var y = 16.0f; y < DisplayResolution.Y; y += 32.0f) {
+                    _gameManager.AddCoin(new Vector2(x, y));
+                }
+            }
+
+            int size = 64;
+            for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
+            {
+                _gameManager.AddBlock(new Vector2(i, 0), size);
             }
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
@@ -100,6 +118,8 @@ namespace Lumen
 #if DEBUG
             if(Keyboard.GetState().IsKeyDown(Keys.Back))
                 LoadVariables();
+            var scale = 1.0f + Mouse.GetState().ScrollWheelValue/12000.0f;
+            GameVariables.CameraZoom = scale;
 #endif
 
             InputManager.BeginUpdate();
@@ -115,7 +135,7 @@ namespace Lumen
 
             _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Candle>(), GraphicsDevice, _spriteBatch);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
             DrawFullscreenQuad(_sceneRT, _spriteBatch);
             _spriteBatch.End();
             _lightManager.DrawLightDarkness(GraphicsDevice, _spriteBatch, _sceneRT);

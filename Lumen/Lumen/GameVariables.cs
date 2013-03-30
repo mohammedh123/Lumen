@@ -10,13 +10,21 @@ namespace Lumen
     {
         public static float PlayerSpeed = 100; //pixels per second
         public static float PlayerCollisionRadius = 16.0f;
-        public static int PlayerInitialCandles = 3;
-        public static float PlayerLanternRadius = 256.0f; //16*sqrt(2)
+        public static int   PlayerInitialCandles = 3;
+        public static float PlayerPushSpeed = 50;
+        public static float PlayerLanternRadius = 256.0f;
 
         public static float EnemyCollisionRadius = 16.0f;
 
         public static float CandleInitialRadius = 100.0f;
         public static float CandleFlickerPeriod = 0.2f;
         public static float CandleFlickerAmount = 5.0f;
+
+        public static float CameraZoom = 1.0f;
+
+        public static Matrix CameraZoomMatrix
+        {
+            get { return Matrix.CreateScale(CameraZoom); }
+        }
     }
 }
