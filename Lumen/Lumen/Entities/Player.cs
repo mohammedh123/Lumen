@@ -32,7 +32,7 @@ namespace Lumen.Entities
 
         public override void Update(float dt)
         {
-            if(PlayerNum == PlayerIndex.Three)
+            if(PlayerNum == PlayerIndex.Two)
             foreach (var kvp in _inputMap) {
 #if DEBUG
                 if (InputManager.KeyDown(kvp.Key)) {

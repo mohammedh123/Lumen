@@ -30,19 +30,25 @@ namespace Lumen
             return false;
         }
 
-        internal static bool Collides(Player player, Player otherPlayer, bool useVelocityPlayerOne = false, bool useVelocityPlayerTwo = false)
+        //http://lazyfoo.net/SDL_tutorials/lesson17/
+        internal static bool Collides(Player player, Player otherPlayer, bool useVelocityXPlayerOne, bool useVelocityYPlayerOne, bool useVelocityXPlayerTwo, bool useVelocityYPlayerTwo)
         {
-            var p1 = new Rectangle((int) (player.Position.X - GameVariables.PlayerCollisionRadius + (useVelocityPlayerOne ? player.Velocity.X : 0)),
-                                   (int)(player.Position.Y - GameVariables.PlayerCollisionRadius + (useVelocityPlayerOne ? player.Velocity.Y : 0)),
-                                   (int) (GameVariables.PlayerCollisionRadius*2),
-                                   (int) (GameVariables.PlayerCollisionRadius*2));
+            var leftA = player.Position.X - GameVariables.PlayerCollisionRadius + (useVelocityXPlayerOne ? player.Velocity.X : 0);
+            var topA = player.Position.Y - GameVariables.PlayerCollisionRadius + (useVelocityYPlayerOne ? player.Velocity.Y : 0);
+            var rightA = leftA + GameVariables.PlayerCollisionRadius * 2;
+            var bottomA = topA + GameVariables.PlayerCollisionRadius * 2;
 
-            var p2 = new Rectangle((int)(otherPlayer.Position.X - GameVariables.PlayerCollisionRadius + (useVelocityPlayerTwo ? otherPlayer.Velocity.X : 0)),
-                                   (int)(otherPlayer.Position.Y - GameVariables.PlayerCollisionRadius + (useVelocityPlayerTwo ? otherPlayer.Velocity.Y : 0)),
-                                   (int) (GameVariables.PlayerCollisionRadius*2),
-                                   (int) (GameVariables.PlayerCollisionRadius*2));
+            var leftB = otherPlayer.Position.X - GameVariables.PlayerCollisionRadius + (useVelocityXPlayerTwo ? otherPlayer.Velocity.X : 0);
+            var topB = otherPlayer.Position.Y - GameVariables.PlayerCollisionRadius + (useVelocityYPlayerTwo ? otherPlayer.Velocity.Y : 0);
+            var rightB = leftB + GameVariables.PlayerCollisionRadius * 2;
+            var bottomB = topB + GameVariables.PlayerCollisionRadius * 2;
 
-            return p1.Intersects(p2);
+            if (bottomA <= topB) return false;
+            if (topA >= bottomB) return false;
+            if (rightA <= leftB) return false;
+            if (leftA >= rightB) return false;
+
+            return true;
         }
 
         private static bool CirclesCollide(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB)

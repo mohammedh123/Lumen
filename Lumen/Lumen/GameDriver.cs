@@ -96,11 +96,9 @@ namespace Lumen
             var rand = new Random();
             for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++ )
             {
-                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Three)
-                {
+                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two) {
                     _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100))
-                                               {
-                                               }, i);
+                                           , i);
 
                     if (i == PlayerIndex.One)
                         _gameManager.Players.Last().Color = Color.Red;
@@ -120,18 +118,18 @@ namespace Lumen
                 }
             }
 
-            for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
-            {
-                for (var y = 16.0f; y < DisplayResolution.Y; y += 32.0f) {
-                    _gameManager.AddCoin(new Vector2(x, y));
-                }
-            }
+            //for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
+            //{
+            //    for (var y = 16.0f; y < DisplayResolution.Y; y += 32.0f) {
+            //        _gameManager.AddCoin(new Vector2(x, y));
+            //    }
+            //}
 
-            int size = 64;
-            for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
-            {
-                _gameManager.AddBlock(new Vector2(i, 0), size);
-            }
+            //int size = 64;
+            //for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
+            //{
+            //    _gameManager.AddBlock(new Vector2(i, 0), size);
+            //}
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
         }
