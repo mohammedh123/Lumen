@@ -9,12 +9,12 @@ namespace Lumen
     public class GameVariables
     {
         public static float PlayerSpeed = 100; //pixels per second
-        public static float PlayerCollisionRadius = 16.0f;
+        public static float PlayerCollisionRadius = 12.0f;
         public static int   PlayerInitialCandles = 3;
         public static float PlayerPushSpeed = 50;
         public static float PlayerLanternRadius = 256.0f;
 
-        public static float EnemyCollisionRadius = 16.0f;
+        public static float EnemyCollisionRadius = 12.0f;
 
         public static float CandleInitialRadius = 100.0f;
         public static float CandleFlickerPeriod = 0.2f;

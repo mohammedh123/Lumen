@@ -10,7 +10,7 @@ namespace Lumen
 {
     public class TextureManager
     {
-        public static readonly Vector2 PlayerOrigin = new Vector2(16,16);
+        public static readonly Vector2 PlayerOrigin = new Vector2(12,12);
 
         private struct TextureDetails
         {
@@ -64,12 +64,12 @@ namespace Lumen
 
         private static void LoadTextureInformation(ContentManager contentManager)
         {
-            _textureDetails.Add("player",   new TextureDetails(contentManager.Load<Texture2D>("player"),    new Vector2(16,16)));
-            _textureDetails.Add("enemy",    new TextureDetails(contentManager.Load<Texture2D>("enemy"),     new Vector2(16,16)));
-            _textureDetails.Add("wax", new TextureDetails(contentManager.Load<Texture2D>("wax"), new Vector2(16, 16)));
-            _textureDetails.Add("candle", new TextureDetails(contentManager.Load<Texture2D>("candle"), new Vector2(16, 16)));
-            _textureDetails.Add("coin", new TextureDetails(contentManager.Load<Texture2D>("coin"), new Vector2(16, 16)));
-            _textureDetails.Add("block", new TextureDetails(contentManager.Load<Texture2D>("block"), new Vector2(16, 16)));
+            _textureDetails.Add("player",   new TextureDetails(contentManager.Load<Texture2D>("player"),    new Vector2(12,12)));
+            _textureDetails.Add("enemy", new TextureDetails(contentManager.Load<Texture2D>("enemy"), new Vector2(12, 12)));
+            _textureDetails.Add("wax", new TextureDetails(contentManager.Load<Texture2D>("wax"), new Vector2(12, 12)));
+            _textureDetails.Add("candle", new TextureDetails(contentManager.Load<Texture2D>("candle"), new Vector2(12, 12)));
+            _textureDetails.Add("coin", new TextureDetails(contentManager.Load<Texture2D>("coin"), new Vector2(12, 12)));
+            _textureDetails.Add("block", new TextureDetails(contentManager.Load<Texture2D>("block"), new Vector2(12, 12)));
             _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("background"), new Vector2(512, 384)));
 
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("debug_font"));
