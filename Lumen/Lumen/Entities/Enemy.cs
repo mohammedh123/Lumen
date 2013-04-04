@@ -1,11 +1,12 @@
+using Box2D.XNA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Lumen.Entities
 {
-    class Enemy : Entity
+    class Enemy : PhysicsEntity
     {
-        public Enemy(Vector2 position) : base("enemy", position)
+        public Enemy(Vector2 position, World world) : base("enemy", position, GameVariables.EnemyCollisionRadius, world)
         {
         }
 

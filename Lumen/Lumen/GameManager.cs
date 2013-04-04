@@ -2,21 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Box2D.XNA;
 using Lumen.Entities;
 using Lumen.Props;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace Lumen
 {
+    enum GameState
+    {
+        Victory,
+        Lost,
+        Playing
+    }
+
     class GameManager
     {
         public List<Player> Players { get; set; }
-        public List<Enemy>  Enemies { get; set; }
-        public List<Prop>   Props   { get; set; }
+        public List<Enemy> Enemies { get; set; }
+        public List<Drunkard> Drunkards { get; set; }
+        public List<IProp> Props { get; set; }
         public List<Block> Blocks { get; set; }
-        public List<Prop> PropsToBeAdded { get; set; }
+        public List<Rectangle> GoalAreas { get; set; }
+        public List<IProp> PropsToBeAdded { get; set; }
+
+        public World World;
+
+        public GameState GameState = GameState.Playing;
 
         private readonly Vector2 _gameResolution;
 
@@ -24,9 +39,18 @@ namespace Lumen
         {
             Players = new List<Player>();
             Enemies = new List<Enemy>();
-            Props = new List<Prop>();
+            Drunkards = new List<Drunkard>();
+            Props = new List<IProp>();
             Blocks = new List<Block>();
-            PropsToBeAdded = new List<Prop>();
+            PropsToBeAdded = new List<IProp>();
+            GoalAreas = new List<Rectangle>();
+
+            var worldAABB = new AABB
+                            {
+                                lowerBound = new Vector2(-gameResolution.X, -gameResolution.Y),
+                                upperBound = new Vector2(gameResolution.X, gameResolution.Y)
+                            };
+            World = new World(Vector2.Zero, true);
 
             _gameResolution = gameResolution;
         }
@@ -35,138 +59,86 @@ namespace Lumen
         {
             var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            World.Step(1.0f/60.0f, 10, 1);
+
             //iterate through all entities and update them (their deltas will be set at the end of update)
-            foreach(var player in Players)
+            foreach (var player in Players)
                 player.Update(dt);
 
-            foreach(var enemy in Enemies)
+            foreach (var enemy in Enemies)
                 enemy.Update(dt);
+
+            GameState = GameState.Playing;
+            foreach (var drunkard in Drunkards) {
+                drunkard.Update(dt);
+
+                if (GameState == GameState.Playing) {
+                    foreach (var goal in GoalAreas.Where(goal => Collider.Collides(drunkard, goal))) {
+                        GameState = GameState.Victory;
+                        break;
+                    }
+
+                    var anyShine = false;
+                    foreach (var candle in Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Candle>()) {
+                        if (Collider.CircleRect(candle.Position.X, candle.Position.Y, candle.Radius*0.8f,
+                                                new Rectangle(
+                                                    (int) (drunkard.Position.X - GameVariables.DrunkardCollisionRadius),
+                                                    (int) (drunkard.Position.Y - GameVariables.DrunkardCollisionRadius),
+                                                    2*(int) GameVariables.DrunkardCollisionRadius,
+                                                    2*(int) GameVariables.DrunkardCollisionRadius))) {
+                            anyShine = true;
+                            break;
+                        }
+                    }
+
+                    if (!anyShine) {
+                        GameState = GameState.Lost;
+                        break;
+                    }
+                }
+            }
 
             foreach(var prop in Props)
                 prop.Update(dt);
 
-            foreach(var kvp in PropsToBeAdded)
+
+            foreach (var prop in PropsToBeAdded)
             {
-                kvp.Lifetime += dt;
+                prop.Lifetime += dt;
             }
 
-            var kvpsToBeRemoved = PropsToBeAdded.Where(kvp => kvp.Lifetime > 0).ToList();
+            var propsToBeRemoved = PropsToBeAdded.Where(kvp => kvp.Lifetime > 0).ToList();
 
-            foreach(var kvp in kvpsToBeRemoved)
+            foreach (var prop in propsToBeRemoved)
             {
-                kvp.Lifetime = 0.0f;
-                Props.Add(kvp);
-                PropsToBeAdded.Remove(kvp);
+                prop.Lifetime = 0.0f;
+
+                Props.Add(prop);
+
+                propsToBeRemoved.Remove(prop);
             }
 
-            //now that all the deltas are collected, actually move the entities whilst checking for blocking collisions
-            //blocking collisions are collisions that will actually stop/impede the entities movement
-
-            //check player vs block collision and 'move' the block if its moveable at half speed
             for (int i = 0; i < Players.Count; i++) {
                 var player = Players[i];
 
-                foreach (var block in Blocks) {
-                    if (Collider.Collides(player, block, true)) //see if player will collide with block if he moves
-                    {
-                        //TODO: THIS
-                        break;
-                    }
-                }
-
-                for (int j = 0; j < Players.Count; j++) {
-                    if (i == j)
-                        continue;
-
-                    var otherPlayer = Players[j];
-
-                    var playerNewX = player.Position.X + player.Velocity.X;
-
-                    var playerOldRect = new Rectangle((int)(player.Position.X - GameVariables.PlayerCollisionRadius),
-                                                      (int)(player.Position.Y - GameVariables.PlayerCollisionRadius),
-                                                      (int)(GameVariables.PlayerCollisionRadius * 2),
-                                                      (int)(GameVariables.PlayerCollisionRadius * 2));
-
-                    var playerNewRect = new Rectangle((int) (playerNewX - GameVariables.PlayerCollisionRadius),
-                                                      (int) (player.Position.Y - GameVariables.PlayerCollisionRadius),
-                                                      (int) (GameVariables.PlayerCollisionRadius*2),
-                                                      (int) (GameVariables.PlayerCollisionRadius*2));
-
-                    var otherOldRect =
-                        new Rectangle((int) (otherPlayer.Position.X - GameVariables.PlayerCollisionRadius),
-                                      (int) (otherPlayer.Position.Y - GameVariables.PlayerCollisionRadius),
-                                      (int) (GameVariables.PlayerCollisionRadius*2),
-                                      (int) (GameVariables.PlayerCollisionRadius*2));
-
-                    if (playerNewRect.Intersects(otherOldRect)) {
-                        if (player.Velocity.X > 0) {
-                            player.Velocity =
-                                new Vector2(
-                                    (otherPlayer.Position.X - player.Position.X - 2*GameVariables.PlayerCollisionRadius) +
-                                    GameVariables.PlayerSpeed*0.5f*dt, player.Velocity.Y);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X + GameVariables.PlayerSpeed*0.5f*dt,
-                                                               otherPlayer.Velocity.Y);
-                        }
-                        else if (player.Velocity.X < 0) {
-
-                            player.Velocity =
-                                new Vector2(
-                                    (otherPlayer.Position.X - player.Position.X + 2*GameVariables.PlayerCollisionRadius) -
-                                    GameVariables.PlayerSpeed * 0.5f * dt, player.Velocity.Y);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X - GameVariables.PlayerSpeed*0.5f*dt,
-                                                               otherPlayer.Velocity.Y);
-                        }
-                    }
-
-                    var playerNewY = player.Position.Y + player.Velocity.Y;
-
-                    playerNewRect = new Rectangle((int) (player.Position.X - GameVariables.PlayerCollisionRadius),
-                                                  (int) (playerNewY - GameVariables.PlayerCollisionRadius),
-                                                  (int) (GameVariables.PlayerCollisionRadius*2),
-                                                  (int) (GameVariables.PlayerCollisionRadius*2));
-
-                    if (playerNewRect.Intersects(otherOldRect)) {
-                        if (player.Velocity.Y > 0) {
-
-                            player.Velocity = new Vector2(player.Velocity.X,
-                                                          (otherPlayer.Position.Y - player.Position.Y -
-                                                           2*GameVariables.PlayerCollisionRadius) +
-                                                          GameVariables.PlayerSpeed * 0.5f * dt);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y + GameVariables.PlayerSpeed * 0.5f * dt);
-                        }
-                        else if (player.Velocity.Y < 0) {
-
-                            player.Velocity = new Vector2(player.Velocity.X,
-                                                          (otherPlayer.Position.Y - player.Position.Y +
-                                                           2*GameVariables.PlayerCollisionRadius) -
-                                                          GameVariables.PlayerSpeed * 0.5f * dt);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y - GameVariables.PlayerSpeed * 0.5f * dt);
-                        }
-                    }
-                }
-
-                Rectangle screenBounds = new Rectangle(0,0,(int)_gameResolution.X, (int)_gameResolution.Y);
-                if (screenBounds.Contains((int)(player.Position.X + player.Velocity.X), (int)(player.Position.Y + player.Velocity.Y)))
-                {
-                    player.ApplyVelocity();
-                }
-
-                player.ResetVelocity();
+                //player.Body.ApplyImpulse(new Vec2(player.Velocity.X / GameVariables.PixelsInOneMeter, player.Velocity.Y / GameVariables.PixelsInOneMeter), new Vec2());
+                player.Body.SetLinearVelocity(player.Velocity/GameVariables.PixelsInOneMeter);
+                player.Velocity = Vector2.Zero;
             }
 
-            //all entities have proper state updated now, now check for the following types of interactions
-            // Player vs Prop
-            // Enemy vs Player
+            foreach(var drunkard in Drunkards) {
+                drunkard.Body.SetLinearVelocity(drunkard.Velocity);
+                drunkard.Velocity = Vector2.Zero;
+            }
+
 
             HandlePropCollision();
         }
 
         private void HandlePropCollision()
         {
-            var collidingProps = new List<Prop>();
-            var interactingProps = new List<Prop>();
+            var collidingProps = new List<IProp>();
+            var interactingProps = new List<IProp>();
             var random = new Random();
 
             foreach (var player in Players)
@@ -174,7 +146,7 @@ namespace Lumen
                 collidingProps.Clear();
                 interactingProps.Clear();
 
-                foreach (var prop in Props.Where(p => !(p is AttachedCandle)))
+                foreach (var prop in Props)
                 {
                     if (Collider.Collides(player, prop))
                     {
@@ -229,11 +201,18 @@ namespace Lumen
             foreach (var prop in Props.OrderByDescending(p => p.PropType))
                 prop.Draw(sb);
 
+            foreach (var drunkard in Drunkards)
+                drunkard.Draw(sb);
+
             foreach (var player in Players)
                 player.Draw(sb);
 
             foreach (var block in Blocks)
                 block.Draw(sb);
+
+            foreach(var area in GoalAreas) {
+                sb.Draw(TextureManager.GetTexture("blank"), area, Color.Red*0.5f);
+            }
 
             sb.End();
         }
@@ -250,13 +229,12 @@ namespace Lumen
             AddPlayer(player);
             Players.Last().PlayerNum = playerIndex;
         }
-
-
+        
         public void AddPlayer(Player p)
         {
             if (Players.Contains(p)) return;
 
-            Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius });
+            Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius, Position = p.Position});
             Players.Add(p);
         }
 
@@ -267,7 +245,28 @@ namespace Lumen
 
         public void AddBlock(Vector2 topLeftCorner, int size)
         {
-            Blocks.Add(new Block(topLeftCorner, size));
+            Blocks.Add(new Block(topLeftCorner, size, World));
+        }
+
+        public void AddGoalArea(Vector2 topLeftCorner, int size)
+        {
+            GoalAreas.Add(new Rectangle((int)topLeftCorner.X, (int)topLeftCorner.Y, size, size));
+        }
+
+        public void AddDrunkard(Vector2 position)
+        {
+            Drunkards.Add(new Drunkard(position, World));
+        }
+
+        public void Clear()
+        {
+            Players.Clear();
+            Props.Clear();
+            Enemies.Clear();
+            PropsToBeAdded.Clear();
+            Blocks.Clear();
+            GoalAreas.Clear();
+            Drunkards.Clear();
         }
     }
 }

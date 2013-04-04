@@ -23,7 +23,10 @@ namespace Lumen
         public static float CoinRespawnRateMin = 6.0f;
         public static float CoinRespawnRateMax = 6.0f;
 
+        public static float DrunkardCollisionRadius = 12.0f;
+
         public static float CameraZoom = 1.0f;
+        public const int PixelsInOneMeter = 20;
 
         public static Matrix CameraZoomMatrix
         {

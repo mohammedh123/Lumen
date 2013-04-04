@@ -10,9 +10,9 @@ namespace Lumen
 {
     public class Collider
     {
-        internal static bool Collides(Player player, Prop prop)
+        internal static bool Collides(PhysicsEntity entity, IProp physicsProp)
         {
-            return CirclesCollide(player.Position, GameVariables.PlayerCollisionRadius, prop.Position,
+            return CirclesCollide(entity.Position, GameVariables.PlayerCollisionRadius, physicsProp.Position,
                                   GameVariables.EnemyCollisionRadius);
         }
 
@@ -30,24 +30,33 @@ namespace Lumen
             return false;
         }
 
-        internal static bool Collides(Player player, Player otherPlayer, bool useVelocityPlayerOne = false, bool useVelocityPlayerTwo = false)
-        {
-            var p1 = new Rectangle((int) (player.Position.X - GameVariables.PlayerCollisionRadius + (useVelocityPlayerOne ? player.Velocity.X : 0)),
-                                   (int)(player.Position.Y - GameVariables.PlayerCollisionRadius + (useVelocityPlayerOne ? player.Velocity.Y : 0)),
-                                   (int) (GameVariables.PlayerCollisionRadius*2),
-                                   (int) (GameVariables.PlayerCollisionRadius*2));
-
-            var p2 = new Rectangle((int)(otherPlayer.Position.X - GameVariables.PlayerCollisionRadius + (useVelocityPlayerTwo ? otherPlayer.Velocity.X : 0)),
-                                   (int)(otherPlayer.Position.Y - GameVariables.PlayerCollisionRadius + (useVelocityPlayerTwo ? otherPlayer.Velocity.Y : 0)),
-                                   (int) (GameVariables.PlayerCollisionRadius*2),
-                                   (int) (GameVariables.PlayerCollisionRadius*2));
-
-            return p1.Intersects(p2);
-        }
-
         private static bool CirclesCollide(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB)
         {
             return (centerA - centerB).LengthSquared() < (radiusA + radiusB)*(radiusA + radiusB);
+        }
+
+        internal static bool CircleRect(float cx, float cy, float r, Rectangle rect)
+        {
+            var closestX = MathHelper.Clamp(cx, rect.Left, rect.Right);
+            var closestY = MathHelper.Clamp(cy, rect.Top, rect.Bottom);
+
+            var distX = cx - closestX;
+            var distY = cy - closestY;
+
+            var dS = (distX * distX) + (distY * distY);
+            return dS < (r * r);
+        }
+
+        internal static bool Collides(PhysicsEntity entity, Rectangle rect)
+        {
+            return new Rectangle((int)(entity.Position.X - GameVariables.PlayerCollisionRadius),
+                                 (int)(entity.Position.Y - GameVariables.PlayerCollisionRadius),
+                                 (int)GameVariables.PlayerCollisionRadius * 2, (int)GameVariables.PlayerCollisionRadius * 2).Intersects(rect);
+        }
+
+        internal static bool Collides(Candle entity, Rectangle rect)
+        {
+            return CircleRect(entity.Position.X, entity.Position.Y, entity.Radius*0.8f, rect);
         }
     }
 }

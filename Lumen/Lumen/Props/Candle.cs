@@ -1,14 +1,15 @@
-using System;
 using Lumen.Entities;
 using Microsoft.Xna.Framework;
+using Color = Microsoft.Xna.Framework.Color;
+using Math = System.Math;
 
 namespace Lumen.Props
 {
-    class Candle : Prop, ILightProvider
+    class Candle : NonPhysicsProp, ILightProvider
     {
         public Player Owner = null;
 
-        //ILightProvider members
+        public Vector2 Position { get; set; }
         public Color LightColor { get; set; }
         public float Radius { get; set; }
 
@@ -38,7 +39,7 @@ namespace Lumen.Props
             base.Update(dt);
         }
 
-        public override void OnInteract(Entity collider)
+        public override void OnInteract(PhysicsEntity collider)
         {
             var player = collider as Player;
 
