@@ -88,17 +88,69 @@ namespace Lumen
 
             TextureManager.LoadContent(Content);
             _lightManager.LoadContent(_graphics, GraphicsDevice, Content);
-            
+
+            ResetLevel();
+
+            //for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
+            //{
+            //    for (var y = 16.0f; y < DisplayResolution.Y; y += 32.0f) {
+            //        _gameManager.AddCoin(new Vector2(x, y));
+            //    }
+            //}
+
+
+            _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
+        }
+
+        private void ResetLevel()
+        {
 #if DEBUG
             LoadVariables();
 #endif
+            _gameManager.Clear();
+            _gameManager.GameState = GameState.Playing;
+
+            int size = 32;
+
+            var tex = Content.Load<Texture2D>("level");
+            var arr = new Color[tex.Width * tex.Height];
+
+            tex.GetData(arr);
+
+            for (int i = 0; i < tex.Width; i++)
+                for (int j = 0; j < tex.Height; j++)
+                {
+                    if (arr[j * tex.Width + i] == Color.Black)
+                    {
+                        _gameManager.AddBlock(new Vector2(i * size, j * size), size);
+                    }
+                    else if (arr[j * tex.Width + i] == Color.Red)
+                    {
+                        _gameManager.AddGoalArea(new Vector2(i * size, j * size), size);
+                    }
+                }
 
             var rand = new Random();
-            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++ )
+            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++)
             {
-                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two) {
-                    _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100))
-                                           , i);
+                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two)
+                {
+                    Rectangle rect;
+
+                    while (true)
+                    {
+                        var randomBlockX = rand.Next(1, (int)DisplayResolution.X / size - 1);
+                        var randomBlockY = rand.Next(1, (int)DisplayResolution.Y / size - 1);
+                        rect = new Rectangle(randomBlockX * size, randomBlockY * size, size, size);
+
+                        var collidesAny = _gameManager.Blocks.Any(block => block.BoundingBox.Intersects(rect));
+
+                        if (!collidesAny)
+                            break;
+                    }
+
+
+                    _gameManager.AddPlayer(new Player("player", new Vector2(rect.X + size / 2, rect.Y + size / 2), _gameManager.World), i);
 
                     if (i == PlayerIndex.One)
                         _gameManager.Players.Last().Color = Color.Red;
@@ -109,7 +161,7 @@ namespace Lumen
                     if (i == PlayerIndex.Four)
                         _gameManager.Players.Last().Color = Color.Cyan;
 
-                    if(i == PlayerIndex.Three)
+                    if (i == PlayerIndex.Three)
                     {
                         _gameManager.Players.Last().CanPickUpCoins = false;
                         var idx = _gameManager.Props.FindLastIndex(p => p is AttachedCandle);
@@ -118,20 +170,20 @@ namespace Lumen
                 }
             }
 
-            //for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
-            //{
-            //    for (var y = 16.0f; y < DisplayResolution.Y; y += 32.0f) {
-            //        _gameManager.AddCoin(new Vector2(x, y));
-            //    }
-            //}
+            Rectangle r;
+            while (true)
+            {
+                var randomBlockX = rand.Next(1, (int)DisplayResolution.X / size - 1);
+                var randomBlockY = rand.Next(1, (int)DisplayResolution.Y / size - 1);
+                r = new Rectangle(randomBlockX * size, randomBlockY * size, size, size);
+                var candles = _gameManager.Props.Where(p => p is AttachedCandle).Cast<AttachedCandle>();
+                var collidesAny = _gameManager.Blocks.Any(block => block.BoundingBox.Intersects(r)) || _gameManager.Players.Any(p => Collider.Collides(p, r)) || !candles.Any(p => Collider.Collides(p, r));
 
-            //int size = 64;
-            //for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
-            //{
-            //    _gameManager.AddBlock(new Vector2(i, 0), size);
-            //}
+                if (!collidesAny)
+                    break;
+            }
 
-            _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
+            _gameManager.AddDrunkard(new Vector2(r.Center.X, r.Center.Y));
         }
 
         protected override void UnloadContent()
@@ -141,6 +193,7 @@ namespace Lumen
 
         protected override void Update(GameTime gameTime)
         {
+            InputManager.BeginUpdate();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
                 Exit();
             }
@@ -148,6 +201,9 @@ namespace Lumen
 #if DEBUG
             if(Keyboard.GetState().IsKeyDown(Keys.Back))
                 LoadVariables();
+            if(InputManager.KeyPressed(Keys.Enter))
+                ResetLevel();
+
             var scale = 1.0f + Mouse.GetState().ScrollWheelValue/12000.0f;
             GameVariables.CameraZoom = scale;
 
@@ -161,7 +217,6 @@ namespace Lumen
             }
 #endif
 
-            InputManager.BeginUpdate();
             _gameManager.Update(gameTime);
             InputManager.EndUpdate();
             base.Update(gameTime);
@@ -189,6 +244,15 @@ namespace Lumen
                 _spriteBatch.End();
             }
 #endif
+
+            if(_gameManager.GameState != GameState.Playing) {
+                _spriteBatch.Begin();
+                var str =
+                _gameManager.GameState == GameState.Victory ? "WON" : "LOST";
+
+                _spriteBatch.DrawString(TextureManager.GetFont("large_font"), String.Format("YOU {0} MAN",str), new Vector2(0, DisplayResolution.Y*0.5f), Color.Yellow);
+                _spriteBatch.End();
+            }
 
             base.Draw(gameTime);
         }

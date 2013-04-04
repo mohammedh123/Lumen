@@ -2,9 +2,13 @@ Content\candle.xnb
 Content\enemy.xnb
 Content\player.xnb
 Content\wax.xnb
-Content\LightDrawer.xnb
 Content\background.xnb
-Content\Combiner.xnb
 Content\coin.xnb
 Content\block.xnb
+Content\level.xnb
+Content\drunkard.xnb
+Content\blank.xnb
+Content\LightDrawer.xnb
+Content\Combiner.xnb
 Content\debug_font.xnb
+Content\reallyLargeFont.xnb

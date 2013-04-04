@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Lumen.Props
 {
-    class Coin : Prop
+    class Coin : NonPhysicsProp
     {
         public override bool CanCollide
         {
@@ -15,7 +15,7 @@ namespace Lumen.Props
             PropType = PropTypeEnum.Coin;
         }
 
-        public override void OnCollide(Entity collider)
+        public override void OnCollide(PhysicsEntity collider)
         {
             var player = collider as Player;
 

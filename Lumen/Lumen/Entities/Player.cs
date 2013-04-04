@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Box2D.XNA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Lumen.Entities
 {
-    class Player : Entity
+    class Player : PhysicsEntity
     {
         public int NumCandlesLeft;
         public bool IsInteractingWithProp = false;
@@ -16,7 +17,7 @@ namespace Lumen.Entities
 
         private Dictionary<Keys, ActionType> _inputMap;
 
-        public Player(string textureKey, Vector2 position) : base(textureKey, position)
+        public Player(string textureKey, Vector2 position, World world) : base(textureKey, position, GameVariables.PlayerCollisionRadius, world)
         {
             NumCandlesLeft = GameVariables.PlayerInitialCandles;
 
@@ -53,10 +54,15 @@ namespace Lumen.Entities
             {
                 var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
-                AdjustVelocity(changeLeft.X * GameVariables.PlayerSpeed * dt, -changeLeft.Y * GameVariables.PlayerSpeed * dt);
+                AdjustVelocity(changeLeft.X * GameVariables.PlayerSpeed, -changeLeft.Y * GameVariables.PlayerSpeed);
 
                 IsInteractingWithProp = InputManager.GamepadButtonPressed(PlayerNum, Buttons.A);
             }
+        }
+
+        private void AdjustVelocity(float f, float f1)
+        {
+            Velocity += new Vector2(f, f1);
         }
 
         private void ProcessKeyDownAction(float dt, ActionType value)
@@ -64,19 +70,19 @@ namespace Lumen.Entities
             switch (value)
             {
                 case ActionType.MoveLeft:
-                    AdjustVelocity(-GameVariables.PlayerSpeed*dt, 0);
+                    AdjustVelocity(-GameVariables.PlayerSpeed, 0);
 
                     break;
                 case ActionType.MoveRight:
-                    AdjustVelocity(GameVariables.PlayerSpeed * dt, 0);
+                    AdjustVelocity(GameVariables.PlayerSpeed, 0);
 
                     break;
                 case ActionType.MoveUp:
-                    AdjustVelocity(0, -GameVariables.PlayerSpeed * dt);
+                    AdjustVelocity(0, -GameVariables.PlayerSpeed);
 
                     break;
                 case ActionType.MoveDown:
-                    AdjustVelocity(0, GameVariables.PlayerSpeed * dt);
+                    AdjustVelocity(0, GameVariables.PlayerSpeed);
 
                     break;
                 case ActionType.InteractWithProp:
