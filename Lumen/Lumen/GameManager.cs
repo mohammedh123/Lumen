@@ -81,12 +81,7 @@ namespace Lumen
                     var otherPlayer = Players[j];
 
                     var playerNewX = player.Position.X + player.Velocity.X;
-
-                    var playerOldRect = new Rectangle((int)(player.Position.X - GameVariables.PlayerCollisionRadius),
-                                                      (int)(player.Position.Y - GameVariables.PlayerCollisionRadius),
-                                                      (int)(GameVariables.PlayerCollisionRadius * 2),
-                                                      (int)(GameVariables.PlayerCollisionRadius * 2));
-
+                    
                     var playerNewRect = new Rectangle((int) (playerNewX - GameVariables.PlayerCollisionRadius),
                                                       (int) (player.Position.Y - GameVariables.PlayerCollisionRadius),
                                                       (int) (GameVariables.PlayerCollisionRadius*2),
@@ -102,18 +97,16 @@ namespace Lumen
                         if (player.Velocity.X > 0) {
                             player.Velocity =
                                 new Vector2(
-                                    (otherPlayer.Position.X - player.Position.X - 2*GameVariables.PlayerCollisionRadius) +
-                                    GameVariables.PlayerSpeed*0.5f*dt, player.Velocity.Y);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X + GameVariables.PlayerSpeed*0.5f*dt,
+                                    (otherPlayer.Position.X - player.Position.X - 2*GameVariables.PlayerCollisionRadius), player.Velocity.Y);
+                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
                                                                otherPlayer.Velocity.Y);
                         }
                         else if (player.Velocity.X < 0) {
 
                             player.Velocity =
                                 new Vector2(
-                                    (otherPlayer.Position.X - player.Position.X + 2*GameVariables.PlayerCollisionRadius) -
-                                    GameVariables.PlayerSpeed * 0.5f * dt, player.Velocity.Y);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X - GameVariables.PlayerSpeed*0.5f*dt,
+                                    (otherPlayer.Position.X - player.Position.X + 2*GameVariables.PlayerCollisionRadius), player.Velocity.Y);
+                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
                                                                otherPlayer.Velocity.Y);
                         }
                     }
@@ -130,24 +123,22 @@ namespace Lumen
 
                             player.Velocity = new Vector2(player.Velocity.X,
                                                           (otherPlayer.Position.Y - player.Position.Y -
-                                                           2*GameVariables.PlayerCollisionRadius) +
-                                                          GameVariables.PlayerSpeed * 0.5f * dt);
+                                                           2*GameVariables.PlayerCollisionRadius));
                             otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y + GameVariables.PlayerSpeed * 0.5f * dt);
+                                                               otherPlayer.Velocity.Y);
                         }
                         else if (player.Velocity.Y < 0) {
 
                             player.Velocity = new Vector2(player.Velocity.X,
                                                           (otherPlayer.Position.Y - player.Position.Y +
-                                                           2*GameVariables.PlayerCollisionRadius) -
-                                                          GameVariables.PlayerSpeed * 0.5f * dt);
+                                                           2*GameVariables.PlayerCollisionRadius));
                             otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y - GameVariables.PlayerSpeed * 0.5f * dt);
+                                                               otherPlayer.Velocity.Y);
                         }
                     }
                 }
 
-                Rectangle screenBounds = new Rectangle(0,0,(int)_gameResolution.X, (int)_gameResolution.Y);
+                var screenBounds = new Rectangle(0,0,(int)_gameResolution.X, (int)_gameResolution.Y);
                 if (screenBounds.Contains((int)(player.Position.X + player.Velocity.X), (int)(player.Position.Y + player.Velocity.Y)))
                 {
                     player.ApplyVelocity();

@@ -127,11 +127,11 @@ namespace Lumen
                 }
             }
 
-            int size = 64;
-            for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
-            {
-                _gameManager.AddBlock(new Vector2(i, 0), size);
-            }
+            //int size = 64;
+            //for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
+            //{
+            //    _gameManager.AddBlock(new Vector2(i, 0), size);
+            //}
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
         }
