@@ -14,6 +14,7 @@ namespace Lumen.Entities
         public int CoinCount = 0;
         public bool CanPickUpCoins = true;
         public bool HasCollidedWithPlayerThisFrame = false;
+        public bool IsEnemy = false;
 
         private Dictionary<Keys, ActionType> _inputMap;
 

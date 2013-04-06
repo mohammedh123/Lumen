@@ -112,7 +112,7 @@ namespace Lumen
                         _gameManager.Players.Last().Color = Color.Cyan;
 
                     if(i == PlayerIndex.Three) {
-                        MarkPlayerAsEnemy(_gameManager.Players.Last());
+                        _gameManager.MarkPlayerAsEnemy(_gameManager.Players.Last());
                     }
                 }
             }
@@ -129,13 +129,6 @@ namespace Lumen
             //}
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
-        }
-
-        private void MarkPlayerAsEnemy(Player player)
-        {
-            player.CanPickUpCoins = false;
-            var idx = _gameManager.Props.FindLastIndex(p => p is AttachedCandle && ((AttachedCandle)p).Owner == player);
-            _gameManager.Props.RemoveAt(idx);
         }
 
         protected override void UnloadContent()

@@ -113,7 +113,8 @@ namespace Lumen
                                                                otherPlayer.Velocity.Y);
                         }
 
-                        hasCollided = true;
+                        hasCollided = !otherPlayer.IsEnemy;
+
                         otherPlayer.HasCollidedWithPlayerThisFrame = true;
                     }
 
@@ -141,7 +142,7 @@ namespace Lumen
                             otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
                                                                otherPlayer.Velocity.Y);
                         }
-                        hasCollided = true;
+                        hasCollided = !otherPlayer.IsEnemy;
                         otherPlayer.HasCollidedWithPlayerThisFrame = true;
                     }
                 }
@@ -286,6 +287,15 @@ namespace Lumen
         public void AddBlock(Vector2 topLeftCorner, int size)
         {
             Blocks.Add(new Block(topLeftCorner, size));
+        }
+
+        public void MarkPlayerAsEnemy(Player player)
+        {
+            player.CanPickUpCoins = false;
+            player.IsEnemy = true;
+
+            var idx = Props.FindLastIndex(p => p is AttachedCandle && ((AttachedCandle)p).Owner == player);
+            Props.RemoveAt(idx);
         }
     }
 }
