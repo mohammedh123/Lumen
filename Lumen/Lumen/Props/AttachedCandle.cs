@@ -4,7 +4,7 @@ namespace Lumen.Props
 {
     class AttachedCandle : Candle
     {
-        public AttachedCandle(string textureKeyName, Player owner) : base(textureKeyName, owner.Position, owner)
+        public AttachedCandle(string textureKeyName, Player owner) : base(textureKeyName, owner.Position, owner, 0)
         {
             IsVisible = false;
         }

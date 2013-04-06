@@ -19,7 +19,7 @@ namespace Lumen.Props
             get { return true; }
         }
 
-        public Candle(string textureKeyName, Vector2 position, Player owner) : base(textureKeyName, position)
+        public Candle(string textureKeyName, Vector2 position, Player owner, float lifetime) : base(textureKeyName, position)
         {
             PropType = PropTypeEnum.Candle;
 
@@ -27,6 +27,7 @@ namespace Lumen.Props
             Radius = GameVariables.CandleInitialRadius;
             _baseRadius = Radius;
             LightColor = Color.White;
+            Lifetime = lifetime;
         }
 
         public override void Update(float dt)
@@ -35,7 +36,12 @@ namespace Lumen.Props
                      GameVariables.CandleFlickerAmount*
                      (float) Math.Sin(Lifetime*MathHelper.Pi/GameVariables.CandleFlickerPeriod);
 
-            base.Update(dt);
+            Lifetime -= dt;
+
+            if (Lifetime <= 0) {
+                IsToBeRemoved = true;
+                Owner.NumCandlesLeft++;
+            }
         }
 
         public override void OnInteract(Entity collider)

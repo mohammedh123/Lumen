@@ -13,6 +13,7 @@ namespace Lumen.Entities
         public PlayerIndex PlayerNum;
         public int CoinCount = 0;
         public bool CanPickUpCoins = true;
+        public bool HasCollidedWithPlayerThisFrame = false;
 
         private Dictionary<Keys, ActionType> _inputMap;
 
@@ -32,7 +33,7 @@ namespace Lumen.Entities
 
         public override void Update(float dt)
         {
-            if(PlayerNum == PlayerIndex.One)
+            if(PlayerNum == PlayerIndex.Two)
             foreach (var kvp in _inputMap) {
 #if DEBUG
                 if (InputManager.KeyDown(kvp.Key)) {

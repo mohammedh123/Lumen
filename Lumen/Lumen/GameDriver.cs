@@ -96,7 +96,7 @@ namespace Lumen
             var rand = new Random();
             for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++ )
             {
-                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Three)
+                if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Three)
                 {
                     _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100))
                                                {
@@ -111,20 +111,15 @@ namespace Lumen
                     if (i == PlayerIndex.Four)
                         _gameManager.Players.Last().Color = Color.Cyan;
 
-                    if(i == PlayerIndex.Three)
-                    {
-                        _gameManager.Players.Last().CanPickUpCoins = false;
-                        var idx = _gameManager.Props.FindLastIndex(p => p is AttachedCandle);
-                        _gameManager.Props.RemoveAt(idx);
+                    if(i == PlayerIndex.Three) {
+                        MarkPlayerAsEnemy(_gameManager.Players.Last());
                     }
                 }
             }
 
-            for (var x = 16.0f; x < DisplayResolution.X; x += 32.0f)
-            {
-                for (var y = 16.0f; y < DisplayResolution.Y; y += 32.0f) {
-                    _gameManager.AddCoin(new Vector2(x, y));
-                }
+            for (var i = 0; i < GameVariables.CoinInitialCount; i++) {
+                
+                _gameManager.AddCoin(new Vector2(rand.Next(16, (int)DisplayResolution.X), rand.Next(16, (int)DisplayResolution.Y)));
             }
 
             //int size = 64;
@@ -134,6 +129,13 @@ namespace Lumen
             //}
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
+        }
+
+        private void MarkPlayerAsEnemy(Player player)
+        {
+            player.CanPickUpCoins = false;
+            var idx = _gameManager.Props.FindLastIndex(p => p is AttachedCandle && ((AttachedCandle)p).Owner == player);
+            _gameManager.Props.RemoveAt(idx);
         }
 
         protected override void UnloadContent()
@@ -186,7 +188,7 @@ namespace Lumen
             {
                 _spriteBatch.Begin();
                 foreach(var player in _gameManager.Players)
-                    _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", player.CoinCount), new Vector2(player.Position.X - 16, player.Position.Y - 32), Color.White);
+                    _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0},{1}", player.CoinCount, player.NumCandlesLeft), new Vector2(player.Position.X - 16, player.Position.Y - 32), Color.White);
                 _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", GameVariables.CameraZoom), Vector2.Zero, Color.White);
                 _spriteBatch.End();
             }

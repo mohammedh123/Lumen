@@ -73,6 +73,8 @@ namespace Lumen
                         break;
                     }
                 }
+                
+                 var hasCollided = false;
 
                 for (int j = 0; j < Players.Count; j++) {
                     if (i == j)
@@ -93,6 +95,7 @@ namespace Lumen
                                       (int) (GameVariables.PlayerCollisionRadius*2),
                                       (int) (GameVariables.PlayerCollisionRadius*2));
 
+
                     if (playerNewRect.Intersects(otherOldRect)) {
                         if (player.Velocity.X > 0) {
                             player.Velocity =
@@ -109,6 +112,9 @@ namespace Lumen
                             otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
                                                                otherPlayer.Velocity.Y);
                         }
+
+                        hasCollided = true;
+                        otherPlayer.HasCollidedWithPlayerThisFrame = true;
                     }
 
                     var playerNewY = player.Position.Y + player.Velocity.Y;
@@ -135,6 +141,8 @@ namespace Lumen
                             otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
                                                                otherPlayer.Velocity.Y);
                         }
+                        hasCollided = true;
+                        otherPlayer.HasCollidedWithPlayerThisFrame = true;
                     }
                 }
 
@@ -145,6 +153,14 @@ namespace Lumen
                 }
 
                 player.ResetVelocity();
+
+                if(hasCollided && !player.HasCollidedWithPlayerThisFrame) {
+                    AddCandle(player);
+                    player.HasCollidedWithPlayerThisFrame = true;
+                }
+                else if(!hasCollided) {
+                    player.HasCollidedWithPlayerThisFrame = false;
+                }
             }
 
             //all entities have proper state updated now, now check for the following types of interactions
@@ -186,11 +202,16 @@ namespace Lumen
                 var coinsToBeRemoved = Props.Where(p => p.PropType == PropTypeEnum.Coin && p.IsToBeRemoved).ToList();
                 Props.RemoveAll(p => p.IsToBeRemoved);
 
-                foreach(var coin in coinsToBeRemoved)
-                {
-                    coin.IsToBeRemoved = false;
-                    coin.Lifetime = -1*(float) (random.NextDouble()*(GameVariables.CoinRespawnRateMax-GameVariables.CoinRespawnRateMin) + GameVariables.CoinRespawnRateMin);
-                    PropsToBeAdded.Add(coin);
+                if (GameVariables.CoinCanRespawn) {
+                    foreach (var coin in coinsToBeRemoved) {
+                        coin.IsToBeRemoved = false;
+                        coin.Lifetime = -1*
+                                        (float)
+                                        (random.NextDouble()*
+                                         (GameVariables.CoinRespawnRateMax - GameVariables.CoinRespawnRateMin) +
+                                         GameVariables.CoinRespawnRateMin);
+                        PropsToBeAdded.Add(coin);
+                    }
                 }
 
                 // interacting + no prop -> place candle
@@ -199,11 +220,7 @@ namespace Lumen
                 {
                     //- place candle, if player has any candles left, place candle, decrement, otherwise nothing
 
-                    if (player.NumCandlesLeft > 0)
-                    {
-                        player.NumCandlesLeft--;
-                        Props.Add(new Candle("candle", player.Position, player));
-                    }
+                    AddCandle(player);
                 }
             }
         }
@@ -249,6 +266,16 @@ namespace Lumen
 
             Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius });
             Players.Add(p);
+        }
+
+        private void AddCandle(Player player)
+        {
+            if (player.NumCandlesLeft > 0) {
+                player.NumCandlesLeft--;
+                var candle = new Candle("candle", player.Position, player, GameVariables.CandleLifetime);
+
+                Props.Add(candle);
+            }
         }
 
         public void AddCoin(Vector2 position)

@@ -21,8 +21,10 @@ namespace Lumen
         public static float CandleFlickerAmount = 5.0f;
         public static float CandleLifetime = 5.0f;
 
+        public static bool CoinCanRespawn = false;
         public static float CoinRespawnRateMin = 6.0f;
         public static float CoinRespawnRateMax = 6.0f;
+        public static int CoinInitialCount = 3;
 
         public static float CameraZoom = 1.0f;
 
