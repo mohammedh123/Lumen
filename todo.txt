@@ -1,10 +1,8 @@
-- win/lose states
-	- bad guys are dead
-	- players are dead
-- push colored blocks into goal
-- walls/doors/traps/buttons
+- vampire -> proximity kill
+- torch + sword (torch 3 hits sword 2 hits, torch lights on fire)
 
-- push drunkard around to end state
-- tiles
-- drunkard dies if not within light
-- win/lose states
+- goal all players die or all enemies die
+- candles: only 1, wanes out
+
+- screen wrapping vs bounds
+- sounds
