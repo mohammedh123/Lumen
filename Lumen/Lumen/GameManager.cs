@@ -7,23 +7,33 @@ using Lumen.Props;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Lumen
 {
+    enum GameState
+    {
+        StillGoing,
+        PlayersWin,
+        EnemyWins
+    }
+
     class GameManager
     {
         public List<Player> Players { get; set; }
-        public List<Enemy>  Enemies { get; set; }
         public List<Prop>   Props   { get; set; }
         public List<Block> Blocks { get; set; }
         public List<Prop> PropsToBeAdded { get; set; }
+
+        public GameState State = GameState.StillGoing;
+
+        public Player Enemy;
 
         private readonly Vector2 _gameResolution;
 
         public GameManager(Vector2 gameResolution)
         {
             Players = new List<Player>();
-            Enemies = new List<Enemy>();
             Props = new List<Prop>();
             Blocks = new List<Block>();
             PropsToBeAdded = new List<Prop>();
@@ -34,14 +44,15 @@ namespace Lumen
         public void Update(GameTime gameTime)
         {
             var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var song = SoundManager.GetSong("main_bgm");
+
+            if(MediaPlayer.State == MediaState.Stopped)
+                MediaPlayer.Play(song);
 
             //iterate through all entities and update them (their deltas will be set at the end of update)
             foreach(var player in Players)
                 player.Update(dt);
-
-            foreach(var enemy in Enemies)
-                enemy.Update(dt);
-
+            
             foreach(var prop in Props)
                 prop.Update(dt);
 
@@ -63,8 +74,19 @@ namespace Lumen
             //blocking collisions are collisions that will actually stop/impede the entities movement
 
             //check player vs block collision and 'move' the block if its moveable at half speed
+            var isEnemyMoving = false;
+
             for (int i = 0; i < Players.Count; i++) {
                 var player = Players[i];
+
+                if(player != Enemy) {
+                    if(Collider.IsPlayerWithinRadius(player, Enemy.Position, GameVariables.EnemyKillRadius)) {
+                        player.TimeWithinEnemyProximity += dt;
+                    }
+                    else {
+                        player.ResetProximityTime();
+                    }
+                }
 
                 foreach (var block in Blocks) {
                     if (Collider.Collides(player, block, true)) //see if player will collide with block if he moves
@@ -81,6 +103,18 @@ namespace Lumen
                         continue;
 
                     var otherPlayer = Players[j];
+
+                    if(player.IsAttacking) {
+                        if(!player.CollidedPlayersThisAttack.Contains(otherPlayer) && Collider.AttackCollidesWith(player, otherPlayer)) {
+                            player.CollidedPlayersThisAttack.Add(otherPlayer);
+                            if (player.Weapon == PlayerWeaponType.Torch) {
+                                otherPlayer.Health -= 2;
+                                otherPlayer.SetOnFire();
+                            }
+                            else if (player.Weapon == PlayerWeaponType.Sword)
+                                otherPlayer.Health -= 3;
+                        }
+                    }
 
                     var playerNewX = player.Position.X + player.Velocity.X;
                     
@@ -114,6 +148,10 @@ namespace Lumen
                         }
 
                         hasCollided = !otherPlayer.IsEnemy;
+                        if (otherPlayer.IsBurning)
+                            player.SetOnFire();
+                        if(player.IsBurning)
+                            otherPlayer.SetOnFire();
 
                         otherPlayer.HasCollidedWithPlayerThisFrame = true;
                     }
@@ -143,26 +181,50 @@ namespace Lumen
                                                                otherPlayer.Velocity.Y);
                         }
                         hasCollided = !otherPlayer.IsEnemy;
+                        if(otherPlayer.IsBurning)
+                            player.SetOnFire();
+                        if (player.IsBurning)
+                            otherPlayer.SetOnFire();
                         otherPlayer.HasCollidedWithPlayerThisFrame = true;
                     }
                 }
 
                 var screenBounds = new Rectangle(0,0,(int)_gameResolution.X, (int)_gameResolution.Y);
-                if (screenBounds.Contains((int)(player.Position.X + player.Velocity.X), (int)(player.Position.Y + player.Velocity.Y)))
+
+                if (GameVariables.IsScreenWrapping)
                 {
+                    if (player.IsEnemy && player.Velocity != Vector2.Zero)
+                        isEnemyMoving = true;
+
                     player.ApplyVelocity();
+                    player.WrapPositionAround();
+                }
+                else {
+
+                    if (screenBounds.Contains((int) (player.Position.X + player.Velocity.X),
+                                              (int) (player.Position.Y + player.Velocity.Y))) {
+                        player.ApplyVelocity();
+                    }
                 }
 
                 player.ResetVelocity();
 
                 if(hasCollided && !player.HasCollidedWithPlayerThisFrame) {
-                    AddCandle(player);
+                    //AddCandle(player);
                     player.HasCollidedWithPlayerThisFrame = true;
                 }
                 else if(!hasCollided) {
                     player.HasCollidedWithPlayerThisFrame = false;
                 }
+                
+                if(player.HasSpentTooMuchTimeNearEnemy || player.Health <= 0) {
+                    KillPlayer(player);
+                }
             }
+
+
+            if (isEnemyMoving)
+                SoundManager.GetSoundInstance("footstep").Play();
 
             //all entities have proper state updated now, now check for the following types of interactions
             // Player vs Prop
@@ -175,7 +237,6 @@ namespace Lumen
         {
             var collidingProps = new List<Prop>();
             var interactingProps = new List<Prop>();
-            var random = new Random();
 
             foreach (var player in Players)
             {
@@ -208,7 +269,7 @@ namespace Lumen
                         coin.IsToBeRemoved = false;
                         coin.Lifetime = -1*
                                         (float)
-                                        (random.NextDouble()*
+                                        (GameDriver.RandomGen.NextDouble() *
                                          (GameVariables.CoinRespawnRateMax - GameVariables.CoinRespawnRateMin) +
                                          GameVariables.CoinRespawnRateMin);
                         PropsToBeAdded.Add(coin);
@@ -231,10 +292,7 @@ namespace Lumen
             sb.Begin(SpriteSortMode.Deferred, null, null, null, null,null,GameVariables.CameraZoomMatrix);
 
             DrawBackground(sb);
-
-            foreach (var enemy in Enemies)
-                enemy.Draw(sb);
-
+            
             foreach (var prop in Props.OrderByDescending(p => p.PropType))
                 prop.Draw(sb);
 
@@ -265,7 +323,7 @@ namespace Lumen
         {
             if (Players.Contains(p)) return;
 
-            Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius });
+            //Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius });
             Players.Add(p);
         }
 
@@ -293,9 +351,35 @@ namespace Lumen
         {
             player.CanPickUpCoins = false;
             player.IsEnemy = true;
+            player.Color = Color.Red;
 
+            Enemy = player;
             var idx = Props.FindLastIndex(p => p is AttachedCandle && ((AttachedCandle)p).Owner == player);
-            Props.RemoveAt(idx);
+
+            if(idx >= 0)
+                Props.RemoveAt(idx);
+        }
+
+        public void KillPlayer(Player player)
+        {
+            if(player.IsEnemy)
+                State = GameState.PlayersWin;
+            else if(Players.Count(p => !p.IsEnemy) == 1)
+                State = GameState.EnemyWins;
+
+            Players.Remove(player);
+
+            SoundManager.GetSound("death_sound").Play();
+        }
+
+        public void Reset()
+        {
+            Players.Clear();
+            Props.Clear();
+            Blocks.Clear();
+            PropsToBeAdded.Clear();
+
+            Enemy = null;
         }
     }
 }

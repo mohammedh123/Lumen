@@ -15,12 +15,45 @@ namespace Lumen.Entities
         public bool CanPickUpCoins = true;
         public bool HasCollidedWithPlayerThisFrame = false;
         public bool IsEnemy = false;
+        public float TimeWithinEnemyProximity = 0.0f;
+        public PlayerWeaponType Weapon = PlayerWeaponType.Torch;
+
+        private float _dashTimer;
+        private float _dashCooldownTimer;
+
+        private float _attackTimer;
+        private float _attackCooldownTimer;
+        public List<Player> CollidedPlayersThisAttack;
+
+        private float _burningTimer;
+
+        public bool IsAttacking
+        {
+            get { return _attackTimer > 0.0f; }
+        }
+
+        public bool IsDashing
+        {
+            get { return _dashTimer > 0.0f; }
+        }
+
+        public bool IsBurning
+        {
+            get { return _burningTimer > 0.0f; }
+        }
+
+        public bool HasSpentTooMuchTimeNearEnemy
+        {
+            get { return TimeWithinEnemyProximity >= GameVariables.EnemyKillTimeRequirement; }
+        }
 
         private Dictionary<Keys, ActionType> _inputMap;
 
         public Player(string textureKey, Vector2 position) : base(textureKey, position)
         {
+            Health = 6;
             NumCandlesLeft = GameVariables.PlayerInitialCandles;
+            CollidedPlayersThisAttack = new List<Player>(4);
 
             _inputMap = new Dictionary<Keys, ActionType>
                             {
@@ -47,38 +80,75 @@ namespace Lumen.Entities
             }
 
             ProcessControllerInput(dt);
+
+            if (IsDashing)
+                _dashTimer -= dt;
+            else
+            {
+                _dashTimer = 0.0f;
+            }
+
+            _dashCooldownTimer = Math.Max(_dashCooldownTimer - dt, 0);
+
+            if (IsAttacking)
+                _attackTimer -= dt;
+            else
+            {
+                _attackTimer = 0.0f;
+            }
+
+            if (IsBurning)
+                _burningTimer -= dt;
+            else
+            {
+                _burningTimer = 0.0f;
+            }
+
+            _attackCooldownTimer = Math.Max(_attackCooldownTimer - dt, 0);
         }
 
         private void ProcessControllerInput(float dt)
         {
-            if (GamePad.GetState(PlayerNum).IsConnected)
-            {
+            if (GamePad.GetState(PlayerNum).IsConnected) {
                 var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
-                AdjustVelocity(changeLeft.X * GameVariables.PlayerSpeed * dt, -changeLeft.Y * GameVariables.PlayerSpeed * dt);
+                var speedToUse = IsEnemy
+                                     ? (IsDashing ? GameVariables.EnemyDashSpeed : GameVariables.EnemySpeed)
+                                     : GameVariables.PlayerSpeed;
+
+                AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
+                if(Velocity != Vector2.Zero)
+                    Angle = (float) Math.Atan2(Velocity.Y, Velocity.X);
 
                 IsInteractingWithProp = InputManager.GamepadButtonPressed(PlayerNum, Buttons.A);
+
+                if (InputManager.GamepadButtonDown(PlayerNum, Buttons.X)) {
+                    Dash();
+                    Attack();
+                }
             }
         }
 
         private void ProcessKeyDownAction(float dt, ActionType value)
         {
+            var speedToUse = IsEnemy ? GameVariables.EnemySpeed : GameVariables.PlayerSpeed;
+
             switch (value)
             {
                 case ActionType.MoveLeft:
-                    AdjustVelocity(-GameVariables.PlayerSpeed*dt, 0);
+                    AdjustVelocity(-speedToUse * dt, 0);
 
                     break;
                 case ActionType.MoveRight:
-                    AdjustVelocity(GameVariables.PlayerSpeed * dt, 0);
+                    AdjustVelocity(speedToUse * dt, 0);
 
                     break;
                 case ActionType.MoveUp:
-                    AdjustVelocity(0, -GameVariables.PlayerSpeed * dt);
+                    AdjustVelocity(0, -speedToUse * dt);
 
                     break;
                 case ActionType.MoveDown:
-                    AdjustVelocity(0, GameVariables.PlayerSpeed * dt);
+                    AdjustVelocity(0, speedToUse * dt);
 
                     break;
                 case ActionType.InteractWithProp:
@@ -114,9 +184,71 @@ namespace Lumen.Entities
             }
         }
 
+        public void Attack()
+        {
+            if (IsEnemy) return;
+
+            if (_attackCooldownTimer == 0.0f) {
+                CollidedPlayersThisAttack.Clear();
+
+                switch(Weapon) {
+                    case PlayerWeaponType.Torch:
+                        _attackTimer = GameVariables.PlayerTorchAttackDuration;
+                        _attackCooldownTimer = GameVariables.PlayerTorchAttackCooldown;
+                        break;
+                    case PlayerWeaponType.Sword:
+                        _attackTimer = GameVariables.PlayerSwordAttackDuration;
+                        _attackCooldownTimer = GameVariables.PlayerSwordAttackCooldown;
+                        break;
+                }
+            }
+        }
+
+        public void Dash()
+        {
+            if (!IsEnemy) return;
+
+            if (_dashCooldownTimer == 0.0f) {
+                _dashTimer = GameVariables.EnemyDashDuration;
+                _dashCooldownTimer = GameVariables.EnemyDashCooldown;
+            }
+        }
+
+        public void SetOnFire()
+        {
+            _burningTimer = GameVariables.ImmolatedLightDuration;
+        }
+
+        public void ResetProximityTime()
+        {
+            TimeWithinEnemyProximity = 0.0f;
+        }
+
         public override void Draw(SpriteBatch sb)
         {
+            var oldColor = Color;
+            if(IsEnemy) {
+                Color = Color.DarkRed;
+            }
+            else
+                Color = Color.Lerp(oldColor, Color.Black, TimeWithinEnemyProximity/GameVariables.EnemyKillTimeRequirement);
+
             base.Draw(sb);
+            Color = oldColor;
+
+            if (IsAttacking) {
+                var wpn = "";
+
+                if (Weapon == PlayerWeaponType.Sword) {
+                    wpn = "sword";
+                }
+                else if (Weapon == PlayerWeaponType.Torch) {
+                    wpn = "torch";
+                }
+
+                sb.Draw(TextureManager.GetTexture(wpn),
+                        Position + new Vector2((float)Math.Cos(Angle), (float)Math.Sin(Angle)) * 18.0f, null, Color.White, Angle, TextureManager.GetOrigin(wpn), 1.0f, SpriteEffects.None, 0);
+            }
         }
     }
 }

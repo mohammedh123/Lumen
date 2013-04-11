@@ -21,6 +21,8 @@ namespace Lumen
         private RenderTarget2D _sceneRT;
         private const int MaxPlayers = 4;
 
+        public static Random RandomGen;
+
         public static readonly Vector2 DisplayResolution = new Vector2(1024,768);
 
 #if DEBUG
@@ -29,6 +31,7 @@ namespace Lumen
 
         public GameDriver()
         {
+            RandomGen = new Random();
             _graphics = new GraphicsDeviceManager(this);
             var graphicsOptions = new GraphicsOptions();
             graphicsOptions.ApplySettings(_graphics);
@@ -75,6 +78,49 @@ namespace Lumen
                 ErrorLog.Log("Error was encountered with exception:" + Environment.NewLine + e);
             }
         }
+
+        private void ResetLevel()
+        {
+            LoadVariables();
+            _gameManager.Reset();
+
+            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++)
+            {
+                if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Two)
+                {
+                    _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int)i * 150, 100 + (int)i * 100))
+                    {
+                    }, i);
+
+                    if (i == PlayerIndex.One)
+                        _gameManager.Players.Last().Color = Color.Yellow;
+                    if (i == PlayerIndex.Two)
+                        _gameManager.Players.Last().Color = Color.Green;
+                    if (i == PlayerIndex.Three)
+                        _gameManager.Players.Last().Color = Color.Blue;
+                    if (i == PlayerIndex.Four)
+                        _gameManager.Players.Last().Color = Color.Cyan;
+
+                    if (i == PlayerIndex.Two)
+                    {
+                        _gameManager.MarkPlayerAsEnemy(_gameManager.Players.Last());
+                    }
+                }
+            }
+
+            for (var i = 0; i < GameVariables.CoinInitialCount; i++)
+            {
+
+                _gameManager.AddCoin(new Vector2(RandomGen.Next(16, (int)DisplayResolution.X), RandomGen.Next(16, (int)DisplayResolution.Y)));
+            }
+
+            //int size = 64;
+            //for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
+            //{
+            //    _gameManager.AddBlock(new Vector2(i, 0), size);
+            //}
+
+        }
 #endif
 
         protected override void Initialize()
@@ -87,46 +133,14 @@ namespace Lumen
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             TextureManager.LoadContent(Content);
+            SoundManager.LoadContent(Content);
             _lightManager.LoadContent(_graphics, GraphicsDevice, Content);
+            
             
 #if DEBUG
             LoadVariables();
 #endif
-
-            var rand = new Random();
-            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++ )
-            {
-                if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Three)
-                {
-                    _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100))
-                                               {
-                                               }, i);
-
-                    if (i == PlayerIndex.One)
-                        _gameManager.Players.Last().Color = Color.Red;
-                    if (i == PlayerIndex.Two)
-                        _gameManager.Players.Last().Color = Color.Green;
-                    if (i == PlayerIndex.Three)
-                        _gameManager.Players.Last().Color = Color.Blue;
-                    if (i == PlayerIndex.Four)
-                        _gameManager.Players.Last().Color = Color.Cyan;
-
-                    if(i == PlayerIndex.Three) {
-                        _gameManager.MarkPlayerAsEnemy(_gameManager.Players.Last());
-                    }
-                }
-            }
-
-            for (var i = 0; i < GameVariables.CoinInitialCount; i++) {
-                
-                _gameManager.AddCoin(new Vector2(rand.Next(16, (int)DisplayResolution.X), rand.Next(16, (int)DisplayResolution.Y)));
-            }
-
-            //int size = 64;
-            //for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
-            //{
-            //    _gameManager.AddBlock(new Vector2(i, 0), size);
-            //}
+            ResetLevel();
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
         }
@@ -143,8 +157,11 @@ namespace Lumen
             }
 
 #if DEBUG
-            if(Keyboard.GetState().IsKeyDown(Keys.Back))
+            if (Keyboard.GetState().IsKeyDown(Keys.Back))
                 LoadVariables();
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                ResetLevel();
+
             var scale = 1.0f + Mouse.GetState().ScrollWheelValue/12000.0f;
             GameVariables.CameraZoom = scale;
 
@@ -169,7 +186,7 @@ namespace Lumen
             GraphicsDevice.SetRenderTarget(_sceneRT);
             _gameManager.DrawScene(_spriteBatch);
 
-            _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Candle>(), GraphicsDevice, _spriteBatch);
+            _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Candle>(), _gameManager.Players.Where(p => p.IsBurning), GraphicsDevice, _spriteBatch);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
             DrawFullscreenQuad(_sceneRT, _spriteBatch);
@@ -186,7 +203,19 @@ namespace Lumen
                 _spriteBatch.End();
             }
 #endif
+            string s = null;
+            if (_gameManager.State == GameState.PlayersWin)
+                s = "THE PLAYERS WIN, MAN";
+            else if (_gameManager.State == GameState.EnemyWins)
+                s = "THE ENEMY WON DUDE";
 
+            if (s != null)
+            {
+                _spriteBatch.Begin();
+                _spriteBatch.DrawString(TextureManager.GetFont("big"), s, new Vector2(0, 300), Color.White);
+                _spriteBatch.End();
+            }
+            
             base.Draw(gameTime);
         }
 

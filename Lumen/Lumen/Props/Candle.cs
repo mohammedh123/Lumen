@@ -32,13 +32,11 @@ namespace Lumen.Props
 
         public override void Update(float dt)
         {
-            Radius = _baseRadius +
-                     GameVariables.CandleFlickerAmount*
-                     (float) Math.Sin(Lifetime*MathHelper.Pi/GameVariables.CandleFlickerPeriod);
+            Radius -= (GameVariables.CandleMinFlicker + (float)GameDriver.RandomGen.NextDouble()*GameVariables.CandleMaxFlicker)*dt;
 
             Lifetime -= dt;
 
-            if (Lifetime <= 0) {
+            if (Lifetime <= 0 || Radius <= 0) {
                 IsToBeRemoved = true;
                 Owner.NumCandlesLeft++;
             }

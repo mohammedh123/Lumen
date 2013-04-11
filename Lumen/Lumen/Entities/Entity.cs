@@ -9,8 +9,9 @@ namespace Lumen.Entities
         protected Vector2 TextureOrigin { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
+        public int Health { get; set; }
 
-        protected float Angle = 0f;
+        public float Angle = 0f, SpriteAngle = 0f;
         public Color Color = Color.White;
 
         public bool IsVisible = true;
@@ -28,7 +29,7 @@ namespace Lumen.Entities
         public virtual void Draw(SpriteBatch sb)
         {
             if(IsVisible)
-                sb.Draw(Texture, Position, null, Color, Angle,TextureOrigin,1.0f,SpriteEffects.None,0);
+                sb.Draw(Texture, Position, null, Color, SpriteAngle,TextureOrigin,1.0f,SpriteEffects.None,0);
         }
 
         protected void AdjustVelocity(float dx, float dy)
@@ -44,6 +45,24 @@ namespace Lumen.Entities
         public void ResetVelocity()
         {
             Velocity = Vector2.Zero;
+        }
+
+        public void WrapPositionAround()
+        {
+            var posX = Position.X;
+            var posY = Position.Y;
+
+            if (posX >= GameDriver.DisplayResolution.X)
+                posX -= GameDriver.DisplayResolution.X;
+            else if (posX < 0)
+                posX = GameDriver.DisplayResolution.X + posX;
+
+            if (posY >= GameDriver.DisplayResolution.Y)
+                posY -= GameDriver.DisplayResolution.Y;
+            else if (posY < 0)
+                posY = GameDriver.DisplayResolution.Y + posX;
+
+            Position = new Vector2(posX, posY);
         }
     }
 }

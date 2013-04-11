@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Lumen.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,7 +26,7 @@ namespace Lumen
             _screenTex = new Texture2D(graphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
-        private void AccumulateLights(IEnumerable<ILightProvider> lights, SpriteBatch sb, GraphicsDevice graphicsDevice)
+        private void AccumulateLights(IEnumerable<ILightProvider> lights, IEnumerable<Player> burningPlayers, SpriteBatch sb, GraphicsDevice graphicsDevice)
         {
             graphicsDevice.SetRenderTarget(_accumulatorRT);
             graphicsDevice.Clear(Color.Black);
@@ -34,8 +35,8 @@ namespace Lumen
             foreach (var light in lights)
             {
                 sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFX, GameVariables.CameraZoomMatrix);
-                var normalizedPosition = new Vector2(light.Position.X/_accumulatorRT.Width,
-                                                     light.Position.Y/_accumulatorRT.Height);
+                var normalizedPosition = new Vector2(light.Position.X / _accumulatorRT.Width,
+                                                     light.Position.Y / _accumulatorRT.Height);
 
                 _lightAccumulatorFX.Parameters["lightPosition"].SetValue(normalizedPosition);
                 _lightAccumulatorFX.Parameters["lightRadius"].SetValue(light.Radius);
@@ -44,6 +45,19 @@ namespace Lumen
                 sb.End();
             }
 
+            foreach (var burningPlayer in burningPlayers)
+            {
+                sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFX, GameVariables.CameraZoomMatrix);
+                var normalizedPosition = new Vector2(burningPlayer.Position.X / _accumulatorRT.Width,
+                                                     burningPlayer.Position.Y / _accumulatorRT.Height);
+
+                _lightAccumulatorFX.Parameters["lightPosition"].SetValue(normalizedPosition);
+                _lightAccumulatorFX.Parameters["lightRadius"].SetValue(GameVariables.ImmolatedLightRadius);
+
+                sb.Draw(_screenTex, new Rectangle(0, 0, _accumulatorRT.Width, _accumulatorRT.Height), Color.White);
+                sb.End();
+            }
+            
             graphicsDevice.SetRenderTarget(null);
 
             //if (lights.Any())
@@ -71,9 +85,9 @@ namespace Lumen
             sb.End();
         }
 
-        public void DrawScene(IEnumerable<ILightProvider> lights, GraphicsDevice graphicsDevice, SpriteBatch sb)
+        public void DrawScene(IEnumerable<ILightProvider> lights, IEnumerable<Player> burningPlayers, GraphicsDevice graphicsDevice, SpriteBatch sb)
         {
-            AccumulateLights(lights, sb, graphicsDevice);
+            AccumulateLights(lights, burningPlayers, sb, graphicsDevice);
         }
     }
 }
