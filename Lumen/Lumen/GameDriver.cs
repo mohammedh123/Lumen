@@ -84,26 +84,34 @@ namespace Lumen
             LoadVariables();
             _gameManager.Reset();
 
+            var randomEnemyIdx = RandomGen.Next(0, 4);
+            var randomSwordWielderIdx = RandomGen.Next(0, 4);
+            while(randomSwordWielderIdx == randomEnemyIdx)
+                randomSwordWielderIdx = RandomGen.Next(0, 4);
+
             for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++)
             {
-                if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Two)
+                if (GamePad.GetState(i).IsConnected)
                 {
-                    _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int)i * 150, 100 + (int)i * 100))
-                    {
-                    }, i);
+                    _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int)i * 150, 100 + (int)i * 100)), i);
 
-                    if (i == PlayerIndex.One)
-                        _gameManager.Players.Last().Color = Color.Yellow;
-                    if (i == PlayerIndex.Two)
-                        _gameManager.Players.Last().Color = Color.Green;
-                    if (i == PlayerIndex.Three)
-                        _gameManager.Players.Last().Color = Color.Blue;
-                    if (i == PlayerIndex.Four)
-                        _gameManager.Players.Last().Color = Color.Cyan;
-
-                    if (i == PlayerIndex.Two)
+                    if (i == PlayerIndex.One + randomEnemyIdx)
                     {
                         _gameManager.MarkPlayerAsEnemy(_gameManager.Players.Last());
+                    }
+                    else
+                    {
+                        if (i == PlayerIndex.One)
+                            _gameManager.Players.Last().Color = Color.Yellow;
+                        if (i == PlayerIndex.Two)
+                            _gameManager.Players.Last().Color = Color.Green;
+                        if (i == PlayerIndex.Three)
+                            _gameManager.Players.Last().Color = Color.LightBlue;
+                        if (i == PlayerIndex.Four)
+                            _gameManager.Players.Last().Color = Color.Cyan;
+
+                        if(i == PlayerIndex.One + randomSwordWielderIdx)
+                            _gameManager.Players.Last().Weapon = PlayerWeaponType.Sword;
                     }
                 }
             }

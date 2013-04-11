@@ -75,6 +75,7 @@ namespace Lumen
 
             //check player vs block collision and 'move' the block if its moveable at half speed
             var isEnemyMoving = false;
+            var closestPlayerDistSq = 99999999.0f;
 
             for (int i = 0; i < Players.Count; i++) {
                 var player = Players[i];
@@ -97,12 +98,20 @@ namespace Lumen
                 }
                 
                  var hasCollided = false;
-
+                
                 for (int j = 0; j < Players.Count; j++) {
                     if (i == j)
                         continue;
 
                     var otherPlayer = Players[j];
+
+                    if(player.IsEnemy)
+                    {
+                        var distSq = (otherPlayer.Position - player.Position).LengthSquared();
+
+                        if (distSq < closestPlayerDistSq)
+                            closestPlayerDistSq = distSq;
+                    }
 
                     if(player.IsAttacking) {
                         if(!player.CollidedPlayersThisAttack.Contains(otherPlayer) && Collider.AttackCollidesWith(player, otherPlayer)) {
@@ -222,6 +231,16 @@ namespace Lumen
                 }
             }
 
+            var ratio = closestPlayerDistSq/(GameVariables.EnemyKillRadius*GameVariables.EnemyKillRadius);
+
+            if(ratio <= 1)
+            {
+                GamePad.SetVibration(Enemy.PlayerNum, ratio, ratio);
+            }
+            else
+            {
+                GamePad.SetVibration(Enemy.PlayerNum, 0, 0);
+            }
 
             if (isEnemyMoving)
                 SoundManager.GetSoundInstance("footstep").Play();
