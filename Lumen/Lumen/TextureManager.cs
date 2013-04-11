@@ -70,9 +70,12 @@ namespace Lumen
             _textureDetails.Add("candle", new TextureDetails(contentManager.Load<Texture2D>("candle"), new Vector2(12, 12)));
             _textureDetails.Add("coin", new TextureDetails(contentManager.Load<Texture2D>("coin"), new Vector2(12, 12)));
             _textureDetails.Add("block", new TextureDetails(contentManager.Load<Texture2D>("block"), new Vector2(12, 12)));
+            _textureDetails.Add("torch", new TextureDetails(contentManager.Load<Texture2D>("torch"), new Vector2(12, 12)));
+            _textureDetails.Add("sword", new TextureDetails(contentManager.Load<Texture2D>("sword"), new Vector2(12, 12)));
             _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("background"), new Vector2(512, 384)));
 
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("debug_font"));
+            _fontDetails.Add("big", contentManager.Load<SpriteFont>("bigFont"));
         }
     }
 }
