@@ -194,7 +194,7 @@ namespace Lumen
             GraphicsDevice.SetRenderTarget(_sceneRT);
             _gameManager.DrawScene(_spriteBatch);
 
-            _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Candle>(), _gameManager.Players.Where(p => p.IsBurning), GraphicsDevice, _spriteBatch);
+            _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Candle>(), _gameManager.Players.Where(p => p.IsBurning), _gameManager.Players.Where(p => p.IsAttacking), GraphicsDevice, _spriteBatch);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
             DrawFullscreenQuad(_sceneRT, _spriteBatch);

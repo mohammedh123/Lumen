@@ -18,6 +18,7 @@ namespace Lumen
         public static float PlayerSwordAttackDuration = 0.5f;
         public static float PlayerTorchAttackCooldown = 5.0f;
         public static float PlayerTorchAttackDuration = 1.0f;
+        public static float PlayerTorchAttackLightRadius = 100.0f;
 
         public static float EnemySpeed = 80.0f;
         public static float EnemyDashSpeed = 120.0f;
