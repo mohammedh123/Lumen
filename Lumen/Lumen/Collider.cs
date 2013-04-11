@@ -10,6 +10,11 @@ namespace Lumen
 {
     public class Collider
     {
+        internal static bool IsPlayerWithinRadius(Player e, Vector2 center, float radius)
+        {
+            return CirclesCollide(e.Position, GameVariables.PlayerCollisionRadius, center, radius);
+        }
+
         internal static bool Collides(Player player, Prop prop)
         {
             return CirclesCollide(player.Position, GameVariables.PlayerCollisionRadius, prop.Position,
@@ -43,6 +48,27 @@ namespace Lumen
                                    (int) (GameVariables.PlayerCollisionRadius*2));
 
             return p1.Intersects(p2);
+        }
+
+        internal static bool AttackCollidesWith(Player attacker, Player otherPlayer)
+        {
+            var attackCenter = attacker.Position +
+                               new Vector2((float) Math.Cos(attacker.Angle), (float) Math.Sin(attacker.Angle))*18.0f;
+
+            return CirclesCollide(attackCenter, 12.0f, otherPlayer.Position, GameVariables.PlayerCollisionRadius);
+        }
+
+
+        private static bool CircleRect(float cx, float cy, float r, Rectangle rect)
+        {
+            var closestX = MathHelper.Clamp(cx, rect.Left, rect.Right);
+            var closestY = MathHelper.Clamp(cy, rect.Top, rect.Bottom);
+
+            var distX = cx - closestX;
+            var distY = cy - closestY;
+
+            var dS = (distX * distX) + (distY * distY);
+            return dS < (r * r);
         }
 
         private static bool CirclesCollide(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB)
