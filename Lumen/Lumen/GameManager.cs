@@ -54,6 +54,30 @@ namespace Lumen
             {
                 player.Update(dt);
 
+                float closestDist = 2000*2000;
+
+                foreach (var prop in Props)
+                {
+                    if (prop.PropType == PropTypeEnum.Crystal)
+                    {
+                        var dist = (prop.Position - player.Position).LengthSquared();
+
+                        if (dist < closestDist)
+                        {
+                            closestDist = dist;
+                            break;
+                        }
+                    }
+                }
+
+                var vibRat = closestDist/(200.0f*200.0f);
+
+                if (vibRat <= 1.0f)
+                {
+                    if (GamePad.GetState(player.PlayerNum).IsConnected)
+                        GamePad.SetVibration(player.PlayerNum, 1-vibRat, 1-vibRat);
+                }
+
                 if(player.IsAttemptingToCollect)
                 {
                     if (player.CollectionTarget == null)

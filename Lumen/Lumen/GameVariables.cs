@@ -42,7 +42,7 @@ namespace Lumen
         public static bool CoinCanRespawn = false;
         public static float CoinRespawnRateMin = 6.0f;
         public static float CoinRespawnRateMax = 6.0f;
-        public static int CoinInitialCount = 40;
+        public static int CoinInitialCount = 8;
 
         public static bool IsScreenWrapping = false;
 
