@@ -50,9 +50,57 @@ namespace Lumen
                 MediaPlayer.Play(song);
 
             //iterate through all entities and update them (their deltas will be set at the end of update)
-            foreach(var player in Players)
+            foreach (var player in Players)
+            {
                 player.Update(dt);
-            
+
+                if(player.IsAttemptingToCollect)
+                {
+                    if (player.CollectionTarget == null)
+                    {
+                        Crystal colTar = null;
+
+                        foreach (var prop in Props)
+                        {
+                            if (prop.PropType == PropTypeEnum.Crystal)
+                            {
+                                if (Collider.IsPlayerWithinRadius(player, prop.Position,
+                                                                  GameVariables.CrystalCollectionRadius))
+                                {
+                                    colTar = (Crystal)prop;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (colTar == null)
+                        {
+                            player.ResetCollecting();
+                        }
+                        else
+                        {
+                            player.CollectionTarget = colTar;
+                        }
+                    }
+                    else
+                    {
+                        player.CollectingTime += dt;
+
+                        if(player.CollectingTime >= GameVariables.CrystalCollectionTime)
+                        {
+                            player.CollectionTarget.Health--;
+
+                            if (player.CollectionTarget.Health <= 0)
+                                player.CollectionTarget.IsToBeRemoved = true;
+
+                            player.ResetCollecting();
+
+                            player.CrystalCount++;
+                        }
+                    }
+                }
+            }
+
             foreach(var prop in Props)
                 prop.Update(dt);
 
@@ -364,6 +412,11 @@ namespace Lumen
         public void AddBlock(Vector2 topLeftCorner, int size)
         {
             Blocks.Add(new Block(topLeftCorner, size));
+        }
+
+        public void AddCrystal(Vector2 position)
+        {
+            Props.Add(new Crystal(position));
         }
 
         public void MarkPlayerAsEnemy(Player player)

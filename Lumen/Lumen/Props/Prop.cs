@@ -8,7 +8,8 @@ namespace Lumen.Props
     {
         Wax,
         Candle,
-        Coin
+        Coin,
+        Crystal
     }
 
     class Prop : Entity

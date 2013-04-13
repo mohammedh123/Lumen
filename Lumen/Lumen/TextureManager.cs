@@ -64,11 +64,13 @@ namespace Lumen
 
         private static void LoadTextureInformation(ContentManager contentManager)
         {
+            _textureDetails.Add("blank", new TextureDetails(contentManager.Load<Texture2D>("blank"), new Vector2(12, 12)));
             _textureDetails.Add("player",   new TextureDetails(contentManager.Load<Texture2D>("player"),    new Vector2(12,12)));
             _textureDetails.Add("enemy", new TextureDetails(contentManager.Load<Texture2D>("enemy"), new Vector2(12, 12)));
             _textureDetails.Add("wax", new TextureDetails(contentManager.Load<Texture2D>("wax"), new Vector2(12, 12)));
             _textureDetails.Add("candle", new TextureDetails(contentManager.Load<Texture2D>("candle"), new Vector2(12, 12)));
             _textureDetails.Add("coin", new TextureDetails(contentManager.Load<Texture2D>("coin"), new Vector2(12, 12)));
+            _textureDetails.Add("crystal", new TextureDetails(contentManager.Load<Texture2D>("crystal"), new Vector2(12, 12)));
             _textureDetails.Add("block", new TextureDetails(contentManager.Load<Texture2D>("block"), new Vector2(12, 12)));
             _textureDetails.Add("torch", new TextureDetails(contentManager.Load<Texture2D>("torch"), new Vector2(12, 12)));
             _textureDetails.Add("sword", new TextureDetails(contentManager.Load<Texture2D>("sword"), new Vector2(12, 12)));

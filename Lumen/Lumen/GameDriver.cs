@@ -121,7 +121,7 @@ namespace Lumen
             for (var i = 0; i < GameVariables.CoinInitialCount; i++)
             {
 
-                _gameManager.AddCoin(new Vector2(RandomGen.Next(16, (int)DisplayResolution.X), RandomGen.Next(16, (int)DisplayResolution.Y)));
+                _gameManager.AddCrystal(new Vector2(RandomGen.Next(16, (int)DisplayResolution.X), RandomGen.Next(16, (int)DisplayResolution.Y)));
             }
 
             //int size = 64;

@@ -42,15 +42,19 @@ namespace Lumen
         public static bool CoinCanRespawn = false;
         public static float CoinRespawnRateMin = 6.0f;
         public static float CoinRespawnRateMax = 6.0f;
-        public static int CoinInitialCount = 0;
+        public static int CoinInitialCount = 40;
 
         public static bool IsScreenWrapping = false;
 
         public static float CameraZoom = 1.0f;
+
         public static float BlinkingPeriod = 1.0f;
         public static float BlinkingDuration = 0.1f;
         public static float BlinkingRadius = 50.0f;
 
+        public static float CrystalCollectionRadius = 24.0f;
+        public static float CrystalCollectionTime = 3.0f;
+        public static int CrystalHarvestRequirement = 3;
 
         public static Matrix CameraZoomMatrix
         {

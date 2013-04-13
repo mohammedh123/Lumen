@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Lumen.Props;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,6 +27,9 @@ namespace Lumen.Entities
         public List<Player> CollidedPlayersThisAttack;
 
         private float _burningTimer;
+        public bool IsAttemptingToCollect;
+
+        public Crystal CollectionTarget;
 
         public bool IsAttacking
         {
@@ -47,7 +51,10 @@ namespace Lumen.Entities
             get { return TimeWithinEnemyProximity >= GameVariables.EnemyKillTimeRequirement; }
         }
 
+        public int CrystalCount = 0;
+
         private Dictionary<Keys, ActionType> _inputMap;
+        public float CollectingTime;
 
         public Player(string textureKey, Vector2 position) : base(textureKey, position)
         {
@@ -77,6 +84,11 @@ namespace Lumen.Entities
                     ProcessKeyUpAction(dt, kvp.Value);
                 }
 #endif
+            }
+
+            if (InputManager.KeyPressed(Keys.Space))
+            {
+                Attack();
             }
 
             ProcessControllerInput(dt);
@@ -116,7 +128,9 @@ namespace Lumen.Entities
                                      ? (IsDashing ? GameVariables.EnemyDashSpeed : GameVariables.EnemySpeed)
                                      : GameVariables.PlayerSpeed;
 
-                AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
+                if(!IsAttemptingToCollect)
+                    AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
+                
                 if(Velocity != Vector2.Zero)
                     Angle = (float) Math.Atan2(Velocity.Y, Velocity.X);
 
@@ -126,6 +140,8 @@ namespace Lumen.Entities
                     Dash();
                     Attack();
                 }
+                if(InputManager.GamepadButtonUp(PlayerNum, Buttons.X))
+                    ResetCollecting();
             }
         }
 
@@ -133,38 +149,43 @@ namespace Lumen.Entities
         {
             var speedToUse = IsEnemy ? GameVariables.EnemySpeed : GameVariables.PlayerSpeed;
 
+
+            if (!IsAttemptingToCollect)
+            {
+                switch (value)
+                {
+                    case ActionType.MoveLeft:
+                        AdjustVelocity(-speedToUse*dt, 0);
+
+                        break;
+                    case ActionType.MoveRight:
+                        AdjustVelocity(speedToUse*dt, 0);
+
+                        break;
+                    case ActionType.MoveUp:
+                        AdjustVelocity(0, -speedToUse*dt);
+
+                        break;
+                    case ActionType.MoveDown:
+                        AdjustVelocity(0, speedToUse*dt);
+
+                        break;
+                }
+            }
             switch (value)
             {
-                case ActionType.MoveLeft:
-                    AdjustVelocity(-speedToUse * dt, 0);
-
-                    break;
-                case ActionType.MoveRight:
-                    AdjustVelocity(speedToUse * dt, 0);
-
-                    break;
-                case ActionType.MoveUp:
-                    AdjustVelocity(0, -speedToUse * dt);
-
-                    break;
-                case ActionType.MoveDown:
-                    AdjustVelocity(0, speedToUse * dt);
-
-                    break;
                 case ActionType.InteractWithProp:
                     IsInteractingWithProp = true;
-                    
+
                     break;
-                default:
-                    throw new Exception(
-                        String.Format(
-                            "If you are reading this message, then something disastrous happened or you forgot to add a key down handler for this type of ActionType: {0}.",
-                            value));
             }
         }
 
         private void ProcessKeyUpAction(float dt, ActionType value)
         {
+            if(InputManager.KeyUp(Keys.Space))
+                ResetCollecting();
+
             switch (value)
             {
                 case ActionType.MoveLeft:
@@ -191,17 +212,19 @@ namespace Lumen.Entities
             if (_attackCooldownTimer == 0.0f) {
                 CollidedPlayersThisAttack.Clear();
 
-                switch(Weapon) {
-                    case PlayerWeaponType.Torch:
-                        _attackTimer = GameVariables.PlayerTorchAttackDuration;
-                        _attackCooldownTimer = GameVariables.PlayerTorchAttackCooldown;
-                        break;
-                    case PlayerWeaponType.Sword:
-                        _attackTimer = GameVariables.PlayerSwordAttackDuration;
-                        _attackCooldownTimer = GameVariables.PlayerSwordAttackCooldown;
-                        break;
-                }
+                //switch(Weapon) {
+                //    case PlayerWeaponType.Torch:
+                //        _attackTimer = GameVariables.PlayerTorchAttackDuration;
+                //        _attackCooldownTimer = GameVariables.PlayerTorchAttackCooldown;
+                //        break;
+                //    case PlayerWeaponType.Sword:
+                //        _attackTimer = GameVariables.PlayerSwordAttackDuration;
+                //        _attackCooldownTimer = GameVariables.PlayerSwordAttackCooldown;
+                //        break;
+                //}
             }
+
+            IsAttemptingToCollect = true;
         }
 
         public void Dash()
@@ -249,6 +272,22 @@ namespace Lumen.Entities
                 sb.Draw(TextureManager.GetTexture(wpn),
                         Position + new Vector2((float)Math.Cos(Angle), (float)Math.Sin(Angle)) * 18.0f, null, Color.White, Angle, TextureManager.GetOrigin(wpn), 1.0f, SpriteEffects.None, 0);
             }
+
+            if(IsAttemptingToCollect && CollectingTime >= 0.0f)
+            {
+                var outerRect = new Rectangle((int)Position.X - 32, (int)Position.Y - 32, 64, 16);
+                var innerRect = new Rectangle(outerRect.X+2, outerRect.Y+2, (int)((64-4)*CollectingTime/GameVariables.CrystalCollectionTime), 12);
+
+                sb.Draw(TextureManager.GetTexture("blank"), outerRect, Color.White);
+                sb.Draw(TextureManager.GetTexture("blank"), innerRect, Color.Cyan);
+            }
+        }
+
+        public void ResetCollecting()
+        {
+            IsAttemptingToCollect = false;
+            CollectionTarget = null;
+            CollectingTime = 0.0f;
         }
     }
 }

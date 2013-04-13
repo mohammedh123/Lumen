@@ -121,6 +121,7 @@
     <Compile Include="GameVariables.cs" />
     <Compile Include="GraphicsOptions.cs" />
     <Compile Include="Entities\Player.cs" />
+    <Compile Include="Props\Crystal.cs" />
     <Compile Include="Props\Prop.cs" />
     <Compile Include="ILightProvider.cs" />
     <Compile Include="InputManager.cs" />
