@@ -123,7 +123,7 @@ namespace Lumen.Entities
         {
             if (GamePad.GetState(PlayerNum).IsConnected)
             {
-                GamePad.SetVibration(PlayerNum, 1.0f, 1.0f);
+                //GamePad.SetVibration(PlayerNum, 1.0f, 1.0f);
 
                 var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
@@ -218,16 +218,17 @@ namespace Lumen.Entities
             if (_attackCooldownTimer == 0.0f) {
                 CollidedPlayersThisAttack.Clear();
 
-                //switch(Weapon) {
-                //    case PlayerWeaponType.Torch:
-                //        _attackTimer = GameVariables.PlayerTorchAttackDuration;
-                //        _attackCooldownTimer = GameVariables.PlayerTorchAttackCooldown;
-                //        break;
-                //    case PlayerWeaponType.Sword:
-                //        _attackTimer = GameVariables.PlayerSwordAttackDuration;
-                //        _attackCooldownTimer = GameVariables.PlayerSwordAttackCooldown;
-                //        break;
-                //}
+                switch (Weapon)
+                {
+                    case PlayerWeaponType.Torch:
+                        _attackTimer = GameVariables.PlayerTorchAttackDuration;
+                        _attackCooldownTimer = GameVariables.PlayerTorchAttackCooldown;
+                        break;
+                    case PlayerWeaponType.Sword:
+                        _attackTimer = GameVariables.PlayerSwordAttackDuration;
+                        _attackCooldownTimer = GameVariables.PlayerSwordAttackCooldown;
+                        break;
+                }
             }
 
             IsAttemptingToCollect = true;

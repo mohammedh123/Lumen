@@ -65,17 +65,18 @@ namespace Lumen
                         if (dist < closestDist)
                         {
                             closestDist = dist;
-                            break;
+                            
                         }
                     }
                 }
 
-                var vibRat = closestDist/(200.0f*200.0f);
+                var vibRat = closestDist/(100.0f*100.0f);
 
-                if (vibRat <= 1.0f)
                 {
                     if (GamePad.GetState(player.PlayerNum).IsConnected)
-                        GamePad.SetVibration(player.PlayerNum, 1-vibRat, 1-vibRat);
+                    {
+                        GamePad.SetVibration(player.PlayerNum, Math.Max(0,1 - vibRat), Math.Max(0,1 - vibRat));
+                    }
                 }
 
                 if(player.IsAttemptingToCollect)
