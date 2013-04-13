@@ -121,7 +121,10 @@ namespace Lumen.Entities
 
         private void ProcessControllerInput(float dt)
         {
-            if (GamePad.GetState(PlayerNum).IsConnected) {
+            if (GamePad.GetState(PlayerNum).IsConnected)
+            {
+                GamePad.SetVibration(PlayerNum, 1.0f, 1.0f);
+
                 var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
                 if (InputManager.GamepadButtonPressed(PlayerNum, Buttons.X))
