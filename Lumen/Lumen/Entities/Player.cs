@@ -124,6 +124,14 @@ namespace Lumen.Entities
             if (GamePad.GetState(PlayerNum).IsConnected) {
                 var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
+                if (InputManager.GamepadButtonDown(PlayerNum, Buttons.X))
+                {
+                    Dash();
+                    Attack();
+                }
+
+                if (InputManager.GamepadButtonUp(PlayerNum, Buttons.X))
+                    ResetCollecting();
                 var speedToUse = IsEnemy
                                      ? (IsDashing ? GameVariables.EnemyDashSpeed : GameVariables.EnemySpeed)
                                      : GameVariables.PlayerSpeed;
@@ -136,12 +144,6 @@ namespace Lumen.Entities
 
                 IsInteractingWithProp = InputManager.GamepadButtonPressed(PlayerNum, Buttons.A);
 
-                if (InputManager.GamepadButtonDown(PlayerNum, Buttons.X)) {
-                    Dash();
-                    Attack();
-                }
-                if(InputManager.GamepadButtonUp(PlayerNum, Buttons.X))
-                    ResetCollecting();
             }
         }
 
