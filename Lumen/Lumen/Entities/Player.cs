@@ -124,7 +124,7 @@ namespace Lumen.Entities
             if (GamePad.GetState(PlayerNum).IsConnected) {
                 var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
-                if (InputManager.GamepadButtonDown(PlayerNum, Buttons.X))
+                if (InputManager.GamepadButtonPressed(PlayerNum, Buttons.X))
                 {
                     Dash();
                     Attack();
