@@ -132,6 +132,7 @@ namespace Lumen.Entities
 
                 if (InputManager.GamepadButtonUp(PlayerNum, Buttons.X))
                     ResetCollecting();
+
                 var speedToUse = IsEnemy
                                      ? (IsDashing ? GameVariables.EnemyDashSpeed : GameVariables.EnemySpeed)
                                      : GameVariables.PlayerSpeed;
@@ -185,7 +186,7 @@ namespace Lumen.Entities
 
         private void ProcessKeyUpAction(float dt, ActionType value)
         {
-            if(InputManager.KeyUp(Keys.Space))
+            if(!GamePad.GetState(PlayerNum).IsConnected && InputManager.KeyUp(Keys.Space))
                 ResetCollecting();
 
             switch (value)
