@@ -1,8 +1,0 @@
-- vampire -> proximity kill
-- torch + sword (torch 3 hits sword 2 hits, torch lights on fire)
-
-- goal all players die or all enemies die
-- candles: only 1, wanes out
-
-- screen wrapping vs bounds
-- sounds

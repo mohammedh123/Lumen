@@ -67,7 +67,7 @@ namespace Lumen.Entities
 
         public override void Update(float dt)
         {
-            if(PlayerNum == PlayerIndex.Two)
+            if(PlayerNum == PlayerIndex.One)
             foreach (var kvp in _inputMap) {
 #if DEBUG
                 if (InputManager.KeyDown(kvp.Key)) {

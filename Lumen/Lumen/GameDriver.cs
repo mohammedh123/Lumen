@@ -89,18 +89,20 @@ namespace Lumen
             while(randomSwordWielderIdx == randomEnemyIdx)
                 randomSwordWielderIdx = RandomGen.Next(0, 4);
 
+            
+
             for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++)
             {
-                if (GamePad.GetState(i).IsConnected)
+                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.One)
                 {
                     _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int)i * 150, 100 + (int)i * 100)), i);
 
-                    if (i == PlayerIndex.One + randomEnemyIdx)
-                    {
-                        _gameManager.MarkPlayerAsEnemy(_gameManager.Players.Last());
-                    }
-                    else
-                    {
+                    //if (i == PlayerIndex.One + randomEnemyIdx)
+                    //{
+                    //    _gameManager.MarkPlayerAsEnemy(_gameManager.Players.Last());
+                    //}
+                    //else
+                    //{
                         if (i == PlayerIndex.One)
                             _gameManager.Players.Last().Color = Color.Yellow;
                         if (i == PlayerIndex.Two)
@@ -110,9 +112,9 @@ namespace Lumen
                         if (i == PlayerIndex.Four)
                             _gameManager.Players.Last().Color = Color.Cyan;
 
-                        if(i == PlayerIndex.One + randomSwordWielderIdx)
-                            _gameManager.Players.Last().Weapon = PlayerWeaponType.Sword;
-                    }
+                    //    if(i == PlayerIndex.One + randomSwordWielderIdx)
+                    //        _gameManager.Players.Last().Weapon = PlayerWeaponType.Sword;
+                    //}
                 }
             }
 

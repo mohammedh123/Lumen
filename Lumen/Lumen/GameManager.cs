@@ -80,14 +80,14 @@ namespace Lumen
             for (int i = 0; i < Players.Count; i++) {
                 var player = Players[i];
 
-                if(player != Enemy) {
-                    if(Collider.IsPlayerWithinRadius(player, Enemy.Position, GameVariables.EnemyKillRadius)) {
-                        player.TimeWithinEnemyProximity += dt;
-                    }
-                    else {
-                        player.ResetProximityTime();
-                    }
-                }
+                //if(player != Enemy) {
+                //    if(Collider.IsPlayerWithinRadius(player, Enemy.Position, GameVariables.EnemyKillRadius)) {
+                //        player.TimeWithinEnemyProximity += dt;
+                //    }
+                //    else {
+                //        player.ResetProximityTime();
+                //    }
+                //}
 
                 foreach (var block in Blocks) {
                     if (Collider.Collides(player, block, true)) //see if player will collide with block if he moves
@@ -233,14 +233,14 @@ namespace Lumen
 
             var ratio = closestPlayerDistSq/(GameVariables.EnemyKillRadius*GameVariables.EnemyKillRadius);
 
-            if(ratio <= 1)
-            {
-                GamePad.SetVibration(Enemy.PlayerNum, ratio, ratio);
-            }
-            else
-            {
-                GamePad.SetVibration(Enemy.PlayerNum, 0, 0);
-            }
+            //if(ratio <= 1)
+            //{
+            //    GamePad.SetVibration(Enemy.PlayerNum, ratio, ratio);
+            //}
+            //else
+            //{
+            //    GamePad.SetVibration(Enemy.PlayerNum, 0, 0);
+            //}
 
             if (isEnemyMoving)
                 SoundManager.GetSoundInstance("footstep").Play();
@@ -342,7 +342,7 @@ namespace Lumen
         {
             if (Players.Contains(p)) return;
 
-            //Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius });
+            Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius });
             Players.Add(p);
         }
 

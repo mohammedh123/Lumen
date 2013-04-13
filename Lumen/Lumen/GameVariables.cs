@@ -44,9 +44,13 @@ namespace Lumen
         public static float CoinRespawnRateMax = 6.0f;
         public static int CoinInitialCount = 0;
 
-        public static bool IsScreenWrapping = true;
+        public static bool IsScreenWrapping = false;
 
         public static float CameraZoom = 1.0f;
+        public static float BlinkingPeriod = 1.0f;
+        public static float BlinkingDuration = 0.1f;
+        public static float BlinkingRadius = 50.0f;
+
 
         public static Matrix CameraZoomMatrix
         {
