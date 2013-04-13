@@ -56,6 +56,7 @@ namespace Lumen
                     {
                         line = line.Trim();
 
+                        if (line.StartsWith("//") || line.StartsWith(@"\\")) continue;
                         if (String.IsNullOrEmpty(line)) continue;
 
                         var variableName = line.Substring(0, line.IndexOf(' ')).Trim();
