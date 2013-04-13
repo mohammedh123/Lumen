@@ -1,9 +1,16 @@
+- Fix vibration not going away on death
+- Fix lantern not going away on death
+
+
 Guardian
 --------
 - Blinks
 - Press A to Attack
 	- AoE
 	- Uses energy, radius is determined by some f(radius)
+	- Non-linear growth of radius
+	- Players can only get hit once per attack
+	- Full bar = half the screen, 3 seconds
 	- Radius grows as you hold down button
 	- Screen shake (grows as you hold down)
 	- Guardian can't move while channeling
