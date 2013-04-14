@@ -37,9 +37,13 @@ namespace Lumen.Entities
             Velocity += new Vector2(dx, dy);
         }
 
-        public void ApplyVelocity()
+        public void ApplyVelocity(bool applyX=true, bool applyY=true)
         {
-            Position += Velocity;
+            if(applyX && applyY)
+                Position += Velocity;
+            else {
+                Position = new Vector2(Position.X + (applyX ? Velocity.X : 0), Position.Y + (applyY ? Velocity.Y : 0));
+            }
         }
 
         public void ResetVelocity()

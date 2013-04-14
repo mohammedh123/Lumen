@@ -11,23 +11,22 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Lumen
 {
-    enum GameState
+    internal enum GameState
     {
         StillGoing,
         PlayersWin,
         EnemyWins
     }
 
-    class GameManager
+    internal class GameManager
     {
         public List<Player> Players { get; set; }
-        public List<Prop>   Props   { get; set; }
+        public Enemy Enemy { get; set; }
+        public List<Prop> Props { get; set; }
         public List<Block> Blocks { get; set; }
         public List<Prop> PropsToBeAdded { get; set; }
 
         public GameState State = GameState.StillGoing;
-
-        public Player Enemy;
 
         private readonly Vector2 _gameResolution;
 
@@ -43,286 +42,235 @@ namespace Lumen
 
         public void Update(GameTime gameTime)
         {
-            var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
             var song = SoundManager.GetSong("main_bgm");
 
-            if(MediaPlayer.State == MediaState.Stopped)
+            if (MediaPlayer.State == MediaState.Stopped)
                 MediaPlayer.Play(song);
 
             //iterate through all entities and update them (their deltas will be set at the end of update)
-            foreach (var player in Players)
-            {
+            foreach (var player in Players) {
                 player.Update(dt);
 
-                float closestDist = 2000*2000;
+                SetPlayerCrystalVibration(player);
 
-                foreach (var prop in Props)
-                {
-                    if (prop.PropType == PropTypeEnum.Crystal)
-                    {
-                        var dist = (prop.Position - player.Position).LengthSquared();
-
-                        if (dist < closestDist)
-                        {
-                            closestDist = dist;
-                            
-                        }
-                    }
-                }
-
-                var vibRat = closestDist/(100.0f*100.0f);
-
-                {
-                    if (GamePad.GetState(player.PlayerNum).IsConnected)
-                    {
-                        GamePad.SetVibration(player.PlayerNum, Math.Max(0,1 - vibRat), Math.Max(0,1 - vibRat));
-                    }
-                }
-
-                if(player.IsAttemptingToCollect)
-                {
-                    if (player.CollectionTarget == null)
-                    {
-                        Crystal colTar = null;
-
-                        foreach (var prop in Props)
-                        {
-                            if (prop.PropType == PropTypeEnum.Crystal)
-                            {
-                                if (Collider.IsPlayerWithinRadius(player, prop.Position,
-                                                                  GameVariables.CrystalCollectionRadius))
-                                {
-                                    colTar = (Crystal)prop;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (colTar == null)
-                        {
-                            player.ResetCollecting();
-                        }
-                        else
-                        {
-                            player.CollectionTarget = colTar;
-                        }
-                    }
-                    else
-                    {
-                        player.CollectingTime += dt;
-
-                        if(player.CollectingTime >= GameVariables.CrystalCollectionTime)
-                        {
-                            player.CollectionTarget.Health--;
-
-                            if (player.CollectionTarget.Health <= 0)
-                                player.CollectionTarget.IsToBeRemoved = true;
-
-                            player.ResetCollecting();
-
-                            player.CrystalCount++;
-                        }
-                    }
-                }
+                HandleCrystalCollection(player, dt);
             }
 
-            foreach(var prop in Props)
+            Enemy.Update(dt);
+
+            foreach (var prop in Props)
                 prop.Update(dt);
 
-            foreach(var kvp in PropsToBeAdded)
-            {
-                kvp.Lifetime += dt;
-            }
+            HandlePropsToBeAdded(dt);
 
-            var kvpsToBeRemoved = PropsToBeAdded.Where(kvp => kvp.Lifetime > 0).ToList();
-
-            foreach(var kvp in kvpsToBeRemoved)
-            {
-                kvp.Lifetime = 0.0f;
-                Props.Add(kvp);
-                PropsToBeAdded.Remove(kvp);
-            }
-
-            //now that all the deltas are collected, actually move the entities whilst checking for blocking collisions
-            //blocking collisions are collisions that will actually stop/impede the entities movement
-
-            //check player vs block collision and 'move' the block if its moveable at half speed
             var isEnemyMoving = false;
-            var closestPlayerDistSq = 99999999.0f;
 
-            for (int i = 0; i < Players.Count; i++) {
-                var player = Players[i];
+            foreach (var player in Players) {
+                ResolveCollisionAgainstPlayers(player, GameVariables.PlayerCollisionRadius);
+                ResolveOutOfBoundsCollision(player);
 
-                //if(player != Enemy) {
-                //    if(Collider.IsPlayerWithinRadius(player, Enemy.Position, GameVariables.EnemyKillRadius)) {
-                //        player.TimeWithinEnemyProximity += dt;
-                //    }
-                //    else {
-                //        player.ResetProximityTime();
-                //    }
-                //}
-
-                foreach (var block in Blocks) {
-                    if (Collider.Collides(player, block, true)) //see if player will collide with block if he moves
-                    {
-                        //TODO: THIS
-                        break;
-                    }
-                }
-                
-                 var hasCollided = false;
-                
-                for (int j = 0; j < Players.Count; j++) {
-                    if (i == j)
-                        continue;
-
-                    var otherPlayer = Players[j];
-
-                    if(player.IsEnemy)
-                    {
-                        var distSq = (otherPlayer.Position - player.Position).LengthSquared();
-
-                        if (distSq < closestPlayerDistSq)
-                            closestPlayerDistSq = distSq;
-                    }
-
-                    if(player.IsAttacking) {
-                        if(!player.CollidedPlayersThisAttack.Contains(otherPlayer) && Collider.AttackCollidesWith(player, otherPlayer)) {
-                            player.CollidedPlayersThisAttack.Add(otherPlayer);
-                            if (player.Weapon == PlayerWeaponType.Torch) {
-                                otherPlayer.Health -= 2;
-                                otherPlayer.SetOnFire();
-                            }
-                            else if (player.Weapon == PlayerWeaponType.Sword)
-                                otherPlayer.Health -= 3;
-                        }
-                    }
-
-                    var playerNewX = player.Position.X + player.Velocity.X;
-                    
-                    var playerNewRect = new Rectangle((int) (playerNewX - GameVariables.PlayerCollisionRadius),
-                                                      (int) (player.Position.Y - GameVariables.PlayerCollisionRadius),
-                                                      (int) (GameVariables.PlayerCollisionRadius*2),
-                                                      (int) (GameVariables.PlayerCollisionRadius*2));
-
-                    var otherOldRect =
-                        new Rectangle((int) (otherPlayer.Position.X - GameVariables.PlayerCollisionRadius),
-                                      (int) (otherPlayer.Position.Y - GameVariables.PlayerCollisionRadius),
-                                      (int) (GameVariables.PlayerCollisionRadius*2),
-                                      (int) (GameVariables.PlayerCollisionRadius*2));
-
-
-                    if (playerNewRect.Intersects(otherOldRect)) {
-                        if (player.Velocity.X > 0) {
-                            player.Velocity =
-                                new Vector2(
-                                    (otherPlayer.Position.X - player.Position.X - 2*GameVariables.PlayerCollisionRadius), player.Velocity.Y);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y);
-                        }
-                        else if (player.Velocity.X < 0) {
-
-                            player.Velocity =
-                                new Vector2(
-                                    (otherPlayer.Position.X - player.Position.X + 2*GameVariables.PlayerCollisionRadius), player.Velocity.Y);
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y);
-                        }
-
-                        hasCollided = !otherPlayer.IsEnemy;
-                        if (otherPlayer.IsBurning)
-                            player.SetOnFire();
-                        if(player.IsBurning)
-                            otherPlayer.SetOnFire();
-
-                        otherPlayer.HasCollidedWithPlayerThisFrame = true;
-                    }
-
-                    var playerNewY = player.Position.Y + player.Velocity.Y;
-
-                    playerNewRect = new Rectangle((int) (player.Position.X - GameVariables.PlayerCollisionRadius),
-                                                  (int) (playerNewY - GameVariables.PlayerCollisionRadius),
-                                                  (int) (GameVariables.PlayerCollisionRadius*2),
-                                                  (int) (GameVariables.PlayerCollisionRadius*2));
-
-                    if (playerNewRect.Intersects(otherOldRect)) {
-                        if (player.Velocity.Y > 0) {
-
-                            player.Velocity = new Vector2(player.Velocity.X,
-                                                          (otherPlayer.Position.Y - player.Position.Y -
-                                                           2*GameVariables.PlayerCollisionRadius));
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y);
-                        }
-                        else if (player.Velocity.Y < 0) {
-
-                            player.Velocity = new Vector2(player.Velocity.X,
-                                                          (otherPlayer.Position.Y - player.Position.Y +
-                                                           2*GameVariables.PlayerCollisionRadius));
-                            otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                               otherPlayer.Velocity.Y);
-                        }
-                        hasCollided = !otherPlayer.IsEnemy;
-                        if(otherPlayer.IsBurning)
-                            player.SetOnFire();
-                        if (player.IsBurning)
-                            otherPlayer.SetOnFire();
-                        otherPlayer.HasCollidedWithPlayerThisFrame = true;
-                    }
-                }
-
-                var screenBounds = new Rectangle(0,0,(int)_gameResolution.X, (int)_gameResolution.Y);
-
-                if (GameVariables.IsScreenWrapping)
-                {
-                    if (player.IsEnemy && player.Velocity != Vector2.Zero)
-                        isEnemyMoving = true;
-
-                    player.ApplyVelocity();
-                    player.WrapPositionAround();
-                }
-                else {
-
-                    if (screenBounds.Contains((int) (player.Position.X + player.Velocity.X),
-                                              (int) (player.Position.Y + player.Velocity.Y))) {
-                        player.ApplyVelocity();
-                    }
-                }
+                ResolveCollisionAgainstEnemy(player, GameVariables.PlayerCollisionRadius);
 
                 player.ResetVelocity();
 
-                if(hasCollided && !player.HasCollidedWithPlayerThisFrame) {
-                    //AddCandle(player);
-                    player.HasCollidedWithPlayerThisFrame = true;
-                }
-                else if(!hasCollided) {
-                    player.HasCollidedWithPlayerThisFrame = false;
-                }
-                
-                if(player.HasSpentTooMuchTimeNearEnemy || player.Health <= 0) {
+                if (player.Health <= 0) {
                     KillPlayer(player);
                 }
             }
 
-            var ratio = closestPlayerDistSq/(GameVariables.EnemyKillRadius*GameVariables.EnemyKillRadius);
-
-            //if(ratio <= 1)
-            //{
-            //    GamePad.SetVibration(Enemy.PlayerNum, ratio, ratio);
-            //}
-            //else
-            //{
-            //    GamePad.SetVibration(Enemy.PlayerNum, 0, 0);
-            //}
-
             if (isEnemyMoving)
                 SoundManager.GetSoundInstance("footstep").Play();
-
-            //all entities have proper state updated now, now check for the following types of interactions
-            // Player vs Prop
-            // Enemy vs Player
-
+            
             HandlePropCollision();
+        }
+
+        private void ResolveOutOfBoundsCollision(Player player)
+        {
+            var screenBounds = new Rectangle(0, 0, (int) _gameResolution.X, (int) _gameResolution.Y);
+
+            if (screenBounds.Contains((int) (player.Position.X + player.Velocity.X),
+                                      (int) (player.Position.Y))) {
+                player.ApplyVelocity(true, false);
+            }
+
+            if (screenBounds.Contains((int) (player.Position.X),
+                                      (int) (player.Position.Y + player.Velocity.Y))) {
+                player.ApplyVelocity(false, true);
+            }
+        }
+
+        private void ResolveCollisionAgainstPlayers(Entity ent, float entCollisionRadius)
+        {
+            for (int j = 0; j < Players.Count; j++)
+            {
+                var otherPlayer = Players[j];
+
+                if (otherPlayer == ent)
+                {
+                    continue;
+                }
+
+                var entNewX = ent.Position.X + ent.Velocity.X;
+
+                var entNewRect = new Rectangle((int)(entNewX - entCollisionRadius),
+                                                  (int)(ent.Position.Y - entCollisionRadius),
+                                                  (int)(entCollisionRadius * 2),
+                                                  (int)(entCollisionRadius * 2));
+
+                var otherOldRect =
+                    new Rectangle((int)(otherPlayer.Position.X - GameVariables.PlayerCollisionRadius),
+                                  (int)(otherPlayer.Position.Y - GameVariables.PlayerCollisionRadius),
+                                  (int)(GameVariables.PlayerCollisionRadius * 2),
+                                  (int)(GameVariables.PlayerCollisionRadius * 2));
+
+
+                if (entNewRect.Intersects(otherOldRect))
+                {
+                    if (ent.Velocity.X > 0)
+                    {
+                        ent.Velocity =
+                            new Vector2(
+                                (otherPlayer.Position.X - ent.Position.X - 2 * entCollisionRadius),
+                                ent.Velocity.Y);
+                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
+                                                           otherPlayer.Velocity.Y);
+                    }
+                    else if (ent.Velocity.X < 0)
+                    {
+                        ent.Velocity =
+                            new Vector2(
+                                (otherPlayer.Position.X - ent.Position.X + 2 * GameVariables.PlayerCollisionRadius),
+                                ent.Velocity.Y);
+                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
+                                                           otherPlayer.Velocity.Y);
+                    }
+                }
+
+                var playerNewY = ent.Position.Y + ent.Velocity.Y;
+
+                entNewRect = new Rectangle((int)(ent.Position.X - entCollisionRadius),
+                                              (int)(playerNewY - entCollisionRadius),
+                                              (int)(entCollisionRadius * 2),
+                                              (int)(entCollisionRadius * 2));
+
+                if (entNewRect.Intersects(otherOldRect))
+                {
+                    if (ent.Velocity.Y > 0)
+                    {
+                        ent.Velocity = new Vector2(ent.Velocity.X,
+                                                      (otherPlayer.Position.Y - ent.Position.Y -
+                                                       2 * entCollisionRadius));
+                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
+                                                           otherPlayer.Velocity.Y);
+                    }
+                    else if (ent.Velocity.Y < 0)
+                    {
+                        ent.Velocity = new Vector2(ent.Velocity.X,
+                                                      (otherPlayer.Position.Y - ent.Position.Y +
+                                                       2 * GameVariables.PlayerCollisionRadius));
+                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
+                                                           otherPlayer.Velocity.Y);
+                    }
+                }
+            }
+        }
+
+        private void ResolveCollisionAgainstEnemy(Player player, float entCollisionRadius)
+        {
+            var entRect = new Rectangle((int)(player.Position.X - entCollisionRadius),
+                                                (int)(player.Position.Y - entCollisionRadius),
+                                                (int)(entCollisionRadius * 2),
+                                                (int)(entCollisionRadius * 2));
+
+            var enemyRect =
+                new Rectangle((int)(Enemy.Position.X - GameVariables.PlayerCollisionRadius),
+                                (int)(Enemy.Position.Y - GameVariables.PlayerCollisionRadius),
+                                (int)(GameVariables.PlayerCollisionRadius * 2),
+                                (int)(GameVariables.PlayerCollisionRadius * 2));
+
+            var collided = entRect.Intersects(enemyRect);
+
+            if(collided) {
+                KillPlayer(player);
+            }
+        }
+
+        private void HandlePropsToBeAdded(float dt)
+        {
+            for (int i = 0; i < PropsToBeAdded.Count; i++) {
+                var prop = PropsToBeAdded[i];
+                prop.Lifetime += dt;
+
+                if (prop.Lifetime > 0) {
+                    prop.Lifetime = 0.0f;
+                    Props.Add(prop);
+                    PropsToBeAdded.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        private void HandleCrystalCollection(Player player, float dt)
+        {
+            if (player.IsCollecting) {
+                if (player.CollectionTarget == null) {
+                    Crystal colTar = null;
+
+                    foreach (var prop in Props) {
+                        if (prop.PropType == PropTypeEnum.Crystal) {
+                            if (Collider.IsPlayerWithinRadius(player, prop.Position,
+                                                              GameVariables.CrystalCollectionRadius)) {
+                                colTar = (Crystal) prop;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (colTar == null) {
+                        player.ResetCollecting();
+                    }
+                    else {
+                        player.CollectionTarget = colTar;
+                    }
+                }
+                else {
+                    player.CollectingTime += dt;
+
+                    if (player.CollectingTime >= GameVariables.CrystalCollectionTime) {
+                        player.CollectionTarget.Health--;
+
+                        if (player.CollectionTarget.Health <= 0) {
+                            player.CollectionTarget.IsToBeRemoved = true;
+                        }
+
+                        player.ResetCollecting();
+
+                        player.CrystalCount++;
+                    }
+                }
+            }
+        }
+
+        private void SetPlayerCrystalVibration(Player player)
+        {
+            float closestDist = 2000*2000;
+
+            foreach (var prop in Props) {
+                if (prop.PropType == PropTypeEnum.Crystal) {
+                    var dist = (prop.Position - player.Position).LengthSquared();
+
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                    }
+                }
+            }
+
+            var vibRat = closestDist/(100.0f*100.0f);
+
+            if (GamePad.GetState(player.PlayerNum).IsConnected) {
+                GamePad.SetVibration(player.PlayerNum, Math.Max(0, 0.5f*(1 - vibRat)), Math.Max(0, 0.5f*(1 - vibRat)));
+            }
         }
 
         private void HandlePropCollision()
@@ -330,19 +278,14 @@ namespace Lumen
             var collidingProps = new List<Prop>();
             var interactingProps = new List<Prop>();
 
-            foreach (var player in Players)
-            {
+            foreach (var player in Players) {
                 collidingProps.Clear();
                 interactingProps.Clear();
 
-                foreach (var prop in Props.Where(p => !(p is AttachedCandle)))
-                {
-                    if (Collider.Collides(player, prop))
-                    {
-                        if (player.IsInteractingWithProp)
-                        {
-                            if (prop.CanInteract)
-                            {
+                foreach (var prop in Props.Where(p => !(p is BlinkingLight))) {
+                    if (Collider.Collides(player, prop)) {
+                        if (player.IsInteractingWithProp) {
+                            if (prop.CanInteract) {
                                 interactingProps.Add(prop);
                                 prop.OnInteract(player);
                             }
@@ -352,44 +295,22 @@ namespace Lumen
                         prop.OnCollide(player);
                     }
                 }
-
-                var coinsToBeRemoved = Props.Where(p => p.PropType == PropTypeEnum.Coin && p.IsToBeRemoved).ToList();
-                Props.RemoveAll(p => p.IsToBeRemoved);
-
-                if (GameVariables.CoinCanRespawn) {
-                    foreach (var coin in coinsToBeRemoved) {
-                        coin.IsToBeRemoved = false;
-                        coin.Lifetime = -1*
-                                        (float)
-                                        (GameDriver.RandomGen.NextDouble() *
-                                         (GameVariables.CoinRespawnRateMax - GameVariables.CoinRespawnRateMin) +
-                                         GameVariables.CoinRespawnRateMin);
-                        PropsToBeAdded.Add(coin);
-                    }
-                }
-
-                // interacting + no prop -> place candle
-
-                if (player.IsInteractingWithProp && !interactingProps.Any())
-                {
-                    //- place candle, if player has any candles left, place candle, decrement, otherwise nothing
-
-                    AddCandle(player);
-                }
             }
         }
 
         public void DrawScene(SpriteBatch sb)
         {
-            sb.Begin(SpriteSortMode.Deferred, null, null, null, null,null,GameVariables.CameraZoomMatrix);
+            sb.Begin(SpriteSortMode.Deferred, null, null, null, null, null, GameVariables.CameraZoomMatrix);
 
             DrawBackground(sb);
-            
+
             foreach (var prop in Props.OrderByDescending(p => p.PropType))
                 prop.Draw(sb);
 
             foreach (var player in Players)
                 player.Draw(sb);
+
+            Enemy.Draw(sb);
 
             foreach (var block in Blocks)
                 block.Draw(sb);
@@ -401,37 +322,40 @@ namespace Lumen
         {
             //sb MUST have been Begin'd
 
-            sb.Draw(TextureManager.GetTexture("background"), new Rectangle(0, 0, (int)_gameResolution.X, (int)_gameResolution.Y), Color.White);
+            sb.Draw(TextureManager.GetTexture("background"),
+                    new Rectangle(0, 0, (int) _gameResolution.X, (int) _gameResolution.Y), Color.White);
         }
 
         public void AddPlayer(Player player, PlayerIndex playerIndex)
         {
-            AddPlayer(player);
-            Players.Last().PlayerNum = playerIndex;
+            if(AddPlayer(player))
+                player.PlayerNum = playerIndex;
         }
 
-
-        public void AddPlayer(Player p)
+        public void AddEnemy(Enemy e, PlayerIndex playerIndex)
         {
-            if (Players.Contains(p)) return;
+            if (AddEnemy(e))
+                e.PlayerNum = playerIndex;
+        }
 
-            Props.Add(new AttachedCandle("candle", p) { Radius = GameVariables.PlayerLanternRadius });
+        public bool AddPlayer(Player p)
+        {
+            if (Players.Contains(p)) return false;
+
+            Props.Add(new BlinkingLight("candle", p));
             Players.Add(p);
+
+            return true;
         }
 
-        private void AddCandle(Player player)
+        public bool AddEnemy(Enemy e)
         {
-            if (player.NumCandlesLeft > 0) {
-                player.NumCandlesLeft--;
-                var candle = new Candle("candle", player.Position, player, GameVariables.CandleLifetime);
+            if (Enemy != null) return false;
 
-                Props.Add(candle);
-            }
-        }
+            Props.Add(new BlinkingLight("candle", e));
+            Enemy = e;
 
-        public void AddCoin(Vector2 position)
-        {
-            Props.Add(new Coin(position));
+            return true;
         }
 
         public void AddBlock(Vector2 topLeftCorner, int size)
@@ -443,28 +367,37 @@ namespace Lumen
         {
             Props.Add(new Crystal(position));
         }
-
-        public void MarkPlayerAsEnemy(Player player)
+        
+        private void RemovePlayersBlinkingLight(Player player)
         {
-            player.CanPickUpCoins = false;
-            player.IsEnemy = true;
-            player.Color = Color.Red;
+            var idx = Props.FindLastIndex(p => p is BlinkingLight && ((BlinkingLight) p).Owner == player);
 
-            Enemy = player;
-            var idx = Props.FindLastIndex(p => p is AttachedCandle && ((AttachedCandle)p).Owner == player);
-
-            if(idx >= 0)
+            if (idx >= 0) {
                 Props.RemoveAt(idx);
+            }
         }
 
         public void KillPlayer(Player player)
         {
-            if(player.IsEnemy)
-                State = GameState.PlayersWin;
-            else if(Players.Count(p => !p.IsEnemy) == 1)
+            if (Players.Count == 1)
                 State = GameState.EnemyWins;
 
+            GamePad.SetVibration(player.PlayerNum, 0, 0);
+
+            //find the lantern that belongs to this enemy and eliminate it
+            RemovePlayersBlinkingLight(player);
+
             Players.Remove(player);
+
+            SoundManager.GetSound("death_sound").Play();
+        }
+
+        public void KillEnemy(Enemy enemy)
+        {
+            State = GameState.PlayersWin;
+
+            GamePad.SetVibration(enemy.PlayerNum, 0, 0);
+            Enemy = null;
 
             SoundManager.GetSound("death_sound").Play();
         }

@@ -110,10 +110,10 @@
     <Compile Include="ActionType.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Collider.cs" />
-    <Compile Include="Entities\PlayerWeaponTypes.cs" />
-    <Compile Include="Props\AttachedCandle.cs" />
-    <Compile Include="Props\Candle.cs" />
-    <Compile Include="Props\Coin.cs" />
+    <Compile Include="Entities\IControllerCapable.cs" />
+    <Compile Include="Entities\IKeyboardCapable.cs" />
+    <Compile Include="Props\BlinkingLight.cs" />
+    <Compile Include="Props\Light.cs" />
     <Compile Include="Entities\Enemy.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="ErrorLog.cs" />
@@ -131,7 +131,6 @@
     <Compile Include="GameDriver.cs" />
     <Compile Include="SoundManager.cs" />
     <Compile Include="TextureManager.cs" />
-    <Compile Include="Props\Wax.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

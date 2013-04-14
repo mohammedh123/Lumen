@@ -1,7 +1,3 @@
-- Fix vibration not going away on death
-- Fix lantern not going away on death
-
-
 Guardian
 --------
 - Blinks

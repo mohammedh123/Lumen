@@ -3,13 +3,16 @@ using Lumen.Entities;
 
 namespace Lumen.Props
 {
-    class AttachedCandle : Candle
+    class BlinkingLight : Light
     {
+        public Entity Owner = null;
+
         public float timer;
         public float durationTimer;
 
-        public AttachedCandle(string textureKeyName, Player owner) : base(textureKeyName, owner.Position, owner, 0)
+        public BlinkingLight(string textureKeyName, Entity owner) : base(textureKeyName, owner.Position, 0)
         {
+            Owner = owner;
             IsVisible = false;
             Radius = 0;
         }

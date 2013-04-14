@@ -62,14 +62,19 @@ namespace Lumen
                         var variableName = line.Substring(0, line.IndexOf(' ')).Trim();
                         var variableValue = line.Substring(line.IndexOf('=') + 1).Trim();
 
-                        var actualVariable = typeof(GameVariables).GetField(variableName);
-                        var actualVariableValue = Convert.ChangeType(variableValue, actualVariable.FieldType);
-                        actualVariable.SetValue(null, actualVariableValue);
+                        try {
+                            var actualVariable = typeof(GameVariables).GetField(variableName);
+                            var actualVariableValue = Convert.ChangeType(variableValue, actualVariable.FieldType);
+                            actualVariable.SetValue(null, actualVariableValue);
 
-                        if(variableName == "PlayerLanternRadius")
-                        {
-                            foreach (var lantern in _gameManager.Props.Where(p => p is AttachedCandle))
-                                (lantern as AttachedCandle).Radius = (float)actualVariableValue;
+                            if (variableName == "PlayerLanternRadius")
+                            {
+                                foreach (var lantern in _gameManager.Props.Where(p => p is BlinkingLight))
+                                    (lantern as BlinkingLight).Radius = (float)actualVariableValue;
+                            }
+                        }
+                        catch (Exception e) {
+                            ErrorLog.Log("Error was encountered with exception:" + Environment.NewLine + e);
                         }
                     }
                 }
@@ -85,25 +90,19 @@ namespace Lumen
             LoadVariables();
             _gameManager.Reset();
 
-            var randomEnemyIdx = RandomGen.Next(0, 4);
-            var randomSwordWielderIdx = RandomGen.Next(0, 4);
-            while(randomSwordWielderIdx == randomEnemyIdx)
-                randomSwordWielderIdx = RandomGen.Next(0, 4);
+            var randomEnemyIdx = RandomGen.Next(0, 2);
 
-            
+            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
+                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two) {
 
-            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++)
-            {
-                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.One)
-                {
-                    _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int)i * 150, 100 + (int)i * 100)), i);
+                    if (i == PlayerIndex.One + randomEnemyIdx) {
+                        _gameManager.AddEnemy(new Enemy(new Vector2(150 + (int) i*150, 100 + (int) i*100)), 
+                                               i);
+                    }
+                    else {
+                        _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100)),
+                                               i);
 
-                    //if (i == PlayerIndex.One + randomEnemyIdx)
-                    //{
-                    //    _gameManager.MarkPlayerAsEnemy(_gameManager.Players.Last());
-                    //}
-                    //else
-                    //{
                         if (i == PlayerIndex.One)
                             _gameManager.Players.Last().Color = Color.Yellow;
                         if (i == PlayerIndex.Two)
@@ -112,31 +111,34 @@ namespace Lumen
                             _gameManager.Players.Last().Color = Color.LightBlue;
                         if (i == PlayerIndex.Four)
                             _gameManager.Players.Last().Color = Color.Cyan;
-
-                    //    if(i == PlayerIndex.One + randomSwordWielderIdx)
-                    //        _gameManager.Players.Last().Weapon = PlayerWeaponType.Sword;
-                    //}
+                    }
                 }
             }
 
-            for (var i = 0; i < GameVariables.CoinInitialCount; i++)
+            for (var i = 0; i < GameVariables.CrystalInitialCount; i++)
             {
-
                 _gameManager.AddCrystal(new Vector2(RandomGen.Next(16, (int)DisplayResolution.X), RandomGen.Next(16, (int)DisplayResolution.Y)));
             }
-
-            //int size = 64;
-            //for (int i = 0; i <= size*((int)(DisplayResolution.X/size)); i += size)
-            //{
-            //    _gameManager.AddBlock(new Vector2(i, 0), size);
-            //}
-
         }
 #endif
 
         protected override void Initialize()
         {
             base.Initialize();
+        }
+
+        protected override void OnExiting(Object sender, EventArgs args)
+        {
+            base.OnExiting(sender, args);
+
+            Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            for(var gp = PlayerIndex.One; gp <= PlayerIndex.Four; gp++) {
+                GamePad.SetVibration(gp, 0, 0);
+            }
         }
 
         protected override void LoadContent()
@@ -197,7 +199,7 @@ namespace Lumen
             GraphicsDevice.SetRenderTarget(_sceneRT);
             _gameManager.DrawScene(_spriteBatch);
 
-            _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Candle>(), _gameManager.Players.Where(p => p.IsBurning), _gameManager.Players.Where(p => p.IsAttacking), GraphicsDevice, _spriteBatch);
+            _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Light>(), GraphicsDevice, _spriteBatch);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
             DrawFullscreenQuad(_sceneRT, _spriteBatch);
@@ -208,8 +210,6 @@ namespace Lumen
             if(IsShowingCoinCount)
             {
                 _spriteBatch.Begin();
-                foreach(var player in _gameManager.Players)
-                    _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0},{1}", player.CoinCount, player.NumCandlesLeft), new Vector2(player.Position.X - 16, player.Position.Y - 32), Color.White);
                 _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", GameVariables.CameraZoom), Vector2.Zero, Color.White);
                 _spriteBatch.End();
             }
