@@ -10,7 +10,7 @@ namespace Lumen
 {
     public class TextureManager
     {
-        public static readonly Vector2 PlayerOrigin = new Vector2(12,12);
+        public static readonly Vector2 PlayerOrigin = new Vector2(16,16);
 
         private struct TextureDetails
         {
@@ -41,7 +41,7 @@ namespace Lumen
             if (_textureDetails.TryGetValue(name, out td))
                 return td.Texture;
 
-            throw new ArgumentException(String.Format("A texture with the name {0} has not been added to the texture details map yet.", name), "name");
+            throw new ArgumentException(String.Format("A texture with the name \"{0}\" has not been added to the texture details map yet.", name), "name");
         }
 
         public static Vector2 GetOrigin(string name)
@@ -50,7 +50,7 @@ namespace Lumen
             if (_textureDetails.TryGetValue(name, out td))
                 return td.Origin;
 
-            throw new ArgumentException(String.Format("A texture origin with the name {0} has not been added to the texture details map yet.", name), "name");
+            throw new ArgumentException(String.Format("A texture origin with the name \"{0}\" has not been added to the texture details map yet.", name), "name");
         }
 
         public static SpriteFont GetFont(string name)
@@ -58,22 +58,22 @@ namespace Lumen
             SpriteFont f;
             if (_fontDetails.TryGetValue(name, out f))
                 return f;
-            
-            throw new ArgumentException(String.Format("A font with the name {0} has not been added to the font map yet.", name), "name");
+
+            throw new ArgumentException(String.Format("A font with the name \"{0}\" has not been added to the font map yet.", name), "name");
         }
 
         private static void LoadTextureInformation(ContentManager contentManager)
         {
             _textureDetails.Add("blank", new TextureDetails(contentManager.Load<Texture2D>("blank"), new Vector2(12, 12)));
-            _textureDetails.Add("player",   new TextureDetails(contentManager.Load<Texture2D>("player"),    new Vector2(12,12)));
-            _textureDetails.Add("enemy", new TextureDetails(contentManager.Load<Texture2D>("enemy"), new Vector2(12, 12)));
-            _textureDetails.Add("wax", new TextureDetails(contentManager.Load<Texture2D>("wax"), new Vector2(12, 12)));
-            _textureDetails.Add("candle", new TextureDetails(contentManager.Load<Texture2D>("candle"), new Vector2(12, 12)));
-            _textureDetails.Add("coin", new TextureDetails(contentManager.Load<Texture2D>("coin"), new Vector2(12, 12)));
-            _textureDetails.Add("crystal", new TextureDetails(contentManager.Load<Texture2D>("crystal"), new Vector2(12, 12)));
-            _textureDetails.Add("block", new TextureDetails(contentManager.Load<Texture2D>("block"), new Vector2(12, 12)));
-            _textureDetails.Add("torch", new TextureDetails(contentManager.Load<Texture2D>("torch"), new Vector2(12, 12)));
-            _textureDetails.Add("sword", new TextureDetails(contentManager.Load<Texture2D>("sword"), new Vector2(12, 12)));
+            _textureDetails.Add("player_portrait", new TextureDetails(contentManager.Load<Texture2D>("player_portrait"), new Vector2(53, 61)));
+            _textureDetails.Add("player1_portrait", new TextureDetails(contentManager.Load<Texture2D>("player1"), new Vector2(64, 64)));
+            _textureDetails.Add("player2_portrait", new TextureDetails(contentManager.Load<Texture2D>("player2"), new Vector2(64, 64)));
+            _textureDetails.Add("player3_portrait", new TextureDetails(contentManager.Load<Texture2D>("player3"), new Vector2(64, 64)));
+            _textureDetails.Add("player1", new TextureDetails(contentManager.Load<Texture2D>("player1_mini"), new Vector2(16, 16)));
+            _textureDetails.Add("player2", new TextureDetails(contentManager.Load<Texture2D>("player2_mini"), new Vector2(16, 16)));
+            _textureDetails.Add("player3", new TextureDetails(contentManager.Load<Texture2D>("player3_mini"), new Vector2(16, 16)));
+            _textureDetails.Add("guardian", new TextureDetails(contentManager.Load<Texture2D>("guardian"), new Vector2(32, 32)));
+            _textureDetails.Add("crystal", new TextureDetails(contentManager.Load<Texture2D>("crystal"), new Vector2(16, 16)));
             _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("background"), new Vector2(512, 384)));
 
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("debug_font"));

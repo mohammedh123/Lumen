@@ -39,7 +39,7 @@ namespace Lumen
                                                      light.Position.Y / _accumulatorRT.Height);
 
                 _lightAccumulatorFX.Parameters["lightPosition"].SetValue(normalizedPosition);
-                _lightAccumulatorFX.Parameters["lightRadius"].SetValue(light.Radius);
+                _lightAccumulatorFX.Parameters["lightRadius"].SetValue(light.LightRadius);
 
                 sb.Draw(_screenTex, new Rectangle(0, 0, _accumulatorRT.Width, _accumulatorRT.Height), Color.White);
                 sb.End();

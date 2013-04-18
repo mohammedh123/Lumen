@@ -14,7 +14,7 @@ namespace Lumen.Props
         {
             Owner = owner;
             IsVisible = false;
-            Radius = 0;
+            LightRadius = 0;
         }
 
         public override void Update(float dt)
@@ -29,11 +29,11 @@ namespace Lumen.Props
 
             if(durationTimer > 0)
             {
-                Radius = GameVariables.BlinkingRadius;
+                LightRadius = GameVariables.BlinkingRadius;
             }
             else
             {
-                Radius = 0;
+                LightRadius = 0;
             }
 
             timer = Math.Max(timer - dt, 0.0f);

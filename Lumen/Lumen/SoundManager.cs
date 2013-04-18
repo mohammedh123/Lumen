@@ -64,6 +64,10 @@ namespace Lumen
             var deathSound = contentManager.Load<SoundEffect>("death_sound");
             _soundDetails.Add("death_sound", deathSound);
             _soundInstances.Add("death_sound", deathSound.CreateInstance());
+
+            var crystalGetSound = contentManager.Load<SoundEffect>("crystal_get");
+            _soundDetails.Add("crystal_get", crystalGetSound);
+            _soundInstances.Add("crystal_get", crystalGetSound.CreateInstance());
         }
     }
 }

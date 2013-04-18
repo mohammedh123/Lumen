@@ -20,7 +20,9 @@ float4 PixelShaderFunction(PixelShaderInput input) : COLOR0
     float4 color = tex2D(TextureSampler, input.TexCoord);
     float2 dist = lightPosition - input.TexCoord;
     float2 dx = dist*float2(1024,768);
-    float alpha = length(dx)/lightRadius;
+    float alpha = length(dx)/(lightRadius);
+	alpha *= alpha;
+	alpha *= alpha;
 
     if(length(dx) < lightRadius)
     {

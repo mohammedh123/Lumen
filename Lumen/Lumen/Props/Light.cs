@@ -8,7 +8,7 @@ namespace Lumen.Props
     {
         //ILightProvider members
         public Color LightColor { get; set; }
-        public float Radius { get; set; }
+        public float LightRadius { get; set; }
 
         public override bool CanInteract
         {
@@ -27,7 +27,7 @@ namespace Lumen.Props
         {
             Lifetime -= dt;
 
-            if (Lifetime <= 0 || Radius <= 0) {
+            if (Lifetime <= 0 || LightRadius <= 0) {
                 IsToBeRemoved = true;
             }
         }

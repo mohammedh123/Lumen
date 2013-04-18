@@ -12,6 +12,6 @@ namespace Lumen
         
         Color LightColor { get; set; }
 
-        float Radius { get; set; }
+        float LightRadius { get; set; }
     }
 }

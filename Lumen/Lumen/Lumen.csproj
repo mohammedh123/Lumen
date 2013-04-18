@@ -110,11 +110,12 @@
     <Compile Include="ActionType.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Collider.cs" />
+    <Compile Include="DrawingHelper.cs" />
     <Compile Include="Entities\IControllerCapable.cs" />
     <Compile Include="Entities\IKeyboardCapable.cs" />
     <Compile Include="Props\BlinkingLight.cs" />
     <Compile Include="Props\Light.cs" />
-    <Compile Include="Entities\Enemy.cs" />
+    <Compile Include="Entities\Guardian.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="ErrorLog.cs" />
     <Compile Include="GameManager.cs" />

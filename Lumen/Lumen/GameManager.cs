@@ -21,14 +21,26 @@ namespace Lumen
     internal class GameManager
     {
         public List<Player> Players { get; set; }
-        public Enemy Enemy { get; set; }
+        private Dictionary<Player,BlinkingLight> _deadPlayers = new Dictionary<Player, BlinkingLight>(); 
+        public Guardian Guardian { get; set; }
         public List<Prop> Props { get; set; }
         public List<Block> Blocks { get; set; }
         public List<Prop> PropsToBeAdded { get; set; }
 
+        public int CrystalsCollected { get; private set; }
+
+        public int CrystalsRemaining
+        {
+            get { return GameVariables.Crystals(RoundNumber, CrystalsCollected) - GameVariables.FinalCrystalBuffer; }
+        }
+
         public GameState State = GameState.StillGoing;
 
         private readonly Vector2 _gameResolution;
+
+        public int RoundNumber { get; private set; }
+
+        public float TimeTillNextRound { get; private set; }
 
         public GameManager(Vector2 gameResolution)
         {
@@ -36,6 +48,7 @@ namespace Lumen
             Props = new List<Prop>();
             Blocks = new List<Block>();
             PropsToBeAdded = new List<Prop>();
+            RoundNumber = 1;
 
             _gameResolution = gameResolution;
         }
@@ -48,55 +61,126 @@ namespace Lumen
             if (MediaPlayer.State == MediaState.Stopped)
                 MediaPlayer.Play(song);
 
-            //iterate through all entities and update them (their deltas will be set at the end of update)
-            foreach (var player in Players) {
-                player.Update(dt);
+            if (State == GameState.StillGoing) {
+                //iterate through all entities and update them (their deltas will be set at the end of update)
+                foreach (var player in Players) {
+                    player.Update(dt);
 
-                SetPlayerCrystalVibration(player);
+                    SetPlayerCrystalVibration(player);
 
-                HandleCrystalCollection(player, dt);
+                    HandleCrystalCollection(player, dt);
+                }
+
+                Guardian.Update(dt);
+
+                foreach (var prop in Props)
+                    prop.Update(dt);
+
+                HandlePropsToBeRemoved();
+                HandlePropsToBeAdded(dt);
+
+                var isEnemyMoving = false;
+
+                ResolveOutOfBoundsCollision(Guardian);
+                Guardian.ResetVelocity();
+
+                for (int i = 0; i < Players.Count; i++) {
+                    var player = Players[i];
+
+                    ResolveCollisionAgainstPlayers(player, GameVariables.PlayerCollisionRadius);
+                    ResolveOutOfBoundsCollision(player);
+
+                    ResolveCollisionAgainstEnemy(player, GameVariables.PlayerCollisionRadius);
+
+                    player.ResetVelocity();
+
+                    if (player.Health <= 0) {
+                        KillPlayer(player);
+                        i--;
+                    }
+                }
+
+                if (isEnemyMoving)
+                    SoundManager.GetSoundInstance("footstep").Play();
+                if (Guardian != null) {
+                    if (Guardian.IsChargingUp)
+                        GameVariables.ScreenShakeAmount = GameVariables.MaxScreenShake*
+                                                          (Guardian.FinalRadiusOfAttack/
+                                                           GameVariables.EnemyAttackMaxRadius);
+                    else if (Guardian.IsAttacking)
+                        GameVariables.ScreenShakeAmount = GameVariables.MaxScreenShake*
+                                                          (Guardian.FinalRadiusOfAttack/
+                                                           GameVariables.EnemyAttackMaxRadius);
+                    else
+                        GameVariables.ScreenShakeAmount = 0;
+                }
+
+                HandlePropCollision();
             }
+            else if(State == GameState.PlayersWin) {
+                TimeTillNextRound -= dt;
 
-            Enemy.Update(dt);
-
-            foreach (var prop in Props)
-                prop.Update(dt);
-
-            HandlePropsToBeAdded(dt);
-
-            var isEnemyMoving = false;
-
-            foreach (var player in Players) {
-                ResolveCollisionAgainstPlayers(player, GameVariables.PlayerCollisionRadius);
-                ResolveOutOfBoundsCollision(player);
-
-                ResolveCollisionAgainstEnemy(player, GameVariables.PlayerCollisionRadius);
-
-                player.ResetVelocity();
-
-                if (player.Health <= 0) {
-                    KillPlayer(player);
+                if(TimeTillNextRound <= 0.0f) {
+                    TimeTillNextRound = 0.0f;
+                    StartNextRound();
                 }
             }
-
-            if (isEnemyMoving)
-                SoundManager.GetSoundInstance("footstep").Play();
-            
-            HandlePropCollision();
+            else if(State == GameState.EnemyWins) {
+                HandleRestartInput();
+            }
         }
 
-        private void ResolveOutOfBoundsCollision(Player player)
+        private void HandleRestartInput()
+        {
+            if(InputManager.KeyDown(Keys.R)) {
+                RoundNumber--;
+                StartNextRound();
+            }
+            else if(InputManager.KeyDown(Keys.T)) {
+                //restart
+                RoundNumber = 0;
+                StartNextRound();
+            }
+        }
+
+        private void StartNextRound()
+        {
+            RoundNumber++;
+            State = GameState.StillGoing;
+
+            foreach(var kvp in _deadPlayers) {
+                Players.Add(kvp.Key);
+                Props.Add(kvp.Value);
+            }
+
+            _deadPlayers.Clear();
+
+            foreach(var player in Players) {
+                player.CrystalCount = 0;
+                CrystalsCollected = 0;
+                player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32*player.PlayerSpriteIndex);
+            }
+
+            Props.RemoveAll(p => p is Crystal);
+
+            for (var i = 0; i < GameVariables.CrystalsToSpawn(RoundNumber); i++)
+            {
+                AddCrystal(new Vector2(GameDriver.RandomGen.Next(16, (int)_gameResolution.X), GameDriver.RandomGen.Next(16, (int)_gameResolution.Y)));
+            }
+        }
+
+        private void ResolveOutOfBoundsCollision(Entity entity)
         {
             var screenBounds = new Rectangle(0, 0, (int) _gameResolution.X, (int) _gameResolution.Y);
 
-            if (screenBounds.Contains((int) (player.Position.X + player.Velocity.X),
-                                      (int) (player.Position.Y))) {
-                player.ApplyVelocity(true, false);
+            if (screenBounds.Contains((int) (entity.Position.X + entity.Velocity.X),
+                                      (int) (entity.Position.Y))) {
+                entity.ApplyVelocity(true, false);
             }
 
-            if (screenBounds.Contains((int) (player.Position.X),
-                                      (int) (player.Position.Y + player.Velocity.Y))) {
-                player.ApplyVelocity(false, true);
+            if (screenBounds.Contains((int) (entity.Position.X),
+                                      (int) (entity.Position.Y + entity.Velocity.Y))) {
+                entity.ApplyVelocity(false, true);
             }
         }
 
@@ -184,8 +268,8 @@ namespace Lumen
                                                 (int)(entCollisionRadius * 2));
 
             var enemyRect =
-                new Rectangle((int)(Enemy.Position.X - GameVariables.PlayerCollisionRadius),
-                                (int)(Enemy.Position.Y - GameVariables.PlayerCollisionRadius),
+                new Rectangle((int)(Guardian.Position.X - GameVariables.PlayerCollisionRadius),
+                                (int)(Guardian.Position.Y - GameVariables.PlayerCollisionRadius),
                                 (int)(GameVariables.PlayerCollisionRadius * 2),
                                 (int)(GameVariables.PlayerCollisionRadius * 2));
 
@@ -193,6 +277,22 @@ namespace Lumen
 
             if(collided) {
                 KillPlayer(player);
+            }
+
+            //now check player against the attack
+            if(Guardian.IsAttacking) {
+                if(Collider.CirclesCollide(Guardian.Position, Guardian.LightRadius, player.Position, GameVariables.PlayerCollisionRadius)) {
+                    if (!Guardian.PlayersHitThisAttack.Contains(player)) {
+                        Guardian.PlayersHitThisAttack.Add(player);
+
+                        if(Guardian.IsFullyCharged) {
+                            player.Health -= 2;
+                        }
+                        else {
+                            player.Health -= 1;
+                        }
+                    }
+                }
             }
         }
 
@@ -211,6 +311,11 @@ namespace Lumen
             }
         }
 
+        private void HandlePropsToBeRemoved()
+        {
+            Props.RemoveAll(p => p.IsToBeRemoved);
+        }
+        
         private void HandleCrystalCollection(Player player, float dt)
         {
             if (player.IsCollecting) {
@@ -227,11 +332,12 @@ namespace Lumen
                         }
                     }
 
-                    if (colTar == null) {
+                    if (colTar == null || colTar.IsToBeRemoved) {
                         player.ResetCollecting();
                     }
                     else {
                         player.CollectionTarget = colTar;
+                        player.CollectionTarget.IncrementCollectorCount();
                     }
                 }
                 else {
@@ -246,9 +352,30 @@ namespace Lumen
 
                         player.ResetCollecting();
 
-                        player.CrystalCount++;
+                        IncreasePlayerCrystalCount(player);
                     }
                 }
+            }
+        }
+
+        private void IncreasePlayerCrystalCount(Player player)
+        {
+            CrystalsCollected++;
+            player.CrystalCount++;
+            SoundManager.GetSound("crystal_get").Play();
+
+            RoundOver();
+        }
+
+        private void RoundOver()
+        {
+            if (CrystalsRemaining == 0) {
+                State = GameState.PlayersWin;
+                TimeTillNextRound = 5.0f;
+
+                foreach (var player in Players)
+                    GamePad.SetVibration(player.ControllerIndex, 0, 0);
+                GamePad.SetVibration(Guardian.PlayerNum, 0, 0);
             }
         }
 
@@ -268,8 +395,8 @@ namespace Lumen
 
             var vibRat = closestDist/(100.0f*100.0f);
 
-            if (GamePad.GetState(player.PlayerNum).IsConnected) {
-                GamePad.SetVibration(player.PlayerNum, Math.Max(0, 0.5f*(1 - vibRat)), Math.Max(0, 0.5f*(1 - vibRat)));
+            if (GamePad.GetState(player.ControllerIndex).IsConnected) {
+                GamePad.SetVibration(player.ControllerIndex, Math.Max(0, 0.5f*(1 - vibRat)), Math.Max(0, 0.5f*(1 - vibRat)));
             }
         }
 
@@ -310,7 +437,7 @@ namespace Lumen
             foreach (var player in Players)
                 player.Draw(sb);
 
-            Enemy.Draw(sb);
+            Guardian.Draw(sb);
 
             foreach (var block in Blocks)
                 block.Draw(sb);
@@ -329,10 +456,10 @@ namespace Lumen
         public void AddPlayer(Player player, PlayerIndex playerIndex)
         {
             if(AddPlayer(player))
-                player.PlayerNum = playerIndex;
+                player.ControllerIndex = playerIndex;
         }
 
-        public void AddEnemy(Enemy e, PlayerIndex playerIndex)
+        public void AddEnemy(Guardian e, PlayerIndex playerIndex)
         {
             if (AddEnemy(e))
                 e.PlayerNum = playerIndex;
@@ -342,18 +469,18 @@ namespace Lumen
         {
             if (Players.Contains(p)) return false;
 
-            Props.Add(new BlinkingLight("candle", p));
+            Props.Add(new BlinkingLight("blank", p));
             Players.Add(p);
 
             return true;
         }
 
-        public bool AddEnemy(Enemy e)
+        public bool AddEnemy(Guardian e)
         {
-            if (Enemy != null) return false;
+            if (Guardian != null) return false;
 
-            Props.Add(new BlinkingLight("candle", e));
-            Enemy = e;
+            Props.Add(new BlinkingLight("blank", e));
+            Guardian = e;
 
             return true;
         }
@@ -368,13 +495,16 @@ namespace Lumen
             Props.Add(new Crystal(position));
         }
         
-        private void RemovePlayersBlinkingLight(Player player)
+        private BlinkingLight RemovePlayersBlinkingLight(Player player)
         {
             var idx = Props.FindLastIndex(p => p is BlinkingLight && ((BlinkingLight) p).Owner == player);
+            var prop = Props[idx];
 
             if (idx >= 0) {
                 Props.RemoveAt(idx);
             }
+
+            return prop as BlinkingLight;
         }
 
         public void KillPlayer(Player player)
@@ -382,34 +512,56 @@ namespace Lumen
             if (Players.Count == 1)
                 State = GameState.EnemyWins;
 
-            GamePad.SetVibration(player.PlayerNum, 0, 0);
+            GamePad.SetVibration(player.ControllerIndex, 0, 0);
 
-            //find the lantern that belongs to this enemy and eliminate it
-            RemovePlayersBlinkingLight(player);
+            //find the lantern that belongs to this Guardian and eliminate it
+            var light = RemovePlayersBlinkingLight(player);
 
             Players.Remove(player);
+            _deadPlayers.Add(player, light);
 
             SoundManager.GetSound("death_sound").Play();
         }
 
-        public void KillEnemy(Enemy enemy)
+        public void KillEnemy(Guardian guardian)
         {
             State = GameState.PlayersWin;
 
-            GamePad.SetVibration(enemy.PlayerNum, 0, 0);
-            Enemy = null;
+            GamePad.SetVibration(guardian.PlayerNum, 0, 0);
+            Guardian = null;
 
             SoundManager.GetSound("death_sound").Play();
         }
-
-        public void Reset()
+        
+        public void ResetCompletely()
         {
+            State = GameState.StillGoing;
+
             Players.Clear();
+            _deadPlayers.Clear();
             Props.Clear();
             Blocks.Clear();
             PropsToBeAdded.Clear();
 
-            Enemy = null;
+            Guardian = null;
+        }
+
+        public IEnumerable<ILightProvider> GetLights()
+        {
+            var lights = new List<ILightProvider>();
+
+            foreach(var prop in Props) {
+                var asLight = prop as ILightProvider;
+
+                if(asLight != null) {
+                    lights.Add(asLight);
+                }
+            }
+
+            if(Guardian != null)
+                lights.Add(Guardian);
+
+            return lights;
         }
     }
 }

@@ -50,16 +50,7 @@ namespace Lumen
             return p1.Intersects(p2);
         }
 
-        internal static bool AttackCollidesWith(Player attacker, Player otherPlayer)
-        {
-            var attackCenter = attacker.Position +
-                               new Vector2((float) Math.Cos(attacker.Angle), (float) Math.Sin(attacker.Angle))*18.0f;
-
-            return CirclesCollide(attackCenter, 12.0f, otherPlayer.Position, GameVariables.PlayerCollisionRadius);
-        }
-
-
-        private static bool CircleRect(float cx, float cy, float r, Rectangle rect)
+        public static bool CircleRect(float cx, float cy, float r, Rectangle rect)
         {
             var closestX = MathHelper.Clamp(cx, rect.Left, rect.Right);
             var closestY = MathHelper.Clamp(cy, rect.Top, rect.Bottom);
@@ -71,7 +62,7 @@ namespace Lumen
             return dS < (r * r);
         }
 
-        private static bool CirclesCollide(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB)
+        public static bool CirclesCollide(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB)
         {
             return (centerA - centerB).LengthSquared() < (radiusA + radiusB)*(radiusA + radiusB);
         }

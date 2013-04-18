@@ -70,7 +70,7 @@ namespace Lumen
                             if (variableName == "PlayerLanternRadius")
                             {
                                 foreach (var lantern in _gameManager.Props.Where(p => p is BlinkingLight))
-                                    (lantern as BlinkingLight).Radius = (float)actualVariableValue;
+                                    (lantern as BlinkingLight).LightRadius = (float)actualVariableValue;
                             }
                         }
                         catch (Exception e) {
@@ -85,37 +85,37 @@ namespace Lumen
             }
         }
 
-        private void ResetLevel()
+        private void ResetRound(bool shufflePlayers = true, bool reloadVariables = true)
         {
-            LoadVariables();
-            _gameManager.Reset();
+            if(reloadVariables)
+                LoadVariables();
 
-            var randomEnemyIdx = RandomGen.Next(0, 2);
+            if (shufflePlayers) {
+                _gameManager.ResetCompletely();
 
-            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
-                if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two) {
+                var randomEnemyIdx = RandomGen.Next(0, 2);
 
-                    if (i == PlayerIndex.One + randomEnemyIdx) {
-                        _gameManager.AddEnemy(new Enemy(new Vector2(150 + (int) i*150, 100 + (int) i*100)), 
-                                               i);
-                    }
-                    else {
-                        _gameManager.AddPlayer(new Player("player", new Vector2(150 + (int) i*150, 100 + (int) i*100)),
-                                               i);
+                var playerNum = 1;
+                for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
+                    if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two) {
 
-                        if (i == PlayerIndex.One)
-                            _gameManager.Players.Last().Color = Color.Yellow;
-                        if (i == PlayerIndex.Two)
-                            _gameManager.Players.Last().Color = Color.Green;
-                        if (i == PlayerIndex.Three)
-                            _gameManager.Players.Last().Color = Color.LightBlue;
-                        if (i == PlayerIndex.Four)
-                            _gameManager.Players.Last().Color = Color.Cyan;
+                        if (i == PlayerIndex.One + randomEnemyIdx) {
+                            _gameManager.AddEnemy(
+                                new Guardian(new Vector2(DisplayResolution.X - 64, DisplayResolution.Y/2)),
+                                i);
+                        }
+                        else {
+                            _gameManager.AddPlayer(
+                                new Player("player" + playerNum++,
+                                           new Vector2(64, DisplayResolution.Y/2 - 96 + 32*playerNum)),
+                                i);
+                            _gameManager.Players.Last().PlayerSpriteIndex = playerNum - 1;
+                        }
                     }
                 }
             }
 
-            for (var i = 0; i < GameVariables.CrystalInitialCount; i++)
+            for (var i = 0; i < GameVariables.CrystalsToSpawn(_gameManager.RoundNumber); i++)
             {
                 _gameManager.AddCrystal(new Vector2(RandomGen.Next(16, (int)DisplayResolution.X), RandomGen.Next(16, (int)DisplayResolution.Y)));
             }
@@ -153,7 +153,7 @@ namespace Lumen
 #if DEBUG
             LoadVariables();
 #endif
-            ResetLevel();
+            ResetRound();
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
         }
@@ -173,7 +173,7 @@ namespace Lumen
             if (Keyboard.GetState().IsKeyDown(Keys.Back))
                 LoadVariables();
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                ResetLevel();
+                ResetRound();
 
             var scale = 1.0f + Mouse.GetState().ScrollWheelValue/12000.0f;
             GameVariables.CameraZoom = scale;
@@ -198,11 +198,11 @@ namespace Lumen
         {
             GraphicsDevice.SetRenderTarget(_sceneRT);
             _gameManager.DrawScene(_spriteBatch);
-
-            _lightManager.DrawScene(_gameManager.Props.Where(p => p.PropType == PropTypeEnum.Candle).Cast<Light>(), GraphicsDevice, _spriteBatch);
+             
+            _lightManager.DrawScene(_gameManager.GetLights(), GraphicsDevice, _spriteBatch);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
-            DrawFullscreenQuad(_sceneRT, _spriteBatch);
+            DrawFullscreenQuad(_sceneRT, _spriteBatch, true);
             _spriteBatch.End();
             _lightManager.DrawLightDarkness(GraphicsDevice, _spriteBatch, _sceneRT);
 
@@ -216,9 +216,9 @@ namespace Lumen
 #endif
             string s = null;
             if (_gameManager.State == GameState.PlayersWin)
-                s = "THE PLAYERS WIN, MAN";
+                s = "Round won!\nNext round in: "+_gameManager.TimeTillNextRound.ToString("0.0");
             else if (_gameManager.State == GameState.EnemyWins)
-                s = "THE ENEMY WON DUDE";
+                s = "The guardian has won.\n(R) Retry?\n(T) Restart?";
 
             if (s != null)
             {
@@ -226,13 +226,68 @@ namespace Lumen
                 _spriteBatch.DrawString(TextureManager.GetFont("big"), s, new Vector2(0, 300), Color.White);
                 _spriteBatch.End();
             }
+
+            var alphaToUse = 1.0f;
+
+            var uiRect = new Rectangle(128,48,(int)DisplayResolution.X-128-100,(int)DisplayResolution.Y-48);
+            
+            if(!_gameManager.Players.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)) || !uiRect.Contains((int)_gameManager.Guardian.Position.X, (int)_gameManager.Guardian.Position.Y) || !_gameManager.Props.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y))) {
+                alphaToUse = 0.25f;
+            }
+
+            DrawUI(alphaToUse);
             
             base.Draw(gameTime);
         }
 
-        private void DrawFullscreenQuad(Texture2D tex, SpriteBatch sb)
+        private void DrawUI(float alpha=1)
         {
-            sb.Draw(tex, new Rectangle(0, 0, (int)DisplayResolution.X, (int)DisplayResolution.Y), Color.White);
+            for (int i = 0; i < _gameManager.Players.Count; i++) {
+                var player = _gameManager.Players[i];
+
+                DrawPlayerInformation(new Vector2(66, 64 + 128*i), player, alpha);
+            }
+
+            DrawCrystalsLeftInformation(new Vector2(DisplayResolution.X/2-200, 16), alpha);
+            DrawEnemyInformation(new Vector2(DisplayResolution.X - 100, 16), alpha);
+        }
+
+        private void DrawEnemyInformation(Vector2 topLeft, float alpha)
+        {
+            _spriteBatch.Begin();
+            DrawingHelper.DrawHorizontalFilledBar(topLeft, _spriteBatch, Color.White*alpha, Color.Blue*alpha, 84, 16, 1, _gameManager.Guardian.EnergyRemaining/GameVariables.EnemyAttackMaxRadius);
+            _spriteBatch.End();
+        }
+
+        private void DrawPlayerInformation(Vector2 center, Player player, float alpha)
+        {
+            _spriteBatch.Begin();
+
+            var str = "player" + player.PlayerSpriteIndex + "_portrait";
+            _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), 1.0f, SpriteEffects.None, 0);
+            _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), 1.0f, SpriteEffects.None, 0);
+
+            _spriteBatch.End();
+        }
+
+        private void DrawCrystalsLeftInformation(Vector2 topLeft, float alpha)
+        {
+            _spriteBatch.Begin();
+
+            _spriteBatch.DrawString(TextureManager.GetFont("debug"), "Crystals Left:\nRound #: " + _gameManager.RoundNumber, topLeft, Color.White*alpha);
+
+            var center = new Vector2(DisplayResolution.X/2, 16);
+
+            for(int i = 0; i < _gameManager.CrystalsRemaining; i++) {
+                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center+new Vector2(32*i,0),Color.White*alpha);
+            }
+
+            _spriteBatch.End();
+        }
+
+        private void DrawFullscreenQuad(Texture2D tex, SpriteBatch sb, bool useScreenShake=false)
+        {
+            sb.Draw(tex, new Rectangle(useScreenShake ? (int)(RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, useScreenShake ? (int)(RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, (int)DisplayResolution.X, (int)DisplayResolution.Y), Color.White);
         }
     }
 }
