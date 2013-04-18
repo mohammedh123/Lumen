@@ -266,8 +266,12 @@ namespace Lumen
             var str = "player" + player.PlayerSpriteIndex + "_portrait";
             _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), 1.0f, SpriteEffects.None, 0);
             _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), 1.0f, SpriteEffects.None, 0);
+            for (int i = 0; i < player.CrystalCount; i++)
+            {
+                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(64+32 * i, 0), Color.White * alpha);
+            }
 
-            _spriteBatch.End();
+                _spriteBatch.End();
         }
 
         private void DrawCrystalsLeftInformation(Vector2 topLeft, float alpha)
