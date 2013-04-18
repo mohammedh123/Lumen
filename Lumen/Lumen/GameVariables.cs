@@ -22,6 +22,7 @@ namespace Lumen
         public static float EnemyEnergyRegeneration = 20.0f;
         public static float EnemySpeedWhileCharging = 30.0f;
 
+        public static float PlayerVibrationDetectionRadius = 100.0f;
         public static bool IsScreenWrapping = false;
 
         public static float CameraZoom = 1.0f;
@@ -29,6 +30,7 @@ namespace Lumen
         public static float BlinkingPeriod = 1.0f;
         public static float BlinkingDuration = 0.1f;
         public static float BlinkingRadius = 50.0f;
+        public static float EnemyBlinkingRadius = 50.0f;
 
         public static int CrystalInitialCount = 3;
         public static float CrystalCollectionRadius = 24.0f;

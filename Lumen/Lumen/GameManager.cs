@@ -393,7 +393,7 @@ namespace Lumen
                 }
             }
 
-            var vibRat = closestDist/(100.0f*100.0f);
+            var vibRat = closestDist / (GameVariables.PlayerVibrationDetectionRadius * GameVariables.PlayerVibrationDetectionRadius);
 
             if (GamePad.GetState(player.ControllerIndex).IsConnected) {
                 GamePad.SetVibration(player.ControllerIndex, Math.Max(0, 0.5f*(1 - vibRat)), Math.Max(0, 0.5f*(1 - vibRat)));
@@ -469,7 +469,7 @@ namespace Lumen
         {
             if (Players.Contains(p)) return false;
 
-            Props.Add(new BlinkingLight("blank", p));
+            Props.Add(new BlinkingLight("blank", p, GameVariables.BlinkingRadius));
             Players.Add(p);
 
             return true;
@@ -479,7 +479,7 @@ namespace Lumen
         {
             if (Guardian != null) return false;
 
-            Props.Add(new BlinkingLight("blank", e));
+            Props.Add(new BlinkingLight("blank", e, GameVariables.EnemyBlinkingRadius));
             Guardian = e;
 
             return true;
