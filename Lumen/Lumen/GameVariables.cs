@@ -31,6 +31,8 @@ namespace Lumen
         public static float BlinkingDuration = 0.1f;
         public static float BlinkingRadius = 50.0f;
         public static float EnemyBlinkingRadius = 50.0f;
+        public static float BlinkingFadeInDuration = 0.1f;
+        public static float BlinkingFadeOutDuration = 0.1f;
 
         public static int CrystalInitialCount = 3;
         public static float CrystalCollectionRadius = 24.0f;
