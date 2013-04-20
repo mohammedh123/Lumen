@@ -41,6 +41,7 @@ namespace Lumen.Props
 
         public BlinkingLight(string textureKeyName, Entity owner, float lightRadius) : base(textureKeyName, owner.Position, 0)
         {
+            _timer = (float)GameDriver.RandomGen.NextDouble()*0.25f;
             Owner = owner;
             IsVisible = false;
             LightRadius = 0;
