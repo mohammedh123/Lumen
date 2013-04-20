@@ -105,7 +105,7 @@ namespace Lumen
                 if (Guardian != null) {
                     if (Guardian.IsChargingUp)
                         GameVariables.ScreenShakeAmount = GameVariables.MaxScreenShake*
-                                                          (Guardian.FinalRadiusOfAttack/
+                                                          (Guardian.InternalAttackRadius/
                                                            GameVariables.EnemyAttackMaxRadius);
                     else if (Guardian.IsAttacking)
                         GameVariables.ScreenShakeAmount = GameVariables.MaxScreenShake*
