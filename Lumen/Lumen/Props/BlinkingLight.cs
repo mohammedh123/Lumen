@@ -81,7 +81,6 @@ namespace Lumen.Props
                     _fadeState = BlinkingLightFadeState.FadingOut;
                     _fadeTimer = 0.0f;
                 }
-
             }
             else if(_fadeState == BlinkingLightFadeState.FadingOut)
             {
@@ -93,6 +92,7 @@ namespace Lumen.Props
                 {
                     _fadeState = BlinkingLightFadeState.None;
                     _fadeTimer = -1.0f;
+                    LightRadius = 0;
                 }
             }
 
