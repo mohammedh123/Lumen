@@ -93,7 +93,7 @@ namespace Lumen
             if (shufflePlayers) {
                 _gameManager.ResetCompletely();
 
-                var randomEnemyIdx = RandomGen.Next(0, 2);
+                var randomEnemyIdx = RandomGen.Next(0,4);
 
                 var playerNum = 1;
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
