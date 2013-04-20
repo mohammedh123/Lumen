@@ -232,7 +232,7 @@ namespace Lumen
             var uiRect = new Rectangle(128,48,(int)DisplayResolution.X-128-100,(int)DisplayResolution.Y-48);
             
             if(!_gameManager.Players.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)) || !uiRect.Contains((int)_gameManager.Guardian.Position.X, (int)_gameManager.Guardian.Position.Y) || !_gameManager.Props.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y))) {
-                alphaToUse = 0.25f;
+                //alphaToUse = 0.25f;
             }
 
             DrawUI(alphaToUse);
@@ -245,7 +245,7 @@ namespace Lumen
             for (int i = 0; i < _gameManager.Players.Count; i++) {
                 var player = _gameManager.Players[i];
 
-                DrawPlayerInformation(new Vector2(66, 64 + 128*i), player, alpha);
+                DrawPlayerInformation(new Vector2(66+360*i, DisplayResolution.Y-64), player, alpha);
             }
 
             DrawCrystalsLeftInformation(new Vector2(DisplayResolution.X/2-200, 16), alpha);
@@ -264,8 +264,8 @@ namespace Lumen
             _spriteBatch.Begin();
 
             var str = "player" + player.PlayerSpriteIndex + "_portrait";
-            _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), 1.0f, SpriteEffects.None, 0);
-            _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), 1.0f, SpriteEffects.None, 0);
+            _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), 0.5f, SpriteEffects.None, 0);
+            _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), 0.5f, SpriteEffects.None, 0);
             for (int i = 0; i < player.CrystalCount; i++)
             {
                 _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(64+32 * i, 0), Color.White * alpha);

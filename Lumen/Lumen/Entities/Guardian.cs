@@ -98,7 +98,7 @@ namespace Lumen.Entities
                 _attackTimer = -1.0f;
             }
 
-            if(!IsChargingUp || IsChargingUp && EnergyRemaining == 0)
+            if(!IsChargingUp)// || IsChargingUp && EnergyRemaining == 0)
                 EnergyRemaining = Math.Min(GameVariables.EnemyAttackMaxRadius, EnergyRemaining + GameVariables.EnemyEnergyRegeneration*dt);
 
             _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
@@ -192,7 +192,7 @@ namespace Lumen.Entities
                                        _chargingTimer * GameVariables.EnemyAttackRadiusAcceleration));
 
                 EnergyRemaining = Math.Max(0,EnergyRemaining-radiusChange);
-                FinalRadiusOfAttack += radiusChange;
+                FinalRadiusOfAttack = Math.Max(GameVariables.EnemyAttackMaxRadius, FinalRadiusOfAttack+radiusChange);
             }
             else {
                 if(CanChargeUp) {

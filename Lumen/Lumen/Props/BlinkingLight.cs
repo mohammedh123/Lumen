@@ -9,12 +9,14 @@ namespace Lumen.Props
 
         public float timer;
         public float durationTimer;
+        private float _lightRadius;
 
-        public BlinkingLight(string textureKeyName, Entity owner) : base(textureKeyName, owner.Position, 0)
+        public BlinkingLight(string textureKeyName, Entity owner, float lightRadius) : base(textureKeyName, owner.Position, 0)
         {
             Owner = owner;
             IsVisible = false;
             LightRadius = 0;
+            _lightRadius = lightRadius;
         }
 
         public override void Update(float dt)
@@ -29,7 +31,7 @@ namespace Lumen.Props
 
             if(durationTimer > 0)
             {
-                LightRadius = GameVariables.BlinkingRadius;
+                LightRadius = _lightRadius;
             }
             else
             {
