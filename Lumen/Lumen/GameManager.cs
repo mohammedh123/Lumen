@@ -173,14 +173,24 @@ namespace Lumen
         {
             var screenBounds = new Rectangle(0, 0, (int) _gameResolution.X, (int) _gameResolution.Y);
 
-            if (screenBounds.Contains((int) (entity.Position.X + entity.Velocity.X),
-                                      (int) (entity.Position.Y))) {
-                entity.ApplyVelocity(true, false);
+            if (GameVariables.IsScreenWrapping)
+            {
+                entity.ApplyVelocity();
+                entity.WrapPositionAround();
             }
+            else
+            {
+                if (screenBounds.Contains((int) (entity.Position.X + entity.Velocity.X),
+                                          (int) (entity.Position.Y)))
+                {
+                    entity.ApplyVelocity(true, false);
+                }
 
-            if (screenBounds.Contains((int) (entity.Position.X),
-                                      (int) (entity.Position.Y + entity.Velocity.Y))) {
-                entity.ApplyVelocity(false, true);
+                if (screenBounds.Contains((int) (entity.Position.X),
+                                          (int) (entity.Position.Y + entity.Velocity.Y)))
+                {
+                    entity.ApplyVelocity(false, true);
+                }
             }
         }
 
