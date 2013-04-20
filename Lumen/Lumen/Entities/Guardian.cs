@@ -184,6 +184,15 @@ namespace Lumen.Entities
             FinalRadiusOfAttack = 0.0f;
         }
 
+        public void ResetAllAttackData()
+        {
+            _chargingTimer = 0.0f;
+            _attackTimer = -1.0f;
+            _chargeCooldown = 0.0f;
+            FinalRadiusOfAttack = 0.0f;
+            PlayersHitThisAttack.Clear();
+        }
+
         private void ChargeUpAttack(float dt)
         {
             if(IsChargingUp) {

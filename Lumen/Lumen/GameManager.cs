@@ -162,6 +162,9 @@ namespace Lumen
                 player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32*player.PlayerSpriteIndex);
             }
 
+            Guardian.Position = new Vector2(_gameResolution.X - 64, _gameResolution.Y/2);
+            Guardian.ResetAllAttackData();
+
             Props.RemoveAll(p => p is Crystal);
 
             for (var i = 0; i < GameVariables.CrystalsToSpawn(RoundNumber); i++)
