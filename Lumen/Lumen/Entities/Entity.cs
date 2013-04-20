@@ -64,7 +64,7 @@ namespace Lumen.Entities
             if (posY >= GameDriver.DisplayResolution.Y)
                 posY -= GameDriver.DisplayResolution.Y;
             else if (posY < 0)
-                posY = GameDriver.DisplayResolution.Y + posX;
+                posY = GameDriver.DisplayResolution.Y + posY;
 
             Position = new Vector2(posX, posY);
         }
