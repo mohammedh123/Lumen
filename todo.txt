@@ -1,37 +1,18 @@
-Guardian
---------
-- Blinks
-- Press A to Attack
-	- AoE
-	- Uses energy, radius is determined by some f(radius)
-	- Non-linear growth of radius
-	- Players can only get hit once per attack
-	- Full bar = half the screen, 3 seconds
-	- Radius grows as you hold down button
-	- Screen shake (grows as you hold down)
-	- Guardian can't move while channeling
-	- Hits players
-	- Max range = mega attack + screen shake + rumble
-
-Crystals
---------
-- Light on interact
-- Relocate (don't do now)
-- Interact 3x to obtain
-- Need n number of crystals to win
-- Always have n+m crystals on map
-- Beat level -> next level n+a crystals (a=1?)
-
-Players
--------
-- Blinks
-- Has HP
-- Takes damage when hit by Guardian's attack
-- Needs to collect crystals
-	- "Channel" to collect" -> can't move while doing this
-	- Release button to cancel
-	- Makes sound
-	- Makes light (while channeling)
+- Health indicators are surrounding orbs (think Wisp)
+- More crystals = blink more frequently
+- Collecting crystals lights up more and more as collection time increases
+- Crystal lights up as a progress bar
+- Move guardian energy bar to above the enemy
+- Guardian's movement speed coupled with charge length
+- Light spawning system
+	- spawn a light that fades away at a point
+		- Fade out Guardian light when its done attacking
+		- Fade out each wisp of player health when it dies/explodes
+- FIX GUARDIAN ATTACK
+- Particle system
+- Screens
+- Remove player-vs-player collisions
+- Make player's lights out of sync with each other
 
 Assets
 ------
