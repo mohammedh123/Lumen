@@ -296,6 +296,8 @@ namespace Lumen
                     if (!Guardian.PlayersHitThisAttack.Contains(player)) {
                         Guardian.PlayersHitThisAttack.Add(player);
 
+                        SoundManager.GetSound("player_hit").Play();
+
                         if(Guardian.IsFullyCharged) {
                             player.Health -= 2;
                         }

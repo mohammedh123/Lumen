@@ -68,6 +68,10 @@ namespace Lumen
             var crystalGetSound = contentManager.Load<SoundEffect>("crystal_get");
             _soundDetails.Add("crystal_get", crystalGetSound);
             _soundInstances.Add("crystal_get", crystalGetSound.CreateInstance());
+
+            var playerHitSound = contentManager.Load<SoundEffect>("player_hit");
+            _soundDetails.Add("player_hit", playerHitSound);
+            _soundInstances.Add("player_hit", playerHitSound.CreateInstance());
         }
     }
 }
