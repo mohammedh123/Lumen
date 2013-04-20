@@ -26,7 +26,7 @@ namespace Lumen.Entities
 
         public Player(string textureKey, Vector2 position) : base(textureKey, position)
         {
-            Health = 3;
+            Health = GameVariables.PlayerStartingHealth;
         }
 
         public override void Update(float dt)
@@ -49,10 +49,10 @@ namespace Lumen.Entities
             
             var changeLeft = InputManager.GamepadLeft(ControllerIndex);
 
-            if (InputManager.GamepadButtonPressed(ControllerIndex, Buttons.X))
+            if (InputManager.GamepadButtonPressed(ControllerIndex, Buttons.A))
                 Collect();
 
-            if (InputManager.GamepadButtonUp(ControllerIndex, Buttons.X))
+            if (InputManager.GamepadButtonUp(ControllerIndex, Buttons.A))
                 ResetCollecting();
 
             var speedToUse = GameVariables.PlayerSpeed;
