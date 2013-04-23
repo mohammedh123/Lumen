@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Lumen.Entities;
+using Lumen.Particle_System;
 using Lumen.Props;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -93,7 +94,7 @@ namespace Lumen
             if (shufflePlayers) {
                 _gameManager.ResetCompletely();
 
-                var randomEnemyIdx = RandomGen.Next(0,4);
+                var randomEnemyIdx = RandomGen.Next(0,0);
 
                 var playerNum = 1;
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
@@ -148,7 +149,7 @@ namespace Lumen
             TextureManager.LoadContent(Content);
             SoundManager.LoadContent(Content);
             _lightManager.LoadContent(_graphics, GraphicsDevice, Content);
-            
+            LoadParticleSystems();
             
 #if DEBUG
             LoadVariables();
@@ -156,6 +157,36 @@ namespace Lumen
             ResetRound();
 
             _sceneRT = new RenderTarget2D(GraphicsDevice, (int)DisplayResolution.X, (int)DisplayResolution.Y);
+        }
+
+        private void LoadParticleSystems()
+        {
+            var psm = ParticleSystemManager.Instance;
+
+            var sampleParticleSystemInfo = new ParticleSystemInfo
+                                       {
+                                           FiringDuration = 1.0f,
+                                           NumberOfParticlesPerSecond = 1.0f,
+                                           ParticleAngle = 0.0f,
+                                           ParticleAngleSpread = MathHelper.TwoPi,
+                                           ParticleAngularVelocityMin = 0.0f,
+                                           ParticleAngularVelocityMax = 0.0f,
+                                           ParticleColorStart = Color.Red,
+                                           ParticleColorEnd = Color.Orange,
+                                           ParticleColorVariation = 0.5f,
+                                           ParticleLifetimeMin = 1.0f,
+                                           ParticleLifetimeMax = 2.0f,
+                                           ParticleScaleMin = 0.5f,
+                                           ParticleScaleMax = 1.0f,
+                                           ParticleVelocityMin = 50.0f,
+                                           ParticleVelocityMax = 150.0f,
+                                           Texture = TextureManager.GetTexture("guardian"),
+                                           TextureOrigin = new Vector2(32,32),
+                                           TextureRect = new Rectangle(0,0,64,64)
+                                       };
+            var sampleParticleSystem = new ParticleSystem(sampleParticleSystemInfo);
+
+            psm.RegisterParticleSystem("sample", sampleParticleSystem);
         }
 
         protected override void UnloadContent()

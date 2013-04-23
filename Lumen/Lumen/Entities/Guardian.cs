@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Lumen.Particle_System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -196,6 +197,8 @@ namespace Lumen.Entities
         private void ChargeUpAttack(float dt)
         {
             if(IsChargingUp) {
+                ParticleSystemManager.Instance.FireParticleSystem("sample", Position.X, Position.Y);
+
                 _chargingTimer += dt;
                 var radiusChange = Math.Min(EnergyRemaining, dt * (GameVariables.EnemyAttackRadiusGrowth +
                                        _chargingTimer * GameVariables.EnemyAttackRadiusAcceleration));

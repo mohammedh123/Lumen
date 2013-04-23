@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Lumen.Entities;
+using Lumen.Particle_System;
 using Lumen.Props;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -59,6 +60,8 @@ namespace Lumen
                 MediaPlayer.Play(song);
 
             if (State == GameState.StillGoing) {
+                ParticleSystemManager.Instance.Update(dt, _gameResolution);
+
                 //iterate through all entities and update them (their deltas will be set at the end of update)
                 foreach (var player in Players) {
                     player.Update(dt);
@@ -443,6 +446,8 @@ namespace Lumen
             sb.Begin(SpriteSortMode.Deferred, null, null, null, null, null, GameVariables.CameraZoomMatrix);
 
             DrawBackground(sb);
+
+            ParticleSystemManager.Instance.Draw(sb);
 
             foreach (var prop in Props.OrderByDescending(p => p.PropType))
                 prop.Draw(sb);
