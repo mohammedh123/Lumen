@@ -8,7 +8,6 @@
 	- spawn a light that fades away at a point
 		- Fade out Guardian light when its done attacking
 		- Fade out each wisp of player health when it dies/explodes
-- FIX GUARDIAN ATTACK
 - Particle system
 - Screens
 - Remove player-vs-player collisions

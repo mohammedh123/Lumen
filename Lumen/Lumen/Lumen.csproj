@@ -113,6 +113,10 @@
     <Compile Include="DrawingHelper.cs" />
     <Compile Include="Entities\IControllerCapable.cs" />
     <Compile Include="Entities\IKeyboardCapable.cs" />
+    <Compile Include="Particle System\Particle.cs" />
+    <Compile Include="Particle System\ParticleSystem.cs" />
+    <Compile Include="Particle System\ParticleSystemInfo.cs" />
+    <Compile Include="Particle System\ParticleSystemManager.cs" />
     <Compile Include="Props\BlinkingLight.cs" />
     <Compile Include="Props\Light.cs" />
     <Compile Include="Entities\Guardian.cs" />

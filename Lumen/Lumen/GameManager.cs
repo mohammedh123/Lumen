@@ -35,11 +35,8 @@ namespace Lumen
         }
 
         public GameState State = GameState.StillGoing;
-
         private readonly Vector2 _gameResolution;
-
         public int RoundNumber { get; private set; }
-
         public float TimeTillNextRound { get; private set; }
 
         public GameManager(Vector2 gameResolution)
