@@ -24,11 +24,16 @@ namespace Lumen.Particle_System
         private int _freeParticleIndex = 0, _numParticlesAlive = 0;
         private readonly float _spawningInterval;
         private List<SpawningInfo> _spawnInfos = new List<SpawningInfo>();
-        
+
+        public Vector2 Position = Vector2.Zero;
+
         public ParticleSystem(ParticleSystemInfo psInfo)
         {
             _systemInfo = psInfo;
             _spawningInterval = 1.0f/_systemInfo.NumberOfParticlesPerSecond;
+
+            for(int i = 0; i < MaxParticles; i++)
+                _particles[i] = new Particle();
         }
 
         private bool GetNextParticleIndex()
@@ -37,7 +42,7 @@ namespace Lumen.Particle_System
 
             if(_numParticlesAlive == MaxParticles) return false;
 
-            while(count < MaxParticles && _particles[_freeParticleIndex].Lifetime <= 0) {
+            while(count < MaxParticles && _particles[_freeParticleIndex].Lifetime >= 0) {
                 _freeParticleIndex++;
                 count++;
 
@@ -60,10 +65,15 @@ namespace Lumen.Particle_System
                     //spawn particle
                     if(GetNextParticleIndex()) {
                         //theres still room in the pool of particles
-                        _particles[_freeParticleIndex].Angle = _systemInfo.ParticleAngle +
+                        _particles[_freeParticleIndex].Angle = _systemInfo.ParticleAngle - _systemInfo.ParticleAngleSpread*0.5f +
                                                                (float)
                                                                (GameDriver.RandomGen.NextDouble()*
-                                                                _systemInfo.ParticleAngleSpread*0.5f);
+                                                                _systemInfo.ParticleAngleSpread);
+                        _particles[_freeParticleIndex].AngularVelocity = _systemInfo.ParticleAngularVelocityMin +
+                                                              (float)
+                                                              (GameDriver.RandomGen.NextDouble() *
+                                                               (_systemInfo.ParticleAngularVelocityMax -
+                                                                _systemInfo.ParticleAngularVelocityMin));
                         _particles[_freeParticleIndex].Color = Color.Lerp(_systemInfo.ParticleColorStart, _systemInfo.ParticleColorEnd, (float)(GameDriver.RandomGen.NextDouble() * _systemInfo.ParticleColorVariation));
                         _particles[_freeParticleIndex].Lifetime = _particles[_freeParticleIndex].InitialLifetime = _systemInfo.ParticleLifetimeMin +
                                                                   (float)(GameDriver.RandomGen.NextDouble() *
@@ -85,9 +95,9 @@ namespace Lumen.Particle_System
                     }
                 }
 
-                si.Duration += dt;
+                si.Duration -= dt;
 
-                if(si.Duration >= _systemInfo.FiringDuration) {
+                if(si.Duration <= 0) {
                     _spawnInfos.RemoveAt(i);
                     i--;
                 }
@@ -110,10 +120,11 @@ namespace Lumen.Particle_System
                     particle.Position +=
                         new Vector2((float) Math.Cos(particle.Angle), (float) Math.Sin(particle.Angle))*
                         particle.Velocity*dt;
-                    particle.Alpha = MathHelper.Lerp(1.0f, 0.0f, particle.Lifetime/particle.InitialLifetime);
+                    particle.Angle += particle.AngularVelocity*dt;
+                    particle.Alpha = MathHelper.Lerp(1.0f, 0.0f, 1-particle.Lifetime/particle.InitialLifetime);
 
                     //bounds check
-                    if (screenBounds.Contains((int) particle.Position.X, (int) particle.Position.Y)) {
+                    if (!screenBounds.Contains((int) particle.Position.X, (int) particle.Position.Y)) {
                         KillParticle(i);
                     }
                 }
@@ -129,19 +140,29 @@ namespace Lumen.Particle_System
 
         public void Draw(SpriteBatch sb)
         {
-            foreach(var p in _particles) {
-                sb.Draw(_systemInfo.Texture, p.Position, _systemInfo.TextureRect,p.Color,p.Angle,_systemInfo.TextureOrigin,p.Scale,SpriteEffects.None,0);
+            foreach (var p in _particles) {
+                if (p.Lifetime <= 0.0f) {
+                    continue;
+                }
+
+                sb.Draw(_systemInfo.Texture, p.Position, _systemInfo.TextureRect, p.Color*p.Alpha, p.Angle,
+                        _systemInfo.TextureOrigin, p.Scale, SpriteEffects.None, 0);
             }
         }
 
-        public void StartSpawn(float x, float y)
+        public void StartSpawn(float x=0, float y=0)
         {
             _spawnInfos.Add(new SpawningInfo
                             {
                                 Duration = _systemInfo.FiringDuration,
-                                Position = new Vector2(x, y),
+                                Position = Position + new Vector2(x, y),
                                 Timer = 0.0f
                             });
+        }
+
+        public void MoveTo(float x, float y)
+        {
+            Position = new Vector2(x,y);
         }
     }
 }

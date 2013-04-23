@@ -19,6 +19,8 @@ namespace Lumen.Particle_System
 
         public float ParticleAngle, ParticleAngleSpread;
 
+        public float ParticleAngularVelocityMin, ParticleAngularVelocityMax;
+
         public float ParticleVelocityMin, ParticleVelocityMax;
 
         public float ParticleScaleMin, ParticleScaleMax;

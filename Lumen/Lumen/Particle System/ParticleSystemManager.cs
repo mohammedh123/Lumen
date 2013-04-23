@@ -19,44 +19,50 @@ namespace Lumen.Particle_System
         {
         }
 
-        private ParticleSystemManager _instance = null;
+        private static ParticleSystemManager _instance = null;
 
-        public ParticleSystemManager Instance
+        public static ParticleSystemManager Instance
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new ParticleSystemManager();
-
-                return _instance;
-            }
+            get { return _instance ?? (_instance = new ParticleSystemManager()); }
         }
 
         #endregion
 
 
-        private readonly List<ParticleSystem> _particleSystems = new List<ParticleSystem>();
+        private readonly Dictionary<string, ParticleSystem> _particleSystems = new Dictionary<string, ParticleSystem>();
 
         public void Update(float dt, Vector2 bounds)
         {
-            foreach(var ps in _particleSystems)
-                ps.Update(dt, bounds);
+            foreach(var kvp in _particleSystems)
+                kvp.Value.Update(dt, bounds);
         }
 
         public void Draw(SpriteBatch sb)
         {
-            foreach(var ps in _particleSystems)
-                ps.Draw(sb);
+            foreach(var kvp in _particleSystems)
+                kvp.Value.Draw(sb);
         }
 
-        public void RemoveParticleSystem(ParticleSystem ps)
+        public void FireParticleSystem(string key, float x, float y)
         {
-            _particleSystems.Remove(ps);
+            if (_particleSystems.ContainsKey(key)) {
+                _particleSystems[key].StartSpawn(x, y);
+            }
+        }
+
+        public void RemoveParticleSystem(string key)
+        {
+            _particleSystems.Remove(key);
         }
 
         public void RemoveAll()
         {
             _particleSystems.Clear();
+        }
+
+        public void RegisterParticleSystem(string key, ParticleSystem ps)
+        {
+            _particleSystems.Add(key, ps);
         }
     }
 }
