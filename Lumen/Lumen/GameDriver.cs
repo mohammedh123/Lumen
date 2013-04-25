@@ -313,10 +313,6 @@ namespace Lumen
             {
                 _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(64 + 32 * i, 0), Color.White * alpha);
             }
-            for (int i = 0; i < player.Health; i++)
-            {
-                _spriteBatch.Draw(TextureManager.GetTexture("health"), center + new Vector2(64 + 32 * i, 32), Color.White * alpha);
-            }
 
             _spriteBatch.End();
         }
