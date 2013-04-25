@@ -59,8 +59,8 @@ namespace Lumen.Particle_System
                 var si = _spawnInfos[i];
                 si.Timer += dt;
 
-                if (si.Timer >= _spawningInterval) {
-                    si.Timer = 0.0f;
+                while (si.Timer >= _spawningInterval) {
+                    si.Timer -= _spawningInterval;
                     
                     //spawn particle
                     if(GetNextParticleIndex()) {

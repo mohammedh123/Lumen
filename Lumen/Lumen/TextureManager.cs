@@ -76,6 +76,7 @@ namespace Lumen
             _textureDetails.Add("player_orb", new TextureDetails(contentManager.Load<Texture2D>("player_orb"), new Vector2(8, 8)));
             _textureDetails.Add("crystal", new TextureDetails(contentManager.Load<Texture2D>("crystal"), new Vector2(16, 16)));
             _textureDetails.Add("health", new TextureDetails(contentManager.Load<Texture2D>("health"), new Vector2(16, 16)));
+            _textureDetails.Add("hit_particle", new TextureDetails(contentManager.Load<Texture2D>("hit_particle"), new Vector2(1, 1)));
             _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("background"), new Vector2(512, 384)));
 
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("debug_font"));

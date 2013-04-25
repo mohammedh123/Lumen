@@ -177,29 +177,53 @@ namespace Lumen
             var psm = ParticleSystemManager.Instance;
 
             var sampleParticleSystemInfo = new ParticleSystemInfo
-                                       {
-                                           FiringDuration = 1.0f,
-                                           NumberOfParticlesPerSecond = 1.0f,
-                                           ParticleAngle = 0.0f,
-                                           ParticleAngleSpread = MathHelper.TwoPi,
-                                           ParticleAngularVelocityMin = 0.0f,
-                                           ParticleAngularVelocityMax = 0.0f,
-                                           ParticleColorStart = Color.Red,
-                                           ParticleColorEnd = Color.Orange,
-                                           ParticleColorVariation = 0.5f,
-                                           ParticleLifetimeMin = 1.0f,
-                                           ParticleLifetimeMax = 2.0f,
-                                           ParticleScaleMin = 0.5f,
-                                           ParticleScaleMax = 1.0f,
-                                           ParticleVelocityMin = 50.0f,
-                                           ParticleVelocityMax = 150.0f,
-                                           Texture = TextureManager.GetTexture("guardian"),
-                                           TextureOrigin = new Vector2(32,32),
-                                           TextureRect = new Rectangle(0,0,64,64)
-                                       };
+            {
+                FiringDuration = 1.0f,
+                NumberOfParticlesPerSecond = 1.0f,
+                ParticleAngle = 0.0f,
+                ParticleAngleSpread = MathHelper.TwoPi,
+                ParticleAngularVelocityMin = 0.0f,
+                ParticleAngularVelocityMax = 0.0f,
+                ParticleColorStart = Color.Red,
+                ParticleColorEnd = Color.Orange,
+                ParticleColorVariation = 0.5f,
+                ParticleLifetimeMin = 1.0f,
+                ParticleLifetimeMax = 2.0f,
+                ParticleScaleMin = 0.5f,
+                ParticleScaleMax = 1.0f,
+                ParticleVelocityMin = 50.0f,
+                ParticleVelocityMax = 150.0f,
+                Texture = TextureManager.GetTexture("guardian"),
+                TextureOrigin = new Vector2(32, 32),
+                TextureRect = new Rectangle(0, 0, 64, 64)
+            };
             var sampleParticleSystem = new ParticleSystem(sampleParticleSystemInfo);
 
+            var playerHitParticleSystemInfo = new ParticleSystemInfo
+            {
+                FiringDuration = 0.2f,
+                NumberOfParticlesPerSecond = 100.0f,
+                ParticleAngle = 0.0f,
+                ParticleAngleSpread = MathHelper.TwoPi,
+                ParticleAngularVelocityMin = 0.0f,
+                ParticleAngularVelocityMax = MathHelper.TwoPi,
+                ParticleColorStart = Color.Cyan,
+                ParticleColorEnd = Color.White,
+                ParticleColorVariation = 0.5f,
+                ParticleLifetimeMin = 0.1f,
+                ParticleLifetimeMax = 0.3f,
+                ParticleScaleMin = 0.5f,
+                ParticleScaleMax = 1.0f,
+                ParticleVelocityMin = 50.0f,
+                ParticleVelocityMax = 150.0f,
+                Texture = TextureManager.GetTexture("hit_particle"),
+                TextureOrigin = new Vector2(1, 1),
+                TextureRect = new Rectangle(0, 0, 2, 2)
+            };
+            var playerHitParticleSystem = new ParticleSystem(playerHitParticleSystemInfo);
+
             psm.RegisterParticleSystem("sample", sampleParticleSystem);
+            psm.RegisterParticleSystem("player_hit", playerHitParticleSystem);
         }
 
         protected override void UnloadContent()
