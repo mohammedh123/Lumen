@@ -300,7 +300,7 @@ namespace Lumen
 
                 foreach (var player in Players)
                     GamePad.SetVibration(player.ControllerIndex, 0, 0);
-                GamePad.SetVibration(Guardian.PlayerNum, 0, 0);
+                GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
             }
         }
 
@@ -389,7 +389,7 @@ namespace Lumen
         public void AddEnemy(Guardian e, PlayerIndex playerIndex)
         {
             if (AddEnemy(e))
-                e.PlayerNum = playerIndex;
+                e.ControllerIndex = playerIndex;
         }
 
         public bool AddPlayer(Player p)
@@ -456,7 +456,7 @@ namespace Lumen
         {
             State = GameState.PlayersWin;
 
-            GamePad.SetVibration(guardian.PlayerNum, 0, 0);
+            GamePad.SetVibration(guardian.ControllerIndex, 0, 0);
             Guardian = null;
 
             SoundManager.GetSound("death_sound").Play();

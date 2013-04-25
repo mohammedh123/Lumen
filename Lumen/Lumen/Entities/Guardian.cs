@@ -9,7 +9,7 @@ namespace Lumen.Entities
 {
     class Guardian : Entity, IControllerCapable, IKeyboardCapable, ILightProvider
     {
-        public PlayerIndex PlayerNum;
+        public PlayerIndex ControllerIndex { get; set; }
 
         public Color LightColor { get; set; }
 
@@ -79,7 +79,7 @@ namespace Lumen.Entities
         public override void Update(float dt)
         {
 #if DEBUG
-            if (PlayerNum <= PlayerIndex.Two && !GamePad.GetState(PlayerNum).IsConnected)
+            if (ControllerIndex <= PlayerIndex.Two && !GamePad.GetState(ControllerIndex).IsConnected)
             {
                 ProcessKeyDownAction(dt);
                 ProcessKeyUpAction(dt);
@@ -115,18 +115,18 @@ namespace Lumen.Entities
         {
             base.Draw(sb);
         }
-
+        
         public void ProcessControllerInput(float dt)
         {
-            if (!GamePad.GetState(PlayerNum).IsConnected)
+            if (!GamePad.GetState(ControllerIndex).IsConnected)
                 return;
 
-            if(InputManager.GamepadButtonDown(PlayerNum, Buttons.A))
+            if(InputManager.GamepadButtonDown(ControllerIndex, Buttons.A))
                 ChargeUpAttack(dt);
-            else if(InputManager.GamepadButtonUp(PlayerNum, Buttons.A))
+            else if(InputManager.GamepadButtonUp(ControllerIndex, Buttons.A))
                 StopChargingAndRelease();
 
-            var changeLeft = InputManager.GamepadLeft(PlayerNum);
+            var changeLeft = InputManager.GamepadLeft(ControllerIndex);
 
             var speedToUse = !IsChargingUp ? GameVariables.EnemySpeed : ChargingSpeed;
 

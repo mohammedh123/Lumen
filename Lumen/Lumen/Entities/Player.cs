@@ -10,7 +10,7 @@ namespace Lumen.Entities
 {
     class Player : Entity, IKeyboardCapable, IControllerCapable
     {
-        public PlayerIndex ControllerIndex;
+        public PlayerIndex ControllerIndex { get; set; }
 
         public int PlayerSpriteIndex;
 
