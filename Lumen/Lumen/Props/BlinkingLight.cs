@@ -56,6 +56,11 @@ namespace Lumen.Props
             _frequency = Math.Min(_frequency, GameVariables.BlinkingMaxFrequency);
         }
 
+        public void ResetFrequency()
+        {
+            _frequency = 1.0f;
+        }
+
         public override void Update(float dt)
         {
             Position = Owner.Position;
