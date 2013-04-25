@@ -80,7 +80,8 @@ namespace Lumen
                 HandlePropsToBeAdded(dt);
 
                 var isEnemyMoving = false;
-
+                
+                SetPlayerCrystalVibration(Guardian);
                 ResolveOutOfBoundsCollision(Guardian);
                 Guardian.ResetVelocity();
 
@@ -304,7 +305,7 @@ namespace Lumen
             }
         }
 
-        private void SetPlayerCrystalVibration(Player player)
+        private void SetPlayerCrystalVibration<T>(T player) where T : Entity, IControllerCapable
         {
             float closestDist = 2000*2000;
 
@@ -321,7 +322,7 @@ namespace Lumen
             var vibRat = closestDist / (GameVariables.PlayerVibrationDetectionRadius * GameVariables.PlayerVibrationDetectionRadius);
 
             if (GamePad.GetState(player.ControllerIndex).IsConnected) {
-                GamePad.SetVibration(player.ControllerIndex, Math.Max(0, 0.5f*(1 - vibRat)), Math.Max(0, 0.5f*(1 - vibRat)));
+                GamePad.SetVibration(player.ControllerIndex, Math.Max(0, GameVariables.CrystalMaxVibration * (1 - vibRat)), Math.Max(0, GameVariables.CrystalMaxVibration * (1 - vibRat)));
             }
         }
 
