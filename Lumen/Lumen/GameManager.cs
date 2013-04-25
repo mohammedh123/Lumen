@@ -489,7 +489,9 @@ namespace Lumen
         {
             if (Players.Contains(p)) return false;
 
-            Props.Add(new BlinkingLight("blank", p, GameVariables.BlinkingRadius));
+            var light = new BlinkingLight("blank", p, GameVariables.BlinkingRadius);
+            Props.Add(light);
+            p.AttachedLight = light;
             Players.Add(p);
 
             return true;

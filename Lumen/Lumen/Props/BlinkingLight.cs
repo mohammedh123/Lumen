@@ -39,6 +39,8 @@ namespace Lumen.Props
             get { return _fadeTimer >= GameVariables.BlinkingFadeOutDuration; }
         }
 
+        private float _frequency = 1.0f;
+
         public BlinkingLight(string textureKeyName, Entity owner, float lightRadius) : base(textureKeyName, owner.Position, 0)
         {
             _timer = (float)GameDriver.RandomGen.NextDouble()*0.25f;
@@ -48,22 +50,28 @@ namespace Lumen.Props
             _lightRadius = lightRadius;
         }
 
+        public void IncreaseFrequency(float factor)
+        {
+            _frequency *= factor;
+            _frequency = Math.Min(_frequency, GameVariables.BlinkingMaxFrequency);
+        }
+
         public override void Update(float dt)
         {
             Position = Owner.Position;
-            
+            var invFreq = (1.0f/_frequency);
             if(CanBeginBlink) //begin fading in
             {
-                _timer = GameVariables.BlinkingPeriod;
-                _durationTimer = GameVariables.BlinkingDuration;
+                _timer = GameVariables.BlinkingPeriod*invFreq;
+                _durationTimer = GameVariables.BlinkingDuration*invFreq;
                 _fadeTimer = 0.0f;
                 _fadeState = BlinkingLightFadeState.FadingIn;
             }
             else if(_fadeState == BlinkingLightFadeState.FadingIn)
             {
-                LightRadius = _lightRadius * MathHelper.SmoothStep(0.0f, 1.0f, _fadeTimer / GameVariables.BlinkingFadeInDuration);
+                LightRadius = _lightRadius * MathHelper.SmoothStep(0.0f, 1.0f, _fadeTimer / (GameVariables.BlinkingFadeInDuration*invFreq));
 
-                _fadeTimer = Math.Min(_fadeTimer + dt, GameVariables.BlinkingFadeInDuration);
+                _fadeTimer = Math.Min(_fadeTimer + dt, GameVariables.BlinkingFadeInDuration*invFreq);
 
                 if(IsDoneFadingIn)
                 {
@@ -85,7 +93,7 @@ namespace Lumen.Props
             }
             else if(_fadeState == BlinkingLightFadeState.FadingOut)
             {
-                LightRadius = _lightRadius*MathHelper.SmoothStep(1.0f, 0.0f, _fadeTimer / GameVariables.BlinkingFadeOutDuration);
+                LightRadius = _lightRadius*MathHelper.SmoothStep(1.0f, 0.0f, _fadeTimer / (GameVariables.BlinkingFadeOutDuration*invFreq));
 
                 _fadeTimer = Math.Min(_fadeTimer + dt, GameVariables.BlinkingFadeOutDuration);
 

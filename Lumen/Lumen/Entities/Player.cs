@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Lumen.Particle_System;
 using Lumen.Props;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +15,8 @@ namespace Lumen.Entities
         public int PlayerSpriteIndex;
 
         public bool IsInteractingWithProp = false;
-        
+
+        public BlinkingLight AttachedLight = null;
         public Crystal CollectionTarget;
         public float CollectingTime = -1;
         public int CrystalCount = 0;
@@ -149,6 +151,7 @@ namespace Lumen.Entities
             CollectionTarget = null;
             CollectingTime = -1;
         }
+
         public void TakeDamage(int n)
         {
             Health -= n;
@@ -161,6 +164,12 @@ namespace Lumen.Entities
                     orb.IsVisible = false;
                 }
             }
+        }
+
+        public void IncrementCrystalCount()
+        {
+            CrystalCount++;
+            AttachedLight.IncreaseFrequency(2);
         }
     }
 }
