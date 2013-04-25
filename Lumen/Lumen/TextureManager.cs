@@ -65,7 +65,7 @@ namespace Lumen
         private static void LoadTextureInformation(ContentManager contentManager)
         {
             _textureDetails.Add("blank", new TextureDetails(contentManager.Load<Texture2D>("blank"), new Vector2(12, 12)));
-            _textureDetails.Add("player_portrait", new TextureDetails(contentManager.Load<Texture2D>("player_portrait"), new Vector2(53, 61)));
+            _textureDetails.Add("player_portrait", new TextureDetails(contentManager.Load<Texture2D>("player_portrait"), new Vector2(64, 64)));
             _textureDetails.Add("player1_portrait", new TextureDetails(contentManager.Load<Texture2D>("player1"), new Vector2(64, 64)));
             _textureDetails.Add("player2_portrait", new TextureDetails(contentManager.Load<Texture2D>("player2"), new Vector2(64, 64)));
             _textureDetails.Add("player3_portrait", new TextureDetails(contentManager.Load<Texture2D>("player3"), new Vector2(64, 64)));
