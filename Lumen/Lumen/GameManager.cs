@@ -87,10 +87,9 @@ namespace Lumen
                 for (int i = 0; i < Players.Count; i++) {
                     var player = Players[i];
 
-                    ResolveCollisionAgainstPlayers(player, GameVariables.PlayerCollisionRadius);
                     ResolveOutOfBoundsCollision(player);
 
-                    ResolveCollisionAgainstEnemy(player, GameVariables.PlayerCollisionRadius);
+                    ResolveCollisionAgainstEnemy(player);
 
                     player.ResetVelocity();
 
@@ -199,103 +198,10 @@ namespace Lumen
                 }
             }
         }
-
-        private void ResolveCollisionAgainstPlayers(Entity ent, float entCollisionRadius)
+        
+        private void ResolveCollisionAgainstEnemy(Player player)
         {
-            for (int j = 0; j < Players.Count; j++)
-            {
-                var otherPlayer = Players[j];
-
-                if (otherPlayer == ent)
-                {
-                    continue;
-                }
-
-                var entNewX = ent.Position.X + ent.Velocity.X;
-
-                var entNewRect = new Rectangle((int)(entNewX - entCollisionRadius),
-                                                  (int)(ent.Position.Y - entCollisionRadius),
-                                                  (int)(entCollisionRadius * 2),
-                                                  (int)(entCollisionRadius * 2));
-
-                var otherOldRect =
-                    new Rectangle((int)(otherPlayer.Position.X - GameVariables.PlayerCollisionRadius),
-                                  (int)(otherPlayer.Position.Y - GameVariables.PlayerCollisionRadius),
-                                  (int)(GameVariables.PlayerCollisionRadius * 2),
-                                  (int)(GameVariables.PlayerCollisionRadius * 2));
-
-
-                if (entNewRect.Intersects(otherOldRect))
-                {
-                    if (ent.Velocity.X > 0)
-                    {
-                        ent.Velocity =
-                            new Vector2(
-                                (otherPlayer.Position.X - ent.Position.X - 2 * entCollisionRadius),
-                                ent.Velocity.Y);
-                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                           otherPlayer.Velocity.Y);
-                    }
-                    else if (ent.Velocity.X < 0)
-                    {
-                        ent.Velocity =
-                            new Vector2(
-                                (otherPlayer.Position.X - ent.Position.X + 2 * GameVariables.PlayerCollisionRadius),
-                                ent.Velocity.Y);
-                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                           otherPlayer.Velocity.Y);
-                    }
-                }
-
-                var playerNewY = ent.Position.Y + ent.Velocity.Y;
-
-                entNewRect = new Rectangle((int)(ent.Position.X - entCollisionRadius),
-                                              (int)(playerNewY - entCollisionRadius),
-                                              (int)(entCollisionRadius * 2),
-                                              (int)(entCollisionRadius * 2));
-
-                if (entNewRect.Intersects(otherOldRect))
-                {
-                    if (ent.Velocity.Y > 0)
-                    {
-                        ent.Velocity = new Vector2(ent.Velocity.X,
-                                                      (otherPlayer.Position.Y - ent.Position.Y -
-                                                       2 * entCollisionRadius));
-                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                           otherPlayer.Velocity.Y);
-                    }
-                    else if (ent.Velocity.Y < 0)
-                    {
-                        ent.Velocity = new Vector2(ent.Velocity.X,
-                                                      (otherPlayer.Position.Y - ent.Position.Y +
-                                                       2 * GameVariables.PlayerCollisionRadius));
-                        otherPlayer.Velocity = new Vector2(otherPlayer.Velocity.X,
-                                                           otherPlayer.Velocity.Y);
-                    }
-                }
-            }
-        }
-
-        private void ResolveCollisionAgainstEnemy(Player player, float entCollisionRadius)
-        {
-            var entRect = new Rectangle((int)(player.Position.X - entCollisionRadius),
-                                                (int)(player.Position.Y - entCollisionRadius),
-                                                (int)(entCollisionRadius * 2),
-                                                (int)(entCollisionRadius * 2));
-
-            var enemyRect =
-                new Rectangle((int)(Guardian.Position.X - GameVariables.PlayerCollisionRadius),
-                                (int)(Guardian.Position.Y - GameVariables.PlayerCollisionRadius),
-                                (int)(GameVariables.PlayerCollisionRadius * 2),
-                                (int)(GameVariables.PlayerCollisionRadius * 2));
-
-            var collided = entRect.Intersects(enemyRect);
-
-            if(collided) {
-                KillPlayer(player);
-            }
-
-            //now check player against the attack
+            //check player against the attack
             if(Guardian.IsAttacking) {
                 if(Collider.CirclesCollide(Guardian.Position, Guardian.LightRadius, player.Position, GameVariables.PlayerCollisionRadius)) {
                     if (!Guardian.PlayersHitThisAttack.Contains(player)) {
