@@ -62,5 +62,16 @@ namespace Lumen.Props
         {
             var player = collider as Player;
         }
+
+        public void DecrementCount()
+        {
+            Health--;
+
+            if (Health <= 0) {
+                IsToBeRemoved = true;
+            }
+
+            LightSpawner.Instance.AddStaticLight(Position, 1.0f,GameVariables.CrystalGlowRadius, 1);
+        }
     }
 }

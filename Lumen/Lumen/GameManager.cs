@@ -62,6 +62,7 @@ namespace Lumen
 
             if (State == GameState.StillGoing) {
                 ParticleSystemManager.Instance.Update(dt, _gameResolution);
+                LightSpawner.Instance.Update(dt);
 
                 //iterate through all entities and update them (their deltas will be set at the end of update)
                 foreach (var player in Players) {
@@ -164,6 +165,8 @@ namespace Lumen
                 player.ResetOrbs();
                 player.AttachedLight.ResetFrequency();
             }
+
+            LightSpawner.Instance.Reset();
 
             Guardian.Position = new Vector2(_gameResolution.X - 64, _gameResolution.Y/2);
             Guardian.ResetAllAttackData();
@@ -270,11 +273,7 @@ namespace Lumen
                     player.CollectingTime += dt;
 
                     if (player.CollectingTime >= GameVariables.CrystalCollectionTime) {
-                        player.CollectionTarget.Health--;
-
-                        if (player.CollectionTarget.Health <= 0) {
-                            player.CollectionTarget.IsToBeRemoved = true;
-                        }
+                        player.CollectionTarget.DecrementCount();
 
                         player.ResetCollecting();
 
@@ -468,6 +467,7 @@ namespace Lumen
         {
             State = GameState.StillGoing;
 
+            LightSpawner.Instance.Reset();
             Players.Clear();
             _deadPlayers.Clear();
             Props.Clear();
@@ -491,6 +491,8 @@ namespace Lumen
 
             if(Guardian != null)
                 lights.Add(Guardian);
+
+            lights.AddRange(LightSpawner.Instance.GetLights());
 
             return lights;
         }
