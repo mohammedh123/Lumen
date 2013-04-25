@@ -27,7 +27,7 @@ namespace Lumen
         public static readonly Vector2 DisplayResolution = new Vector2(1024,768);
 
 #if DEBUG
-        public bool IsShowingCoinCount = false;
+        public bool IsShowingDebugInformation = false;
 #endif
 
         public GameDriver()
@@ -223,11 +223,11 @@ namespace Lumen
 
             if(Keyboard.GetState().IsKeyDown(Keys.Tab))
             {
-                IsShowingCoinCount = true;
+                IsShowingDebugInformation = true;
             }
             else
             {
-                IsShowingCoinCount = false;
+                IsShowingDebugInformation = false;
             }
 #endif
 
@@ -250,7 +250,7 @@ namespace Lumen
             _lightManager.DrawLightDarkness(GraphicsDevice, _spriteBatch, _sceneRT);
 
 #if DEBUG
-            if(IsShowingCoinCount)
+            if(IsShowingDebugInformation)
             {
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", GameVariables.CameraZoom), Vector2.Zero, Color.White);
