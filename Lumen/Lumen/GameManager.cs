@@ -355,7 +355,7 @@ namespace Lumen
                     }
                     else {
                         player.CollectionTarget = colTar;
-                        player.CollectionTarget.IncrementCollectorCount();
+                        player.CollectionTarget.IncrementCollectorCount(player);
                     }
                 }
                 else {
@@ -379,7 +379,8 @@ namespace Lumen
         private void IncreasePlayerCrystalCount(Player player)
         {
             CrystalsCollected++;
-            player.CrystalCount++;
+            player.IncrementCrystalCount();
+
             SoundManager.GetSound("crystal_get").Play();
 
             RoundOver();

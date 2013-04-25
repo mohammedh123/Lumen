@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Lumen.Entities;
 using Microsoft.Xna.Framework;
 
@@ -10,20 +12,29 @@ namespace Lumen.Props
         public Color LightColor { get; set; }
         public float LightRadius
         {
-            get { return IsSomeoneCollectingThis ? GameVariables.CrystalGlowRadius : 0; }
+            get
+            {
+                if (!IsSomeoneCollectingThis) return 0;
+
+                return (_collectors.Max(p => p.CollectingTime)/GameVariables.CrystalCollectionTime)*
+                       GameVariables.CrystalGlowRadius;
+            }
             set { }
         }
 
         private int _collectorCount = 0;
+        private readonly List<Player> _collectors = new List<Player>();
 
-        public void DecrementCollectorCount()
+        public void DecrementCollectorCount(Player p)
         {
             _collectorCount = Math.Max(_collectorCount - 1, 0);
+            _collectors.Remove(p);
         }
 
-        public void IncrementCollectorCount()
+        public void IncrementCollectorCount(Player p)
         {
             _collectorCount++;
+            _collectors.Add(p);
         }
 
         public bool IsSomeoneCollectingThis

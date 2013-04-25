@@ -135,10 +135,6 @@ namespace Lumen.Entities
         {
             base.Draw(sb);
 
-            if(IsCollecting)
-            {
-                DrawingHelper.DrawHorizontalFilledBar(Position - Vector2.One*32, sb, Color.White, Color.Cyan, 64, 16, 2, CollectingTime/GameVariables.CrystalCollectionTime);
-            }
             foreach(var o in Orbs)
                 o.Draw(sb);
         }
@@ -146,7 +142,7 @@ namespace Lumen.Entities
         public void ResetCollecting()
         {
             if(CollectionTarget != null)
-                CollectionTarget.DecrementCollectorCount();
+                CollectionTarget.DecrementCollectorCount(this);
 
             CollectionTarget = null;
             CollectingTime = -1;
