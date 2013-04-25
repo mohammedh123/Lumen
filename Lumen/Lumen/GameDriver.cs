@@ -73,6 +73,18 @@ namespace Lumen
                                 foreach (var lantern in _gameManager.Props.Where(p => p is BlinkingLight))
                                     (lantern as BlinkingLight).LightRadius = (float)actualVariableValue;
                             }
+                            else if (variableName == "PlayerOrbsDistance")
+                            {
+                                foreach (var p in _gameManager.Players)
+                                    foreach (var o in p.Orbs)
+                                        o.DistanceFromCenter = (float)actualVariableValue;
+                            }
+                            else if (variableName == "PlayerOrbsPeriod")
+                            {
+                                foreach (var p in _gameManager.Players)
+                                    foreach (var o in p.Orbs)
+                                        o.OrbitPeriod = (float)actualVariableValue;
+                            }
                         }
                         catch (Exception e) {
                             ErrorLog.Log("Error was encountered with exception:" + Environment.NewLine + e);
