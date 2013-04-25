@@ -38,6 +38,11 @@ namespace Lumen.Entities
             }
         }
 
+        public float ChargingSpeed
+        {
+            get { return MathHelper.Lerp(GameVariables.EnemySpeedWhileCharging, GameVariables.EnemySpeed, (1 - Math.Min(4 * InternalAttackRadius / GameVariables.EnemyAttackMaxRadius, 1.0f))); }
+        }
+
         public float FinalRadiusOfAttack { get; private set; }
         private float _chargingTimer = 0.0f;
         private float _chargeCooldown = 0.0f;
@@ -123,7 +128,7 @@ namespace Lumen.Entities
 
             var changeLeft = InputManager.GamepadLeft(PlayerNum);
 
-            var speedToUse = !IsChargingUp ? GameVariables.EnemySpeed : GameVariables.EnemySpeedWhileCharging;
+            var speedToUse = !IsChargingUp ? GameVariables.EnemySpeed : ChargingSpeed;
 
             AdjustVelocity(changeLeft.X * speedToUse * dt, -changeLeft.Y * speedToUse * dt);
 
