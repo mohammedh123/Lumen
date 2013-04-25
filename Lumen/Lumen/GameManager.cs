@@ -160,6 +160,8 @@ namespace Lumen
                 CrystalsCollected = 0;
                 player.Health = GameVariables.PlayerStartingHealth;
                 player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32*player.PlayerSpriteIndex);
+                player.Position = new Vector2(64, _gameResolution.Y / 2 - 96 + 32 * player.PlayerSpriteIndex);
+                player.ResetOrbs();
             }
 
             Guardian.Position = new Vector2(_gameResolution.X - 64, _gameResolution.Y/2);
@@ -302,10 +304,10 @@ namespace Lumen
                         SoundManager.GetSound("player_hit").Play();
 
                         if(Guardian.IsFullyCharged) {
-                            player.Health -= 2;
+                            player.TakeDamage(2);
                         }
                         else {
-                            player.Health -= 1;
+                            player.TakeDamage(1);
                         }
                     }
                 }

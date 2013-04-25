@@ -18,6 +18,7 @@ namespace Lumen.Entities
         public Crystal CollectionTarget;
         public float CollectingTime = -1;
         public int CrystalCount = 0;
+        public List<OrbitingParticle> Orbs;
         
         public bool IsCollecting
         {
@@ -27,6 +28,26 @@ namespace Lumen.Entities
         public Player(string textureKey, Vector2 position) : base(textureKey, position)
         {
             Health = GameVariables.PlayerStartingHealth;
+
+            Orbs = new List<OrbitingParticle>();
+
+            for (int i = 0; i < Health; i++) {
+                var atu = i*(MathHelper.TwoPi/Health);
+
+                Orbs.Add(new OrbitingParticle(TextureManager.GetTexture(textureKey), new Rectangle(0,0,32,32), TextureManager.GetOrigin(textureKey), this, GameVariables.PlayerOrbsDistance, GameVariables.PlayerOrbsPeriod, atu)
+                          {
+                              Alpha = 1.0f,
+                              Scale = 0.5f,
+                              Angle = atu,
+                              Color = Color.White
+                          });
+            }
+        }
+
+        public void ResetOrbs()
+        {
+            foreach (var orb in Orbs)
+                orb.IsVisible = true;
         }
 
         public override void Update(float dt)
@@ -40,6 +61,8 @@ namespace Lumen.Entities
             }
 #endif
             ProcessControllerInput(dt);
+            foreach(var o in Orbs)
+                o.Update(dt);
         }
 
         public void ProcessControllerInput(float dt)
@@ -114,6 +137,8 @@ namespace Lumen.Entities
             {
                 DrawingHelper.DrawHorizontalFilledBar(Position - Vector2.One*32, sb, Color.White, Color.Cyan, 64, 16, 2, CollectingTime/GameVariables.CrystalCollectionTime);
             }
+            foreach(var o in Orbs)
+                o.Draw(sb);
         }
 
         public void ResetCollecting()
@@ -123,6 +148,19 @@ namespace Lumen.Entities
 
             CollectionTarget = null;
             CollectingTime = -1;
+        }
+        public void TakeDamage(int n)
+        {
+            Health -= n;
+
+            int count = 0;
+            foreach(var orb in Orbs) {
+                if (count >= n) break;
+                if(orb.IsVisible) {
+                    count++;
+                    orb.IsVisible = false;
+                }
+            }
         }
     }
 }
