@@ -159,6 +159,7 @@ namespace Lumen.Entities
                 if(orb.IsVisible) {
                     count++;
                     orb.IsVisible = false;
+                    LightSpawner.Instance.AddStaticLight(orb.Position, 1.0f, 12.0f, 2.0f);
                 }
             }
         }
