@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Lumen.Light_System;
 using Lumen.Particle_System;
 using Lumen.Props;
 using Microsoft.Xna.Framework;

@@ -7,6 +7,7 @@ sampler TextureSampler = sampler_state
 
 float2  lightPosition;
 float   lightRadius;
+float	lightIntensity;
 
 struct PixelShaderInput
 {
@@ -26,7 +27,7 @@ float4 PixelShaderFunction(PixelShaderInput input) : COLOR0
 
     if(length(dx) < lightRadius)
     {
-        return float4(1-alpha,0,0,1-alpha);
+        return float4(lightIntensity*(1-alpha),0,0,lightIntensity*(1-alpha));
     }
 
     return color;

@@ -47,6 +47,7 @@ namespace Lumen.Props
             Owner = owner;
             IsVisible = false;
             LightRadius = 0;
+            LightIntensity = 1.0f;
             _lightRadius = lightRadius;
         }
 

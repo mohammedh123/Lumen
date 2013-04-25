@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lumen.Entities;
+using Lumen.Light_System;
 using Microsoft.Xna.Framework;
 
 namespace Lumen.Props
 {
     class Crystal : Prop, ILightProvider
     {
-
         public Color LightColor { get; set; }
         public float LightRadius
         {
@@ -21,6 +21,8 @@ namespace Lumen.Props
             }
             set { }
         }
+
+        public float LightIntensity { get; set; }
 
         private int _collectorCount = 0;
         private readonly List<Player> _collectors = new List<Player>();
@@ -50,6 +52,7 @@ namespace Lumen.Props
         public Crystal(Vector2 position)
             : base("crystal", position)
         {
+            LightIntensity = 1.0f;
             PropType = PropTypeEnum.Crystal;
 
             Health = GameVariables.CrystalHarvestRequirement;

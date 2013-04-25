@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Lumen.Entities;
+using Lumen.Light_System;
 using Lumen.Particle_System;
 using Lumen.Props;
 using Microsoft.Xna.Framework;

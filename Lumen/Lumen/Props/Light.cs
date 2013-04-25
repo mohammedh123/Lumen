@@ -1,5 +1,6 @@
 using System;
 using Lumen.Entities;
+using Lumen.Light_System;
 using Microsoft.Xna.Framework;
 
 namespace Lumen.Props
@@ -9,6 +10,7 @@ namespace Lumen.Props
         //ILightProvider members
         public Color LightColor { get; set; }
         public float LightRadius { get; set; }
+        public float LightIntensity { get; set; }
 
         public override bool CanInteract
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Lumen.Light_System;
 using Lumen.Particle_System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,6 +26,8 @@ namespace Lumen.Entities
             }
             set { }
         }
+
+        public float LightIntensity { get; set; }
 
         public float EnergyRemaining { get; set; }
 
@@ -72,6 +75,7 @@ namespace Lumen.Entities
 
         public Guardian(Vector2 position) : base("guardian", position)
         {
+            LightIntensity = 1.0f;
             Health = Int32.MaxValue;
             EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
         }
