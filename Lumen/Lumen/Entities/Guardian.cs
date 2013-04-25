@@ -191,6 +191,9 @@ namespace Lumen.Entities
         private void StopAttack()
         {
             _attackTimer = -1.0f;
+
+            LightSpawner.Instance.AddAttachedLight(this, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 3.0f);
+
             FinalRadiusOfAttack = 0.0f;
         }
 
