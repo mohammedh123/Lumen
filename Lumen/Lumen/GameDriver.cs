@@ -307,11 +307,11 @@ namespace Lumen
             _spriteBatch.Begin();
 
             var str = "player" + player.PlayerSpriteIndex + "_portrait";
-            _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), 0.5f, SpriteEffects.None, 0);
-            _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), 0.5f, SpriteEffects.None, 0);
+            _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), GameVariables.UIScale, SpriteEffects.None, 0);
+            _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
             for (int i = 0; i < player.CrystalCount; i++)
             {
-                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(64 + 32 * i, 0), Color.White * alpha);
+                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 + 32 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale*2, SpriteEffects.None, 0);
             }
 
             _spriteBatch.End();
@@ -326,7 +326,7 @@ namespace Lumen
             var center = new Vector2(DisplayResolution.X/2, 16);
 
             for(int i = 0; i < _gameManager.CrystalsRemaining; i++) {
-                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center+new Vector2(32*i,0),Color.White*alpha);
+                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale,SpriteEffects.None, 0);
             }
 
             _spriteBatch.End();
