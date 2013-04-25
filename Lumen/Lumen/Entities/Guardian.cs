@@ -209,8 +209,6 @@ namespace Lumen.Entities
         private void ChargeUpAttack(float dt)
         {
             if(IsChargingUp) {
-                ParticleSystemManager.Instance.FireParticleSystem("sample", Position.X, Position.Y);
-
                 _chargingTimer += dt;
                 var radiusChange = Math.Min(EnergyRemaining, dt * (GameVariables.EnemyAttackRadiusGrowth +
                                        _chargingTimer * GameVariables.EnemyAttackRadiusAcceleration));
