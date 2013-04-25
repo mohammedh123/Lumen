@@ -43,6 +43,7 @@ namespace Lumen
         public static float CrystalCollectionTime = 3.0f;
         public static int CrystalHarvestRequirement = 3;
         public static float CrystalGlowRadius = 120.0f;
+        public static float CrystalMaxVibration = 0.8f;
 
         public static Matrix CameraZoomMatrix
         {
