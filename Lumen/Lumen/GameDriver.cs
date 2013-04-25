@@ -107,7 +107,7 @@ namespace Lumen
             if (shufflePlayers) {
                 _gameManager.ResetCompletely();
 
-                var randomEnemyIdx = RandomGen.Next(0,4);
+                var randomEnemyIdx = RandomGen.Next(1,1);
 
                 var playerNum = 1;
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
@@ -316,13 +316,13 @@ namespace Lumen
                 DrawPlayerInformation(new Vector2(66+360*i, DisplayResolution.Y-64), player, alpha);
             }
 
-            DrawEnemyInformation(new Vector2(DisplayResolution.X - 100, 16), alpha);
+            DrawEnemyInformation(new Vector2(_gameManager.Guardian.Position.X - 16, _gameManager.Guardian.Position.Y - 32), alpha);
         }
 
         private void DrawEnemyInformation(Vector2 topLeft, float alpha)
         {
             _spriteBatch.Begin();
-            DrawingHelper.DrawHorizontalFilledBar(topLeft, _spriteBatch, Color.White*alpha, Color.Blue*alpha, 84, 16, 1, _gameManager.Guardian.EnergyRemaining/GameVariables.EnemyAttackMaxRadius);
+            DrawingHelper.DrawHorizontalFilledBar(topLeft, _spriteBatch, Color.White*alpha, Color.Blue*alpha, 32, 8, 1, _gameManager.Guardian.EnergyRemaining/GameVariables.EnemyAttackMaxRadius);
             _spriteBatch.End();
         }
 
