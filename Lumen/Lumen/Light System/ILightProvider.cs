@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace Lumen
+namespace Lumen.Light_System
 {
     interface ILightProvider
     {
@@ -13,5 +13,7 @@ namespace Lumen
         Color LightColor { get; set; }
 
         float LightRadius { get; set; }
+
+        float LightIntensity { get; set; }
     }
 }

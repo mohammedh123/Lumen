@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Lumen
+namespace Lumen.Light_System
 {
     class LightManager
     {
@@ -40,6 +40,7 @@ namespace Lumen
 
                 _lightAccumulatorFX.Parameters["lightPosition"].SetValue(normalizedPosition);
                 _lightAccumulatorFX.Parameters["lightRadius"].SetValue(light.LightRadius);
+                _lightAccumulatorFX.Parameters["lightIntensity"].SetValue(light.LightIntensity);
 
                 sb.Draw(_screenTex, new Rectangle(0, 0, _accumulatorRT.Width, _accumulatorRT.Height), Color.White);
                 sb.End();
