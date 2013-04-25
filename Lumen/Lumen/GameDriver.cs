@@ -291,7 +291,6 @@ namespace Lumen
                 DrawPlayerInformation(new Vector2(66+360*i, DisplayResolution.Y-64), player, alpha);
             }
 
-            DrawCrystalsLeftInformation(new Vector2(DisplayResolution.X/2-200, 16), alpha);
             DrawEnemyInformation(new Vector2(DisplayResolution.X - 100, 16), alpha);
         }
 
@@ -312,21 +311,6 @@ namespace Lumen
             for (int i = 0; i < player.CrystalCount; i++)
             {
                 _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 + 32 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale*2, SpriteEffects.None, 0);
-            }
-
-            _spriteBatch.End();
-        }
-
-        private void DrawCrystalsLeftInformation(Vector2 topLeft, float alpha)
-        {
-            _spriteBatch.Begin();
-
-            _spriteBatch.DrawString(TextureManager.GetFont("debug"), "Crystals Left:\nRound #: " + _gameManager.RoundNumber, topLeft, Color.White*alpha);
-
-            var center = new Vector2(DisplayResolution.X/2, 16);
-
-            for(int i = 0; i < _gameManager.CrystalsRemaining; i++) {
-                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale,SpriteEffects.None, 0);
             }
 
             _spriteBatch.End();
