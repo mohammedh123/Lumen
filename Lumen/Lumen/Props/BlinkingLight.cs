@@ -31,12 +31,12 @@ namespace Lumen.Props
 
         private bool IsDoneFadingIn
         {
-            get { return _fadeTimer >= GameVariables.BlinkingFadeInDuration; }
+            get { return _fadeTimer >= GameVariables.BlinkingFadeInDuration*(1/_frequency); }
         }
 
         private bool IsDoneFadingOut
         {
-            get { return _fadeTimer >= GameVariables.BlinkingFadeOutDuration; }
+            get { return _fadeTimer >= GameVariables.BlinkingFadeOutDuration * (1 / _frequency); }
         }
 
         private float _frequency = 1.0f;

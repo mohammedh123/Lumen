@@ -320,6 +320,7 @@ namespace Lumen
             }
 
             var vibRat = closestDist / (GameVariables.PlayerVibrationDetectionRadius * GameVariables.PlayerVibrationDetectionRadius);
+            vibRat *= vibRat;
 
             if (GamePad.GetState(player.ControllerIndex).IsConnected) {
                 GamePad.SetVibration(player.ControllerIndex, Math.Max(0, GameVariables.CrystalMaxVibration * (1 - vibRat)), Math.Max(0, GameVariables.CrystalMaxVibration * (1 - vibRat)));

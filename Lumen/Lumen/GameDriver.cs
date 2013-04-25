@@ -315,8 +315,10 @@ namespace Lumen
 
                 DrawPlayerInformation(new Vector2(66+360*i, DisplayResolution.Y-64), player, alpha);
             }
+            if (_gameManager.Guardian.IsChargingUp) { 
+                DrawEnemyInformation(new Vector2(_gameManager.Guardian.Position.X - 16, _gameManager.Guardian.Position.Y - 32), alpha);            
+            }
 
-            DrawEnemyInformation(new Vector2(_gameManager.Guardian.Position.X - 16, _gameManager.Guardian.Position.Y - 32), alpha);
         }
 
         private void DrawEnemyInformation(Vector2 topLeft, float alpha)
@@ -335,7 +337,7 @@ namespace Lumen
             _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
             for (int i = 0; i < player.CrystalCount; i++)
             {
-                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 + 32 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale*2, SpriteEffects.None, 0);
+                _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 + 16 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale*2, SpriteEffects.None, 0);
             }
 
             _spriteBatch.End();

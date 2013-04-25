@@ -169,7 +169,7 @@ namespace Lumen.Entities
         public void IncrementCrystalCount()
         {
             CrystalCount++;
-            AttachedLight.IncreaseFrequency(2);
+            AttachedLight.IncreaseFrequency(1.5f);
         }
     }
 }
