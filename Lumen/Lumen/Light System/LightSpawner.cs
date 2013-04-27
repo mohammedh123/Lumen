@@ -63,7 +63,8 @@ namespace Lumen.Light_System
                             LightIntensity = intensity,
                             LightRadius = radius,
                             LightColor = Color.White,
-                            Position = position
+                            Position = position,
+                            IsVisible = true
                         };
         }
 

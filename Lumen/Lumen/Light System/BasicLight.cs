@@ -12,5 +12,6 @@ namespace Lumen.Light_System
         public Color LightColor { get; set; }
         public float LightRadius { get; set; }
         public float LightIntensity { get; set; }
+        public bool IsVisible { get; set; }
     }
 }
