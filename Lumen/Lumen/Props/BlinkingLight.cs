@@ -45,7 +45,7 @@ namespace Lumen.Props
         {
             _timer = (float)GameDriver.RandomGen.NextDouble()*0.25f;
             Owner = owner;
-            IsVisible = false;
+            IsVisible = true;
             LightRadius = 0;
             LightIntensity = 1.0f;
             _lightRadius = lightRadius;
