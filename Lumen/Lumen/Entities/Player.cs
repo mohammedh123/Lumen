@@ -79,8 +79,7 @@ namespace Lumen.Entities
 
             var speedToUse = GameVariables.PlayerSpeed;
 
-            if(!IsCollecting)
-                AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
+            AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
 
             if (Velocity != Vector2.Zero)
                 Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
