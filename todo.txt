@@ -1,4 +1,5 @@
 - Screens
+- Spawn crystals more intelligently (Poisson)x
 - Crystal light does not go away if you die while collecting
 - Player should not fade away from UI after death
 - Double attack on guardian when he presses X during attack is growing
