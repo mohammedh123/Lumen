@@ -270,7 +270,15 @@ namespace Lumen
                         player.CollectionTarget.IncrementCollectorCount(player);
                     }
                 }
-                else {
+                else
+                {
+                    if (!Collider.IsPlayerWithinRadius(player, player.CollectionTarget.Position,
+                                                      GameVariables.CrystalCollectionRadius))
+                    {
+                        player.ResetCollecting();
+                        return;
+                    }
+
                     player.CollectingTime += dt;
 
                     if (player.CollectingTime >= GameVariables.CrystalCollectionTime) {
