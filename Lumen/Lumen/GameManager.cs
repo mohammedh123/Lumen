@@ -217,12 +217,7 @@ namespace Lumen
 
                         SoundManager.GetSound("player_hit").Play();
 
-                        if(Guardian.IsFullyCharged) {
-                            player.TakeDamage(2);
-                        }
-                        else {
-                            player.TakeDamage(1);
-                        }
+                        player.TakeDamage(1);
                     }
                 }
             }

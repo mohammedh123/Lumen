@@ -17,7 +17,8 @@ namespace Lumen.Entities
 
         public bool IsInteractingWithProp = false;
 
-        public Light AttachedLight = null, AttachedBlinkingLight = null;
+        public Light AttachedLight = null;
+        public BlinkingLight AttachedBlinkingLight = null;
         public Crystal CollectionTarget;
         public float CollectingTime = -1;
         public int CrystalCount = 0;
@@ -197,7 +198,7 @@ namespace Lumen.Entities
         public void IncrementCrystalCount()
         {
             CrystalCount++;
-            //AttachedLight.IncreaseFrequency(1.5f);
+            AttachedBlinkingLight.IncreaseFrequency(1.5f);
         }
     }
 }
