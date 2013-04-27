@@ -34,6 +34,8 @@ namespace Lumen.Light_System
 
             foreach (var light in lights)
             {
+                if (!light.IsVisible) continue;
+
                 sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFX, GameVariables.CameraZoomMatrix);
                 var normalizedPosition = new Vector2(light.Position.X / _accumulatorRT.Width,
                                                      light.Position.Y / _accumulatorRT.Height);
