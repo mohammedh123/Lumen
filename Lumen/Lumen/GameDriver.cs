@@ -86,6 +86,13 @@ namespace Lumen
                                     foreach (var o in p.Orbs)
                                         o.OrbitPeriod = (float)actualVariableValue;
                             }
+                            else if(variableName == "PlayerLightDuration")
+                            {
+                                foreach(var light in _gameManager.Props.Where(p => p is Light))
+                                {
+                                    (light as Light).LightRadius = (float) actualVariableValue;
+                                }
+                            }
                         }
                         catch (Exception e) {
                             ErrorLog.Log("Error was encountered with exception:" + Environment.NewLine + e);
