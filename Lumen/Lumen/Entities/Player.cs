@@ -148,6 +148,7 @@ namespace Lumen.Entities
         public void TurnOffLight()
         {
             _lightVisibilityTimer = -1.0f;
+            if (AttachedLight != null) AttachedLight.IsVisible = false;
         }
 
         public void Collect()
