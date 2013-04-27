@@ -163,7 +163,8 @@ namespace Lumen
                 player.Health = GameVariables.PlayerStartingHealth;
                 player.Position = new Vector2(64, _gameResolution.Y / 2 - 96 + 32 * player.PlayerSpriteIndex);
                 player.ResetOrbs();
-                player.AttachedLight.ResetFrequency();
+                player.AttachedLight.IsVisible = false;
+                //player.AttachedLight.ResetFrequency();
             }
 
             LightSpawner.Instance.Reset();
@@ -407,7 +408,7 @@ namespace Lumen
         {
             if (Players.Contains(p)) return false;
 
-            var light = new BlinkingLight("blank", p, GameVariables.BlinkingRadius);
+            var light = new Light("blank", GameVariables.BlinkingRadius, p.Position, p);
             Props.Add(light);
             p.AttachedLight = light;
             Players.Add(p);

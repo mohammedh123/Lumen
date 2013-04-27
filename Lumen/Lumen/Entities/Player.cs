@@ -17,7 +17,7 @@ namespace Lumen.Entities
 
         public bool IsInteractingWithProp = false;
 
-        public BlinkingLight AttachedLight = null;
+        public Light AttachedLight = null;
         public Crystal CollectionTarget;
         public float CollectingTime = -1;
         public int CrystalCount = 0;
@@ -84,7 +84,7 @@ namespace Lumen.Entities
             if (Velocity != Vector2.Zero)
                 Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
 
-            AttachedLight.IsVisible = Velocity != Vector2.Zero;
+            AttachedLight.IsVisible = InputManager.GamepadButtonDown(ControllerIndex, Buttons.A);
 
             IsInteractingWithProp = InputManager.GamepadButtonPressed(ControllerIndex, Buttons.A);
         }
@@ -166,7 +166,7 @@ namespace Lumen.Entities
         public void IncrementCrystalCount()
         {
             CrystalCount++;
-            AttachedLight.IncreaseFrequency(1.5f);
+            //AttachedLight.IncreaseFrequency(1.5f);
         }
     }
 }
