@@ -23,7 +23,7 @@ namespace Lumen
     internal class GameManager
     {
         public List<Player> Players { get; set; }
-        private Dictionary<Player,BlinkingLight> _deadPlayers = new Dictionary<Player, BlinkingLight>(); 
+        private Dictionary<Player,Light> _deadPlayers = new Dictionary<Player, Light>(); 
         public Guardian Guardian { get; set; }
         public List<Prop> Props { get; set; }
         public List<Block> Blocks { get; set; }
@@ -436,16 +436,16 @@ namespace Lumen
             Props.Add(new Crystal(position));
         }
         
-        private BlinkingLight RemovePlayersBlinkingLight(Player player)
+        private Light RemovePlayersLight(Player player)
         {
-            var idx = Props.FindLastIndex(p => p is BlinkingLight && ((BlinkingLight) p).EntityAttachedTo == player);
+            var idx = Props.FindLastIndex(p => p is Light && ((Light) p).EntityAttachedTo == player);
             var prop = Props[idx];
 
             if (idx >= 0) {
                 Props.RemoveAt(idx);
             }
 
-            return prop as BlinkingLight;
+            return prop as Light;
         }
 
         public void KillPlayer(Player player)
@@ -456,7 +456,7 @@ namespace Lumen
             GamePad.SetVibration(player.ControllerIndex, 0, 0);
 
             //find the light that belongs to this Guardian and eliminate it
-            var light = RemovePlayersBlinkingLight(player);
+            var light = RemovePlayersLight(player);
 
             Players.Remove(player);
             _deadPlayers.Add(player, light);

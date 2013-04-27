@@ -78,6 +78,7 @@ namespace Lumen.Entities
 
             if(IsLightOn)
             {
+                _lightVisibilityTimer += dt;
                 if (AttachedLight != null) AttachedLight.IsVisible = true;
             }
 
