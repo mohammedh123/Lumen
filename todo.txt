@@ -1,17 +1,11 @@
-- Health indicators are surrounding orbs (think Wisp)
-- More crystals = blink more frequently
-- Collecting crystals lights up more and more as collection time increases
-- Crystal lights up as a progress bar
-- Move guardian energy bar to above the enemy
-- Guardian's movement speed coupled with charge length
-- Light spawning system
-	- spawn a light that fades away at a point
-		- Fade out Guardian light when its done attacking
-		- Fade out each wisp of player health when it dies/explodes
-- Particle system
 - Screens
-- Remove player-vs-player collisions
-- Make player's lights out of sync with each other
+- Crystal light does not go away if you die while collecting
+- Player should not fade away from UI after death
+- Double attack on guardian when he presses X during attack is growing
+
+- Start button/select button instead of R and T
+
+- Guardian charging => wisps around it
 
 Assets
 ------
