@@ -17,7 +17,7 @@ namespace Lumen.Entities
 
         public bool IsInteractingWithProp = false;
 
-        public Light AttachedLight = null;
+        public Light AttachedLight = null, AttachedBlinkingLight = null;
         public Crystal CollectionTarget;
         public float CollectingTime = -1;
         public int CrystalCount = 0;

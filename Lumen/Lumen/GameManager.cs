@@ -164,6 +164,7 @@ namespace Lumen
                 player.Position = new Vector2(64, _gameResolution.Y / 2 - 96 + 32 * player.PlayerSpriteIndex);
                 player.ResetOrbs();
                 player.AttachedLight.IsVisible = false;
+                player.AttachedBlinkingLight.IsVisible = true;
                 //player.AttachedLight.ResetFrequency();
             }
 
@@ -408,9 +409,12 @@ namespace Lumen
         {
             if (Players.Contains(p)) return false;
 
-            var light = new Light("blank", GameVariables.BlinkingRadius, p.Position, p);
+            var light = new Light("blank", GameVariables.PlayerLightRadius, p.Position, p);
+            var blinkingLight = new BlinkingLight("blank", p, GameVariables.BlinkingRadius);
             Props.Add(light);
+            Props.Add(blinkingLight);
             p.AttachedLight = light;
+            p.AttachedBlinkingLight = blinkingLight;
             Players.Add(p);
 
             return true;
