@@ -14,13 +14,13 @@ namespace Lumen.Entities
         public float Angle = 0f, SpriteAngle = 0f;
         public Color Color = Color.White;
 
-        public bool IsVisible = true;
+        public bool IsVisible { get; set; }
 
         protected Entity(string textureKeyName, Vector2 position)
         {
             Texture = TextureManager.GetTexture(textureKeyName);
             TextureOrigin = TextureManager.GetOrigin(textureKeyName);
-
+            IsVisible = true;
             Position = position;
         }
 

@@ -85,9 +85,11 @@ namespace Lumen.Entities
 
             if(!IsCollecting)
                 AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
-                
-            if(Velocity != Vector2.Zero)
-                Angle = (float) Math.Atan2(Velocity.Y, Velocity.X);
+
+            if (Velocity != Vector2.Zero)
+                Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
+
+            AttachedLight.IsVisible = Velocity != Vector2.Zero;
 
             IsInteractingWithProp = InputManager.GamepadButtonPressed(ControllerIndex, Buttons.A);
         }
