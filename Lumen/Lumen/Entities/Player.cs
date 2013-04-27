@@ -45,6 +45,8 @@ namespace Lumen.Entities
                               Color = Color.White
                           });
             }
+
+            CollectingTime = 0.0f;
         }
 
         public void ResetOrbs()
@@ -74,12 +76,6 @@ namespace Lumen.Entities
                 return;
             
             var changeLeft = InputManager.GamepadLeft(ControllerIndex);
-
-            if (InputManager.GamepadButtonPressed(ControllerIndex, Buttons.A))
-                Collect();
-
-            if (InputManager.GamepadButtonUp(ControllerIndex, Buttons.A))
-                ResetCollecting();
 
             var speedToUse = GameVariables.PlayerSpeed;
 
@@ -148,7 +144,7 @@ namespace Lumen.Entities
                 CollectionTarget.DecrementCollectorCount(this);
 
             CollectionTarget = null;
-            CollectingTime = -1;
+            CollectingTime = 0.0f;
         }
 
         public void TakeDamage(int n)
