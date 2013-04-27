@@ -22,7 +22,14 @@ namespace Lumen.Entities
         public float CollectingTime = -1;
         public int CrystalCount = 0;
         public List<OrbitingParticle> Orbs;
+
+        private float _lightVisibilityTimer = -1.0f;
         
+        public bool IsLightOn
+        {
+            get { return _lightVisibilityTimer >= 0.0f; }
+        }
+
         public bool IsCollecting
         {
             get { return CollectingTime >= 0.0f; } 
@@ -68,6 +75,14 @@ namespace Lumen.Entities
             ProcessControllerInput(dt);
             foreach(var o in Orbs)
                 o.Update(dt);
+
+            if(IsLightOn)
+            {
+                if (AttachedLight != null) AttachedLight.IsVisible = true;
+            }
+
+            if(_lightVisibilityTimer >= GameVariables.PlayerLightDuration)
+                TurnOffLight();
         }
 
         public void ProcessControllerInput(float dt)
@@ -84,7 +99,8 @@ namespace Lumen.Entities
             if (Velocity != Vector2.Zero)
                 Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
 
-            AttachedLight.IsVisible = InputManager.GamepadButtonDown(ControllerIndex, Buttons.A);
+            if (InputManager.GamepadButtonDown(ControllerIndex, Buttons.A))
+                TurnOnLight();
 
             IsInteractingWithProp = InputManager.GamepadButtonPressed(ControllerIndex, Buttons.A);
         }
@@ -122,6 +138,16 @@ namespace Lumen.Entities
         {
             if (InputManager.KeyPressed(Keys.Space))
                 Collect();
+        }
+
+        public void TurnOnLight()
+        {
+            _lightVisibilityTimer = 0.0f;
+        }
+
+        public void TurnOffLight()
+        {
+            _lightVisibilityTimer = -1.0f;
         }
 
         public void Collect()
