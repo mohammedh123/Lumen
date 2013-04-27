@@ -100,7 +100,9 @@ namespace Lumen.Entities
 
             if (Velocity != Vector2.Zero)
                 Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
-
+            
+            AttachedBlinkingLight.IsVisible = Velocity != Vector2.Zero;
+            
             if (InputManager.GamepadButtonDown(ControllerIndex, Buttons.A))
                 TurnOnLight();
 
