@@ -165,7 +165,7 @@ namespace Lumen
                 player.ResetOrbs();
                 player.AttachedLight.IsVisible = false;
                 player.AttachedBlinkingLight.IsVisible = true;
-                //player.AttachedLight.ResetFrequency();
+                player.AttachedBlinkingLight.ResetFrequency();
             }
 
             LightSpawner.Instance.Reset();
