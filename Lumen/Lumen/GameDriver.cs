@@ -315,10 +315,9 @@ namespace Lumen
 
                 DrawPlayerInformation(new Vector2(66+360*i, DisplayResolution.Y-64), player, alpha);
             }
-            if (_gameManager.Guardian.IsChargingUp) { 
-                DrawEnemyInformation(new Vector2(_gameManager.Guardian.Position.X - 16, _gameManager.Guardian.Position.Y - 32), alpha);            
-            }
 
+            DrawEnemyInformation(
+                new Vector2(_gameManager.Guardian.Position.X - 16, _gameManager.Guardian.Position.Y - 32), alpha);
         }
 
         private void DrawEnemyInformation(Vector2 topLeft, float alpha)
