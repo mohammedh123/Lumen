@@ -23,7 +23,7 @@ namespace Lumen
     internal class GameManager
     {
         public List<Player> Players { get; set; }
-        private Dictionary<Player,Light> _deadPlayers = new Dictionary<Player, Light>(); 
+        private Dictionary<Player,List<Light>> _deadPlayers = new Dictionary<Player, List<Light>>(); 
         public Guardian Guardian { get; set; }
         public List<Prop> Props { get; set; }
         public List<Block> Blocks { get; set; }
@@ -152,7 +152,7 @@ namespace Lumen
 
             foreach(var kvp in _deadPlayers) {
                 Players.Add(kvp.Key);
-                Props.Add(kvp.Value);
+                Props.AddRange(kvp.Value);
             }
 
             _deadPlayers.Clear();
@@ -440,16 +440,16 @@ namespace Lumen
             Props.Add(new Crystal(position));
         }
         
-        private Light RemovePlayersLight(Player player)
+        private List<Light> RemovePlayersLight(Player player)
         {
-            var idx = Props.FindLastIndex(p => p is Light && ((Light) p).EntityAttachedTo == player);
-            var prop = Props[idx];
-
-            if (idx >= 0) {
-                Props.RemoveAt(idx);
+            var lights = Props.FindAll(p => p is Light && ((Light)p).EntityAttachedTo == player).Cast<Light>().ToList();
+            
+            foreach(var prop in lights)
+            {
+                Props.Remove(prop);
             }
 
-            return prop as Light;
+            return lights;
         }
 
         public void KillPlayer(Player player)
@@ -460,10 +460,10 @@ namespace Lumen
             GamePad.SetVibration(player.ControllerIndex, 0, 0);
 
             //find the light that belongs to this Guardian and eliminate it
-            var light = RemovePlayersLight(player);
+            var lights = RemovePlayersLight(player);
 
             Players.Remove(player);
-            _deadPlayers.Add(player, light);
+            _deadPlayers.Add(player, lights);
 
             SoundManager.GetSound("death_sound").Play();
         }
