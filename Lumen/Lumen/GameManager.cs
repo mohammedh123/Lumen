@@ -410,7 +410,7 @@ namespace Lumen
         {
             if (Guardian != null) return false;
 
-            Props.Add(new BlinkingLight("blank", e, GameVariables.EnemyBlinkingRadius));
+            Props.Add(new Light("blank", GameVariables.EnemyBlinkingRadius, e.Position, e));
             Guardian = e;
 
             return true;
@@ -428,7 +428,7 @@ namespace Lumen
         
         private BlinkingLight RemovePlayersBlinkingLight(Player player)
         {
-            var idx = Props.FindLastIndex(p => p is BlinkingLight && ((BlinkingLight) p).Owner == player);
+            var idx = Props.FindLastIndex(p => p is BlinkingLight && ((BlinkingLight) p).EntityAttachedTo == player);
             var prop = Props[idx];
 
             if (idx >= 0) {
@@ -445,7 +445,7 @@ namespace Lumen
 
             GamePad.SetVibration(player.ControllerIndex, 0, 0);
 
-            //find the lantern that belongs to this Guardian and eliminate it
+            //find the light that belongs to this Guardian and eliminate it
             var light = RemovePlayersBlinkingLight(player);
 
             Players.Remove(player);

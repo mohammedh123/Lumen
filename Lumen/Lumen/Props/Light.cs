@@ -12,26 +12,27 @@ namespace Lumen.Props
         public float LightRadius { get; set; }
         public float LightIntensity { get; set; }
 
+        public Entity EntityAttachedTo { get; set; }
+
         public override bool CanInteract
         {
             get { return true; }
         }
 
-        public Light(string textureKeyName, Vector2 position, float lifetime) : base(textureKeyName, position)
+        public Light(string textureKeyName, float radius, Vector2 position, Entity entityAttachedTo=null) : base(textureKeyName, position)
         {
             PropType = PropTypeEnum.Candle;
 
             LightColor = Color.White;
-            Lifetime = lifetime;
+            LightIntensity = 1.0f;
+            LightRadius = radius;
+            EntityAttachedTo = entityAttachedTo;
         }
 
         public override void Update(float dt)
         {
-            Lifetime -= dt;
-
-            if (Lifetime <= 0 || LightRadius <= 0) {
-                IsToBeRemoved = true;
-            }
+            if (EntityAttachedTo != null)
+                Position = EntityAttachedTo.Position;
         }
     }
 }

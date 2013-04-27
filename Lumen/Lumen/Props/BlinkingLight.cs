@@ -13,8 +13,6 @@ namespace Lumen.Props
             FadingOut
         }
 
-        public Entity Owner = null;
-
         private BlinkingLightFadeState _fadeState = BlinkingLightFadeState.None;
         private float _timer, _durationTimer, _fadeTimer=-1.0f;
         private readonly float _lightRadius;
@@ -41,10 +39,9 @@ namespace Lumen.Props
 
         private float _frequency = 1.0f;
 
-        public BlinkingLight(string textureKeyName, Entity owner, float lightRadius) : base(textureKeyName, owner.Position, 0)
+        public BlinkingLight(string textureKeyName, Entity owner, float lightRadius) : base(textureKeyName, lightRadius, owner.Position, owner)
         {
             _timer = (float)GameDriver.RandomGen.NextDouble()*0.25f;
-            Owner = owner;
             IsVisible = true;
             LightRadius = 0;
             LightIntensity = 1.0f;
@@ -64,7 +61,7 @@ namespace Lumen.Props
 
         public override void Update(float dt)
         {
-            Position = Owner.Position;
+            Position = EntityAttachedTo.Position;
             var invFreq = (1.0f/_frequency);
             if(CanBeginBlink) //begin fading in
             {
