@@ -169,6 +169,7 @@ namespace Lumen
             LightSpawner.Instance.Reset();
 
             Guardian.Position = new Vector2(_gameResolution.X - 64, _gameResolution.Y/2);
+            Guardian.EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
             Guardian.ResetAllAttackData();
 
             Props.RemoveAll(p => p is Crystal);
