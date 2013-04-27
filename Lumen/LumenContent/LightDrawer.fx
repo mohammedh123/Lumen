@@ -24,6 +24,7 @@ float4 PixelShaderFunction(PixelShaderInput input) : COLOR0
     float alpha = length(dx)/(lightRadius);
 	alpha *= alpha;
 	alpha *= alpha;
+	//alpha = 0;
 
     if(length(dx) < lightRadius)
     {

@@ -192,7 +192,7 @@ namespace Lumen.Entities
         {
             _attackTimer = -1.0f;
 
-            LightSpawner.Instance.AddAttachedLight(this, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 3.0f);
+            LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 0.33333333333333333f);
 
             FinalRadiusOfAttack = 0.0f;
         }
