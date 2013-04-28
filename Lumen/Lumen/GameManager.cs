@@ -452,6 +452,9 @@ namespace Lumen
             if (Players.Count == 1)
                 State = GameState.EnemyWins;
 
+            if(player.CollectionTarget != null)
+                player.ResetCollecting();
+
             GamePad.SetVibration(player.ControllerIndex, 0, 0);
 
             //find the light that belongs to this Guardian and eliminate it
