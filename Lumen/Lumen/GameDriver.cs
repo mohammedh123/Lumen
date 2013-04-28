@@ -148,14 +148,7 @@ namespace Lumen
             base.Initialize();
         }
 
-        protected override void OnExiting(Object sender, EventArgs args)
-        {
-            base.OnExiting(sender, args);
-
-            Cleanup();
-        }
-
-        private void Cleanup()
+        private void Cleanup(object sender, EventArgs e)
         {
             for(var gp = PlayerIndex.One; gp <= PlayerIndex.Four; gp++) {
                 GamePad.SetVibration(gp, 0, 0);
