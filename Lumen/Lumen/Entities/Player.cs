@@ -36,6 +36,11 @@ namespace Lumen.Entities
             get { return CollectingTime >= 0.0f; } 
         }
 
+        public bool IsAlive
+        {
+            get { return Health > 0; }
+        }
+
         public Player(string textureKey, Vector2 position) : base(textureKey, position)
         {
             Health = GameVariables.PlayerStartingHealth;
