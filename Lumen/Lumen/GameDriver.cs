@@ -33,6 +33,8 @@ namespace Lumen
 
         public GameDriver()
         {
+            Exiting += Cleanup;
+
             RandomGen = new Random();
             _graphics = new GraphicsDeviceManager(this);
             var graphicsOptions = new GraphicsOptions();
