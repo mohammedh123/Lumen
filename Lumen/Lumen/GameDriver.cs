@@ -116,11 +116,11 @@ namespace Lumen
             if (shufflePlayers) {
                 _gameManager.ResetCompletely();
 
-                var randomEnemyIdx = RandomGen.Next(0,3);
+                var randomEnemyIdx = RandomGen.Next(1,1);
 
                 var playerNum = 1;
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
-                    if (GamePad.GetState(i).IsConnected || i == PlayerIndex.Two) {
+                    if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Three) {
 
                         if (i == PlayerIndex.One + randomEnemyIdx) {
                             _gameManager.AddEnemy(
@@ -312,8 +312,10 @@ namespace Lumen
 
         private void DrawUI(float alpha=1)
         {
-            for (int i = 0; i < _gameManager.Players.Count; i++) {
-                var player = _gameManager.Players[i];
+            var allPlayers = _gameManager.Players.Union(_gameManager.DeadPlayers.Keys).OrderBy(p => p.ControllerIndex).ToList();
+
+            for (int i = 0; i < allPlayers.Count(); i++) {
+                var player = allPlayers[i];
 
                 DrawPlayerInformation(new Vector2(66+360*i, DisplayResolution.Y-64), player, alpha);
             }
@@ -333,7 +335,7 @@ namespace Lumen
         {
             _spriteBatch.Begin();
 
-            var str = "player" + player.PlayerSpriteIndex + "_portrait";
+            var str = "player" + (player.IsAlive ? "" + player.PlayerSpriteIndex : "_dead") + "_portrait";
             _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), GameVariables.UIScale, SpriteEffects.None, 0);
             _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
             for (int i = 0; i < player.CrystalCount; i++)
