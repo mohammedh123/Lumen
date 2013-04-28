@@ -101,7 +101,7 @@ namespace Lumen.Entities
 
             if(IsAttacking) {
                 _attackTimer += dt;
-                if(_attackTimer > GameVariables.EnemyAttackTotalDuration)
+                if(_attackTimer >= GameVariables.EnemyAttackTotalDuration)
                     StopAttack();
             }
             else {
@@ -176,9 +176,8 @@ namespace Lumen.Entities
         {
             if (IsChargingUp) {
                 BeginAttack();
+                _chargingTimer = 0.0f;
             }
-
-            _chargingTimer = 0.0f;
         }
 
         private void BeginAttack()
@@ -216,7 +215,7 @@ namespace Lumen.Entities
                 EnergyRemaining = Math.Max(0,EnergyRemaining-radiusChange);
                 FinalRadiusOfAttack = Math.Min(GameVariables.EnemyAttackMaxRadius, FinalRadiusOfAttack+radiusChange);
             }
-            else {
+            else if(!IsAttacking) {
                 if(CanChargeUp) {
                     _chargeCooldown = GameVariables.EnemyAttackCooldown;
                     _chargingTimer += dt;
