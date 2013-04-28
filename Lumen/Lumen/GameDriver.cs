@@ -79,14 +79,12 @@ namespace Lumen
                             else if (variableName == "PlayerOrbsDistance")
                             {
                                 foreach (var p in _gameManager.Players)
-                                    foreach (var o in p.Orbs)
-                                        o.DistanceFromCenter = (float)actualVariableValue;
+                                    p.OrbitRing.Radius = (float)actualVariableValue;
                             }
                             else if (variableName == "PlayerOrbsPeriod")
                             {
                                 foreach (var p in _gameManager.Players)
-                                    foreach (var o in p.Orbs)
-                                        o.OrbitPeriod = (float)actualVariableValue;
+                                    p.OrbitRing.OrbitPeriod = (float)actualVariableValue;
                             }
                             else if(variableName == "PlayerLightDuration")
                             {
@@ -120,7 +118,7 @@ namespace Lumen
 
                 var playerNum = 1;
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
-                    if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Three) {
+                    if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Two) {
 
                         if (i == PlayerIndex.One + randomEnemyIdx) {
                             _gameManager.AddEnemy(

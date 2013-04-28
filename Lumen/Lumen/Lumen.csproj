@@ -116,6 +116,7 @@
     <Compile Include="Light System\BasicLight.cs" />
     <Compile Include="Light System\LightSpawner.cs" />
     <Compile Include="Particle System\OrbitingParticle.cs" />
+    <Compile Include="Particle System\OrbitingRing.cs" />
     <Compile Include="Particle System\Particle.cs" />
     <Compile Include="Particle System\ParticleSystem.cs" />
     <Compile Include="Particle System\ParticleSystemInfo.cs" />

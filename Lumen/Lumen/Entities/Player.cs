@@ -22,7 +22,8 @@ namespace Lumen.Entities
         public Crystal CollectionTarget;
         public float CollectingTime = -1;
         public int CrystalCount = 0;
-        public List<OrbitingParticle> Orbs;
+
+        public OrbitingRing OrbitRing;
 
         private float _lightVisibilityTimer = -1.0f;
         
@@ -45,27 +46,14 @@ namespace Lumen.Entities
         {
             Health = GameVariables.PlayerStartingHealth;
 
-            Orbs = new List<OrbitingParticle>();
-
-            for (int i = 0; i < Health; i++) {
-                var atu = i*(MathHelper.TwoPi/Health);
-
-                Orbs.Add(new OrbitingParticle(TextureManager.GetTexture(textureKey), new Rectangle(0,0,32,32), TextureManager.GetOrigin(textureKey), this, GameVariables.PlayerOrbsDistance, GameVariables.PlayerOrbsPeriod, atu)
-                          {
-                              Alpha = 1.0f,
-                              Scale = 0.5f,
-                              Angle = atu,
-                              Color = Color.White
-                          });
-            }
+            OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod,textureKey, new Rectangle(0,0,32,32), this);
 
             CollectingTime = 0.0f;
         }
 
         public void ResetOrbs()
         {
-            foreach (var orb in Orbs)
-                orb.IsVisible = true;
+            OrbitRing.IsVisible = true;
         }
 
         public override void Update(float dt)
@@ -79,8 +67,7 @@ namespace Lumen.Entities
             }
 #endif
             ProcessControllerInput(dt);
-            foreach(var o in Orbs)
-                o.Update(dt);
+            OrbitRing.Update(dt);
 
             if(IsLightOn)
             {
@@ -170,8 +157,7 @@ namespace Lumen.Entities
         {
             base.Draw(sb);
 
-            foreach(var o in Orbs)
-                o.Draw(sb);
+            OrbitRing.Draw(sb);
         }
 
         public void ResetCollecting()
@@ -188,7 +174,7 @@ namespace Lumen.Entities
             Health -= n;
 
             int count = 0;
-            foreach(var orb in Orbs) {
+            foreach(var orb in OrbitRing.Satellites) {
                 if (count >= n) break;
                 if(orb.IsVisible) {
                     count++;
