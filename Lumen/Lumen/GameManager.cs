@@ -23,7 +23,7 @@ namespace Lumen
     internal class GameManager
     {
         public List<Player> Players { get; set; }
-        private Dictionary<Player,List<Light>> _deadPlayers = new Dictionary<Player, List<Light>>(); 
+        public Dictionary<Player,List<Light>> DeadPlayers = new Dictionary<Player, List<Light>>(); 
         public Guardian Guardian { get; set; }
         public List<Prop> Props { get; set; }
         public List<Block> Blocks { get; set; }
@@ -150,12 +150,12 @@ namespace Lumen
             RoundNumber++;
             State = GameState.StillGoing;
 
-            foreach(var kvp in _deadPlayers) {
+            foreach(var kvp in DeadPlayers) {
                 Players.Add(kvp.Key);
                 Props.AddRange(kvp.Value);
             }
 
-            _deadPlayers.Clear();
+            DeadPlayers.Clear();
 
             foreach(var player in Players) {
                 player.CrystalCount = 0;
@@ -461,7 +461,7 @@ namespace Lumen
             var lights = RemovePlayersLight(player);
 
             Players.Remove(player);
-            _deadPlayers.Add(player, lights);
+            DeadPlayers.Add(player, lights);
 
             SoundManager.GetSound("death_sound").Play();
         }
@@ -482,7 +482,7 @@ namespace Lumen
 
             LightSpawner.Instance.Reset();
             Players.Clear();
-            _deadPlayers.Clear();
+            DeadPlayers.Clear();
             Props.Clear();
             Blocks.Clear();
             PropsToBeAdded.Clear();
