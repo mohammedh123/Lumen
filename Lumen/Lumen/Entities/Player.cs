@@ -72,6 +72,7 @@ namespace Lumen.Entities
             if(IsLightOn)
             {
                 _lightVisibilityTimer += dt;
+                SoundManager.GetSound("player_light").Play();
             }
                 
             if (AttachedLight != null) AttachedLight.IsVisible = IsLightOn;

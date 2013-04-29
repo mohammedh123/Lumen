@@ -253,7 +253,8 @@ namespace Lumen
                         if (prop.PropType == PropTypeEnum.Crystal) {
                             if (Collider.IsPlayerWithinRadius(player, prop.Position,
                                                               GameVariables.CrystalCollectionRadius)) {
-                                colTar = (Crystal) prop;
+                                                                  colTar = (Crystal)prop;
+                                                                  SoundManager.GetSound("crystal_hit").Play();
                                 break;
                             }
                         }
@@ -284,6 +285,9 @@ namespace Lumen
                         player.ResetCollecting();
 
                         IncreasePlayerCrystalCount(player);
+                    }
+                    else {
+                        SoundManager.GetSoundInstance("crystal_charge").Play();
                     }
                 }
             }
