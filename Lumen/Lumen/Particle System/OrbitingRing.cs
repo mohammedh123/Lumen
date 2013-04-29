@@ -82,48 +82,7 @@ namespace Lumen.Particle_System
                           });
             }
         }
-
-        public void SetSatelliteCount(int n)
-        {
-            var diff = n - Satellites.Count;
-            var originalCount = Satellites.Count;
-            var newAngleDiff = MathHelper.TwoPi/n;
-
-            if (n <= 0)
-                Satellites.Clear();
-            else if (diff < 0) {
-                Satellites.RemoveRange(Satellites.Count + diff - 1, n);
-            }
-            else if (diff > 0) {
-                for (int i = 0; i < diff; i++)
-                {
-                    Satellites.Add(new OrbitingParticle(TextureManager.GetTexture(_textureKey), _textureRect,
-                        TextureManager.GetOrigin(_textureKey), _orbitTarget, _radius,
-                        _orbitPeriod, newAngleDiff*i)
-                    {
-                        Alpha = 1.0f,
-                        Scale = _particleScale,
-                        Angle = 0.0f,
-                        Color = Color.White
-                    });
-                }
-
-                for (int i = 0; i < n; i++) {
-                    if (i < originalCount) {
-                        if (originalCount > 0)
-                            Satellites[i].Angle -= i*((MathHelper.TwoPi/originalCount) - (MathHelper.TwoPi/n));
-                    }
-                    else {
-                        if(originalCount > 0)
-                            Satellites[i].Angle = Satellites[i - 1].Angle + newAngleDiff;
-                        else {
-                            Satellites[i].Angle = newAngleDiff*i;
-                        }
-                    }
-                }
-            }
-        }
-
+        
         public void Update(float dt)
         {
             foreach(var orb in Satellites)

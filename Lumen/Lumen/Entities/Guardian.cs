@@ -79,7 +79,8 @@ namespace Lumen.Entities
             Health = Int32.MaxValue;
             EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
 
-            OrbitRing = new OrbitingRing(0, 2, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
+            OrbitRing = new OrbitingRing(0, 20, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
+            OrbitRing.IsVisible = false;
         }
 
         public override void Update(float dt)
@@ -94,8 +95,6 @@ namespace Lumen.Entities
 #endif
             ProcessControllerInput(dt);
 
-            OrbitRing.Update(dt);
-
             if(IsChargingUp) {
                 _chargingTimer += dt;
                 SetOrbitRingProperties(true);
@@ -104,7 +103,9 @@ namespace Lumen.Entities
                 _chargingTimer = 0.0f;
             }
 
-            if(IsAttacking) {
+            if (IsAttacking)
+            {
+                Velocity = Vector2.Zero;
                 _attackTimer += dt;
                 SetOrbitRingProperties(true);
                 if(_attackTimer >= GameVariables.EnemyAttackTotalDuration)
@@ -114,23 +115,22 @@ namespace Lumen.Entities
                 _attackTimer = -1.0f;
             }
 
+            if (Velocity != Vector2.Zero)
+                Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
+
             if(!IsChargingUp)// || IsChargingUp && EnergyRemaining == 0)
                 EnergyRemaining = Math.Min(GameVariables.EnemyAttackMaxRadius, EnergyRemaining + GameVariables.EnemyEnergyRegeneration*dt);
 
             _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
 
+            OrbitRing.Update(dt);
         }
 
         private void SetOrbitRingProperties(bool visible)
         {
             OrbitRing.IsVisible = visible;
-            OrbitRing.Radius = IsAttacking ? LightRadius : InternalAttackRadius;
+            OrbitRing.Radius = IsAttacking ? LightRadius : FinalRadiusOfAttack;
             OrbitRing.OrbitPeriod = MathHelper.Lerp(1.0f, 0.2f, OrbitRing.Radius / GameVariables.EnemyAttackMaxRadius);
-
-            var potentialNewSatCount = (int) (OrbitRing.Radius/50.0f);
-            if(potentialNewSatCount != OrbitRing.Satellites.Count) {
-                OrbitRing.SetSatelliteCount(potentialNewSatCount);
-            }
         }
 
         public override void Draw(SpriteBatch sb)
@@ -154,12 +154,6 @@ namespace Lumen.Entities
             var speedToUse = !IsChargingUp ? GameVariables.EnemySpeed : ChargingSpeed;
 
             AdjustVelocity(changeLeft.X * speedToUse * dt, -changeLeft.Y * speedToUse * dt);
-
-            if (IsAttacking)
-                Velocity = Vector2.Zero;
-
-            if (Velocity != Vector2.Zero)
-                Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
         }
 
         public void ProcessKeyDownAction(float dt)
