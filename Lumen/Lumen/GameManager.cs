@@ -191,16 +191,15 @@ namespace Lumen
 
         public void SpawnCrystalUniformly()
         {
-            var rectToTry = new Rectangle(150, 0, (int) _gameResolution.X-16, (int) _gameResolution.Y - 100);
+            var rectToTry = new Rectangle(150, 0, (int) _gameResolution.X-16-150, (int) _gameResolution.Y - 100);
             var pt = GameDriver.GetPointWithinRect(rectToTry);
 
             if (!Props.Any(p => p is Crystal)) {
                 AddCrystal(pt);
             }
             else {
-                var crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v,
-                                                                                 v => (pt - v.Position).LengthSquared());
-                var closestCrystalDistance = crystalLengths.Values.Min();
+                var crystalLengths = Props.Where(p => p is Crystal).Select(v => (pt - v.Position).LengthSquared()).ToList();
+                var closestCrystalDistance = crystalLengths.Min();
 
                 var bestAttempt = Vector2.Zero;
 
@@ -212,13 +211,11 @@ namespace Lumen
                     for (int i = 0; i < GameVariables.CrystalSpawningMaxAttempts; i++) {
                         pt = GameDriver.GetPointWithinRect(rectToTry);
 
-                        crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v,
-                                                                                     v =>
-                                                                                     (pt - v.Position).LengthSquared());
+                        crystalLengths = Props.Where(p => p is Crystal).Select(v => (pt - v.Position).LengthSquared()).ToList();
 
-                        if (crystalLengths.Min().Value > closestCrystalDistance) {
+                        if (crystalLengths.Min() > closestCrystalDistance) {
                             //if this new point results in a better fit then all the other ones, then we will use this if we exhaust the search
-                            closestCrystalDistance = crystalLengths.Min().Value;
+                            closestCrystalDistance = crystalLengths.Min();
                             bestAttempt = pt;
                         }
 
