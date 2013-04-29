@@ -182,9 +182,44 @@ namespace Lumen
 
             Props.RemoveAll(p => p is Crystal);
 
-            for (var i = 0; i < GameVariables.CrystalsToSpawn(RoundNumber); i++)
+            for (var i = 0; i < GameVariables.CrystalsToSpawn(RoundNumber); i++) {
+                SpawnCrystalUniformly();
+            }
+        }
+
+        private void SpawnCrystalUniformly()
+        {
+            var rectToTry = new Rectangle(150, 0, (int) _gameResolution.X-16, (int) _gameResolution.Y - 100);
+            var pt = GameDriver.GetPointWithinRect(rectToTry);
+
+            var crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v, v => (pt-v.Position).LengthSquared());
+            var closestCrystal = crystalLengths.Min();
+
+            var bestAttempt = Vector2.Zero;
+
+            if (closestCrystal.Value >= GameVariables.CrystalMinimumSpawnDistanceBetween * GameVariables.CrystalMinimumSpawnDistanceBetween)
+                AddCrystal(pt);
+            else
             {
-                AddCrystal(new Vector2(GameDriver.RandomGen.Next(16, (int)_gameResolution.X), GameDriver.RandomGen.Next(16, (int)_gameResolution.Y)));
+                for (int i = 0; i < GameVariables.CrystalSpawningMaxAttempts; i++) {
+                    pt = GameDriver.GetPointWithinRect(rectToTry);
+
+                    crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v, v => (pt - v.Position).LengthSquared());
+
+                    if(crystalLengths.Min().Value > closestCrystal.Value) {
+                        //if this new point results in a better fit then all the other ones, then we will use this if we exhaust the search
+                        closestCrystal = crystalLengths.Min();
+                        bestAttempt = pt;
+                    }
+
+                    if (closestCrystal.Value >= GameVariables.CrystalMinimumSpawnDistanceBetween * GameVariables.CrystalMinimumSpawnDistanceBetween)
+                    {
+                        AddCrystal(pt);
+                        break;
+                    }
+                }
+
+                AddCrystal(bestAttempt);
             }
         }
 

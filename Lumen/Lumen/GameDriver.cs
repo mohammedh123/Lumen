@@ -136,10 +136,34 @@ namespace Lumen
                 }
             }
 
-            for (var i = 0; i < GameVariables.CrystalsToSpawn(_gameManager.RoundNumber); i++)
-            {
-                _gameManager.AddCrystal(new Vector2(RandomGen.Next(16, (int)DisplayResolution.X), RandomGen.Next(16, (int)DisplayResolution.Y)));
+            for (var i = 0; i < GameVariables.CrystalsToSpawn(_gameManager.RoundNumber); i++) {
+                var pt = GetPointWithinRect(new Rectangle(150, 0, (int)DisplayResolution.X, (int)DisplayResolution.Y-100));
+
+                _gameManager.AddCrystal(pt);
             }
+        }
+
+        public static Vector2 GetPointWithinRect(Rectangle rect)
+        {
+            var g = rect.Width > rect.Height ? rect.Height : rect.Width;
+            var a = rect.Width;
+            var b = rect.Height;
+            int am, bm;
+
+            if(a > b) {
+                bm = g;
+                am = (int)Math.Floor((double)g*a/b);
+            }
+            else
+            {
+                am = g;
+                bm = (int)Math.Floor((double)g * b / a);
+            }
+
+            var av = a*RandomGen.Next(0, am)/(float)am;
+            var bv = b*RandomGen.Next(0, bm)/(float) bm;
+
+            return new Vector2(rect.X + av, rect.Y + bv);
         }
 #endif
 

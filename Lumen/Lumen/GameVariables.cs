@@ -47,6 +47,9 @@ namespace Lumen
         public static float CrystalGlowRadius = 120.0f;
         public static float CrystalMaxVibration = 0.8f;
 
+        public static float CrystalMinimumSpawnDistanceBetween = 50.0f;
+        public static int CrystalSpawningMaxAttempts = 100;
+
         public static Matrix CameraZoomMatrix
         {
             get { return Matrix.CreateScale(CameraZoom); }
