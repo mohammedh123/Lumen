@@ -61,9 +61,6 @@ namespace Lumen
                 MediaPlayer.Play(song);
 
             if (State == GameState.StillGoing) {
-                ParticleSystemManager.Instance.Update(dt, _gameResolution);
-                LightSpawner.Instance.Update(dt);
-
                 //iterate through all entities and update them (their deltas will be set at the end of update)
                 foreach (var player in Players) {
                     player.Update(dt);
@@ -75,9 +72,6 @@ namespace Lumen
 
                 Guardian.Update(dt);
 
-                foreach (var prop in Props)
-                    prop.Update(dt);
-
                 HandlePropsToBeRemoved();
                 HandlePropsToBeAdded(dt);
 
@@ -85,13 +79,18 @@ namespace Lumen
                 
                 SetPlayerCrystalVibration(Guardian);
                 ResolveOutOfBoundsCollision(Guardian);
+                Guardian.OrbitRing.Update(dt);
+
+                foreach (var prop in Props)
+                    prop.Update(dt);
+
                 Guardian.ResetVelocity();
 
                 for (int i = 0; i < Players.Count; i++) {
                     var player = Players[i];
 
                     ResolveOutOfBoundsCollision(player);
-
+                    player.OrbitRing.Update(dt);
                     ResolveCollisionAgainstEnemy(player);
 
                     player.ResetVelocity();
@@ -118,6 +117,9 @@ namespace Lumen
                 }
 
                 HandlePropCollision();
+
+                ParticleSystemManager.Instance.Update(dt, _gameResolution);
+                LightSpawner.Instance.Update(dt);
             }
             else if(State == GameState.PlayersWin) {
                 TimeTillNextRound -= dt;
@@ -192,34 +194,44 @@ namespace Lumen
             var rectToTry = new Rectangle(150, 0, (int) _gameResolution.X-16, (int) _gameResolution.Y - 100);
             var pt = GameDriver.GetPointWithinRect(rectToTry);
 
-            var crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v, v => (pt-v.Position).LengthSquared());
-            var closestCrystal = crystalLengths.Min();
-
-            var bestAttempt = Vector2.Zero;
-
-            if (closestCrystal.Value >= GameVariables.CrystalMinimumSpawnDistanceBetween * GameVariables.CrystalMinimumSpawnDistanceBetween)
+            if (!Props.Any(p => p is Crystal)) {
                 AddCrystal(pt);
-            else
-            {
-                for (int i = 0; i < GameVariables.CrystalSpawningMaxAttempts; i++) {
-                    pt = GameDriver.GetPointWithinRect(rectToTry);
+            }
+            else {
+                var crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v,
+                                                                                 v => (pt - v.Position).LengthSquared());
+                var closestCrystalDistance = crystalLengths.Values.Min();
 
-                    crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v, v => (pt - v.Position).LengthSquared());
+                var bestAttempt = Vector2.Zero;
 
-                    if(crystalLengths.Min().Value > closestCrystal.Value) {
-                        //if this new point results in a better fit then all the other ones, then we will use this if we exhaust the search
-                        closestCrystal = crystalLengths.Min();
-                        bestAttempt = pt;
-                    }
-
-                    if (closestCrystal.Value >= GameVariables.CrystalMinimumSpawnDistanceBetween * GameVariables.CrystalMinimumSpawnDistanceBetween)
-                    {
-                        AddCrystal(pt);
-                        break;
-                    }
+                if (closestCrystalDistance >=
+                    GameVariables.CrystalMinimumSpawnDistanceBetween*GameVariables.CrystalMinimumSpawnDistanceBetween) {
+                    AddCrystal(pt);
                 }
+                else {
+                    for (int i = 0; i < GameVariables.CrystalSpawningMaxAttempts; i++) {
+                        pt = GameDriver.GetPointWithinRect(rectToTry);
 
-                AddCrystal(bestAttempt);
+                        crystalLengths = Props.Where(p => p is Crystal).ToDictionary(v => v,
+                                                                                     v =>
+                                                                                     (pt - v.Position).LengthSquared());
+
+                        if (crystalLengths.Min().Value > closestCrystalDistance) {
+                            //if this new point results in a better fit then all the other ones, then we will use this if we exhaust the search
+                            closestCrystalDistance = crystalLengths.Min().Value;
+                            bestAttempt = pt;
+                        }
+
+                        if (closestCrystalDistance >=
+                            GameVariables.CrystalMinimumSpawnDistanceBetween*
+                            GameVariables.CrystalMinimumSpawnDistanceBetween) {
+                            AddCrystal(pt);
+                            break;
+                        }
+                    }
+
+                    AddCrystal(bestAttempt);
+                }
             }
         }
 
@@ -537,7 +549,7 @@ namespace Lumen
 
         public IEnumerable<ILightProvider> GetLights()
         {
-            var lights = new List<ILightProvider>();
+            var lights = new List<ILightProvider>(50);
 
             foreach(var prop in Props) {
                 var asLight = prop as ILightProvider;

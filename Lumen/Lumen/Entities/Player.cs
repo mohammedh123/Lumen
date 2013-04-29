@@ -67,7 +67,6 @@ namespace Lumen.Entities
             }
 #endif
             ProcessControllerInput(dt);
-            OrbitRing.Update(dt);
 
             if(IsLightOn)
             {

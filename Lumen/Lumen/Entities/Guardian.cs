@@ -122,8 +122,6 @@ namespace Lumen.Entities
                 EnergyRemaining = Math.Min(GameVariables.EnemyAttackMaxRadius, EnergyRemaining + GameVariables.EnemyEnergyRegeneration*dt);
 
             _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
-
-            OrbitRing.Update(dt);
         }
 
         private void SetOrbitRingProperties(bool visible)
