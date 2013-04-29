@@ -187,7 +187,7 @@ namespace Lumen
             }
         }
 
-        private void SpawnCrystalUniformly()
+        public void SpawnCrystalUniformly()
         {
             var rectToTry = new Rectangle(150, 0, (int) _gameResolution.X-16, (int) _gameResolution.Y - 100);
             var pt = GameDriver.GetPointWithinRect(rectToTry);

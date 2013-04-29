@@ -137,9 +137,7 @@ namespace Lumen
             }
 
             for (var i = 0; i < GameVariables.CrystalsToSpawn(_gameManager.RoundNumber); i++) {
-                var pt = GetPointWithinRect(new Rectangle(150, 0, (int)DisplayResolution.X, (int)DisplayResolution.Y-100));
-
-                _gameManager.AddCrystal(pt);
+                _gameManager.SpawnCrystalUniformly();
             }
         }
 
