@@ -25,7 +25,7 @@ namespace Lumen.Entities
 
         public OrbitingRing OrbitRing;
 
-        private float _lightVisibilityTimer = -1.0f;
+        private float _lightVisibilityTimer = -1.0f, _lightModulationSoundTimer = 0.0f;
         
         public bool IsLightOn
         {
@@ -72,7 +72,11 @@ namespace Lumen.Entities
             if(IsLightOn)
             {
                 _lightVisibilityTimer += dt;
-                SoundManager.GetSound("player_light").Play();
+                _lightModulationSoundTimer += dt;
+                SoundManager.GetSound("player_light").Play(1.0f,0.5f*(float)Math.Sin(_lightModulationSoundTimer*3.0f),0);
+            }
+            else {
+                _lightModulationSoundTimer = 0.0f;
             }
                 
             if (AttachedLight != null) AttachedLight.IsVisible = IsLightOn;
