@@ -72,7 +72,8 @@ namespace Lumen.Entities
             {
                 _lightVisibilityTimer += dt;
                 _lightModulationSoundTimer += dt;
-                SoundManager.GetSound("player_light").Play(1.0f,0.5f*(float)Math.Sin(_lightModulationSoundTimer*3.0f),0);
+                if(_lightModulationSoundTimer <= MathHelper.TwoPi/3)
+                SoundManager.GetSound("player_light").Play(1.0f,0.25f*(float)Math.Cos(_lightModulationSoundTimer*3.0f),0);
             }
             else {
                 _lightModulationSoundTimer = 0.0f;
