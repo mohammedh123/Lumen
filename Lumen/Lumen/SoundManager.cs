@@ -71,7 +71,27 @@ namespace Lumen
 
             var playerHitSound = contentManager.Load<SoundEffect>("player_hit");
             _soundDetails.Add("player_hit", playerHitSound);
-            _soundInstances.Add("player_hit", playerHitSound.CreateInstance());
+            _soundInstances.Add("player_hit", playerHitSound.CreateInstance()); 
+            
+            var guardianChargeSound = contentManager.Load<SoundEffect>("guardian_charge");
+            _soundDetails.Add("guardian_charge", guardianChargeSound);
+            _soundInstances.Add("guardian_charge", guardianChargeSound.CreateInstance());
+
+            var guardianReleaseSound = contentManager.Load<SoundEffect>("guardian_release");
+            _soundDetails.Add("guardian_release", guardianReleaseSound);
+            _soundInstances.Add("guardian_release", guardianReleaseSound.CreateInstance());
+
+            var playerLightSound = contentManager.Load<SoundEffect>("player_light");
+            _soundDetails.Add("player_light", playerLightSound);
+            _soundInstances.Add("player_light", playerLightSound.CreateInstance());
+
+            var crystalChargeSound = contentManager.Load<SoundEffect>("crystal_charge");
+            _soundDetails.Add("crystal_charge", crystalChargeSound);
+            _soundInstances.Add("crystal_charge", crystalChargeSound.CreateInstance());
+
+            var crystalHitSound = contentManager.Load<SoundEffect>("crystal_hit");
+            _soundDetails.Add("crystal_hit", crystalHitSound);
+            _soundInstances.Add("crystal_hit", crystalHitSound.CreateInstance());
         }
     }
 }
