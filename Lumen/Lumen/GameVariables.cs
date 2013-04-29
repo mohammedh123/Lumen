@@ -71,7 +71,7 @@ namespace Lumen
         public static int FinalCrystalBuffer = 2;
 
         public static float ScreenShakeAmount = 0.0f;
-        public const float MaxScreenShake = 10.0f;
+        public const float MaxScreenShake = 0.0f;
 
         public static float UIScale = 0.25f;
     }

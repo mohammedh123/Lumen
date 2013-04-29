@@ -7,31 +7,17 @@
 - Start button/select button instead of R and T
 
 - Guardian charging => wisps around it
+- Guardian attack stops channeling
 
 Assets
 ------
 Art
-	- Player
 	- Guardian
 	- Crystal
-	- GUI overlay
-		-Player/Guardian portrait
-	- Logo/Title
-	- Screens:
-		- Title/Start
-		- Win
-		- Lose
+
 Sound
-	- Guardian attack
-	- Channeling
-	- Crystal ambience
-	- Ambient soundbed
-	- Channel success
-	- Death
 	- Win
 	- Lose
-	- Title screen
 	- Guardian energy depletion
 	- Guardian energy recharged to full
-	- Crystal moved
 	- "Footstep" (movement) noise
