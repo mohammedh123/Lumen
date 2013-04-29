@@ -502,11 +502,12 @@ namespace Lumen
                 }
             }
 
-            if(Guardian != null)
+            if (Guardian != null) {
                 lights.Add(Guardian);
+                lights.AddRange(Guardian.OrbitRing.GetLights());
+            }
 
             lights.AddRange(LightSpawner.Instance.GetLights());
-
             return lights;
         }
     }

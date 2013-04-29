@@ -11,7 +11,6 @@ namespace Lumen.Entities
     class Guardian : Entity, IControllerCapable, IKeyboardCapable, ILightProvider
     {
         public PlayerIndex ControllerIndex { get; set; }
-
         public Color LightColor { get; set; }
 
         public float LightRadius
@@ -28,7 +27,6 @@ namespace Lumen.Entities
         }
 
         public float LightIntensity { get; set; }
-
         public float EnergyRemaining { get; set; }
 
         public float InternalAttackRadius
@@ -50,6 +48,8 @@ namespace Lumen.Entities
         private float _chargingTimer = 0.0f;
         private float _chargeCooldown = 0.0f;
         private float _attackTimer = -1.0f;
+
+        public OrbitingRing OrbitRing;
 
         public List<Player> PlayersHitThisAttack = new List<Player>();
 
@@ -78,6 +78,8 @@ namespace Lumen.Entities
             LightIntensity = 1.0f;
             Health = Int32.MaxValue;
             EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
+
+            OrbitRing = new OrbitingRing(0, 2, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
         }
 
         public override void Update(float dt)
@@ -92,8 +94,11 @@ namespace Lumen.Entities
 #endif
             ProcessControllerInput(dt);
 
+            OrbitRing.Update(dt);
+
             if(IsChargingUp) {
                 _chargingTimer += dt;
+                SetOrbitRingProperties(true);
             }
             else {
                 _chargingTimer = 0.0f;
@@ -101,6 +106,7 @@ namespace Lumen.Entities
 
             if(IsAttacking) {
                 _attackTimer += dt;
+                SetOrbitRingProperties(true);
                 if(_attackTimer >= GameVariables.EnemyAttackTotalDuration)
                     StopAttack();
             }
@@ -115,10 +121,23 @@ namespace Lumen.Entities
 
         }
 
+        private void SetOrbitRingProperties(bool visible)
+        {
+            OrbitRing.IsVisible = visible;
+            OrbitRing.Radius = IsAttacking ? LightRadius : InternalAttackRadius;
+            OrbitRing.OrbitPeriod = MathHelper.Lerp(1.0f, 0.2f, OrbitRing.Radius / GameVariables.EnemyAttackMaxRadius);
+
+            var potentialNewSatCount = (int) (OrbitRing.Radius/50.0f);
+            if(potentialNewSatCount != OrbitRing.Satellites.Count) {
+                OrbitRing.SetSatelliteCount(potentialNewSatCount);
+            }
+        }
+
         public override void Draw(SpriteBatch sb)
         {
             base.Draw(sb);
-        }
+            OrbitRing.Draw(sb);
+        }   
         
         public void ProcessControllerInput(float dt)
         {
@@ -189,6 +208,7 @@ namespace Lumen.Entities
 
         private void StopAttack()
         {
+            OrbitRing.IsVisible = false;
             _attackTimer = -1.0f;
 
             LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 0.33333333333333333f);
