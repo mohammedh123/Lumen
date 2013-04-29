@@ -127,7 +127,7 @@ namespace Lumen.Entities
         private void SetOrbitRingProperties(bool visible)
         {
             OrbitRing.IsVisible = visible;
-            OrbitRing.Radius = IsAttacking ? LightRadius : FinalRadiusOfAttack;
+            OrbitRing.Radius = IsAttacking ? LightRadius : GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack;
             OrbitRing.OrbitPeriod = MathHelper.Lerp(1.0f, 0.2f, OrbitRing.Radius / GameVariables.EnemyAttackMaxRadius);
         }
 
@@ -231,10 +231,8 @@ namespace Lumen.Entities
 
                 EnergyRemaining = Math.Max(0,EnergyRemaining-radiusChange);
                 FinalRadiusOfAttack = Math.Min(GameVariables.EnemyAttackMaxRadius, FinalRadiusOfAttack+radiusChange);
-                if (SoundManager.GetSoundInstance("guardian_charge").State != Microsoft.Xna.Framework.Audio.SoundState.Playing)
-                {
-                    SoundManager.GetSoundInstance("guardian_charge").Play();
-                }
+                
+                SoundManager.GetSoundInstance("guardian_charge").Play();
             }
             else if(!IsAttacking) {
                 if(CanChargeUp) {

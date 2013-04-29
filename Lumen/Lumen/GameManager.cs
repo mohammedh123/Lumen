@@ -263,7 +263,7 @@ namespace Lumen
         private void ResolveCollisionAgainstEnemy(Player player)
         {
             //check player against the attack
-            if(Guardian.IsAttacking) {
+            if(Guardian.IsAttacking) {          
                 if(Collider.CirclesCollide(Guardian.Position, Guardian.LightRadius, player.Position, GameVariables.PlayerCollisionRadius)) {
                     if (!Guardian.PlayersHitThisAttack.Contains(player)) {
                         Guardian.PlayersHitThisAttack.Add(player);
