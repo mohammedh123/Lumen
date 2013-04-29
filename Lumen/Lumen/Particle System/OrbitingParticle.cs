@@ -30,7 +30,7 @@ namespace Lumen.Particle_System
         public OrbitingParticle(Texture2D tex, Rectangle texRect, Vector2 texOrigin, Entity e, float distFromCenter, float orbitPeriod, float startingAngle)
         {
             LightColor = Color.White;
-            LightRadius = 12.0f;
+            LightRadius = 8.0f;
             LightIntensity = 1.0f;
 
             _initialAngle = Angle = startingAngle;
