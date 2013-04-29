@@ -134,14 +134,20 @@ namespace Lumen
 
         private void HandleRestartInput()
         {
-            if(InputManager.KeyDown(Keys.R)) {
-                RoundNumber--;
-                StartNextRound();
-            }
-            else if(InputManager.KeyDown(Keys.T)) {
-                //restart
-                RoundNumber = 0;
-                StartNextRound();
+            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
+                if (GamePad.GetState(i).IsConnected) {
+                    if (InputManager.GamepadButtonDown(i, Buttons.Start)) {
+                        RoundNumber--;
+                        StartNextRound();
+                        return;
+                    }
+                    if(InputManager.GamepadButtonDown(i, Buttons.Back)) {
+                        //restart
+                        RoundNumber = 0;
+                        StartNextRound();
+                        return;
+                    }
+                }
             }
         }
 

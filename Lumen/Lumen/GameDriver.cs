@@ -286,7 +286,7 @@ namespace Lumen
             if (_gameManager.State == GameState.PlayersWin)
                 s = "Round won!\nNext round in: "+_gameManager.TimeTillNextRound.ToString("0.0");
             else if (_gameManager.State == GameState.EnemyWins)
-                s = "The guardian has won.\n(R) Retry?\n(T) Restart?";
+                s = "The guardian has won.\n(Start) Retry?\n(Back) Restart?";
 
             if (s != null)
             {
@@ -336,6 +336,7 @@ namespace Lumen
             var str = "player" + (player.IsAlive ? "" + player.PlayerSpriteIndex : "_dead") + "_portrait";
             _spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), GameVariables.UIScale, SpriteEffects.None, 0);
             _spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
+
             for (int i = 0; i < player.CrystalCount; i++)
             {
                 _spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 + 16 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale*2, SpriteEffects.None, 0);
