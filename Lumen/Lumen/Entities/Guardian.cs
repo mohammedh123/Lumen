@@ -215,6 +215,8 @@ namespace Lumen.Entities
             _chargingTimer = 0.0f;
             _attackTimer = -1.0f;
             _chargeCooldown = 0.0f;
+            OrbitRing.IsVisible = false;
+
             FinalRadiusOfAttack = 0.0f;
             PlayersHitThisAttack.Clear();
         }
