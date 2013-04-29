@@ -189,6 +189,8 @@ namespace Lumen.Entities
                 BeginAttack();
                 _chargingTimer = 0.0f;
             }
+            SoundManager.GetSoundInstance("guardian_charge").Stop();
+
         }
 
         private void BeginAttack()
@@ -196,6 +198,7 @@ namespace Lumen.Entities
             PlayersHitThisAttack.Clear();
 
             _attackTimer = 0.0f;
+            SoundManager.GetSoundInstance("guardian_release").Play();
         }
 
         private void StopAttack()
@@ -228,6 +231,10 @@ namespace Lumen.Entities
 
                 EnergyRemaining = Math.Max(0,EnergyRemaining-radiusChange);
                 FinalRadiusOfAttack = Math.Min(GameVariables.EnemyAttackMaxRadius, FinalRadiusOfAttack+radiusChange);
+                if (SoundManager.GetSoundInstance("guardian_charge").State != Microsoft.Xna.Framework.Audio.SoundState.Playing)
+                {
+                    SoundManager.GetSoundInstance("guardian_charge").Play();
+                }
             }
             else if(!IsAttacking) {
                 if(CanChargeUp) {

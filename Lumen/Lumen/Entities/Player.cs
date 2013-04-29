@@ -186,7 +186,7 @@ namespace Lumen.Entities
                     LightSpawner.Instance.AddStaticLight(orb.Position, 1.0f, 12.0f, 2.0f);
                 }
             }
-
+            ResetCollecting();
             ParticleSystemManager.Instance.FireParticleSystem("player_hit", Position.X, Position.Y);
         }
 
