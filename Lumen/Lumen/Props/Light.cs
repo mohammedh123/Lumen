@@ -2,6 +2,7 @@ using System;
 using Lumen.Entities;
 using Lumen.Light_System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Lumen.Props
 {
@@ -33,6 +34,10 @@ namespace Lumen.Props
         {
             if (EntityAttachedTo != null)
                 Position = EntityAttachedTo.Position;
+        }
+
+        public override void Draw(SpriteBatch sb)
+        {
         }
     }
 }
