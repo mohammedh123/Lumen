@@ -139,6 +139,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="GameDriver.cs" />
     <Compile Include="SoundManager.cs" />
+    <Compile Include="State Management\State.cs" />
+    <Compile Include="State Management\StateManager.cs" />
+    <Compile Include="States\GameOverState.cs" />
+    <Compile Include="States\MainGameState.cs" />
+    <Compile Include="States\MainMenuState.cs" />
     <Compile Include="TextureManager.cs" />
   </ItemGroup>
   <ItemGroup>
