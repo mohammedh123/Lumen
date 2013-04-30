@@ -79,7 +79,7 @@ namespace Lumen.Entities
             Health = Int32.MaxValue;
             EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
 
-            OrbitRing = new OrbitingRing(0, 20, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
+            OrbitRing = new OrbitingRing(0, 10, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
             OrbitRing.IsVisible = false;
         }
 

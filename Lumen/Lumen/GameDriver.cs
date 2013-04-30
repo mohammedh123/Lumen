@@ -224,7 +224,7 @@ namespace Lumen
             var playerHitParticleSystemInfo = new ParticleSystemInfo
             {
                 FiringDuration = 0.2f,
-                NumberOfParticlesPerSecond = 400.0f,
+                NumberOfParticlesPerSecond = 500.0f,
                 ParticleAngle = 0.1f,
                 ParticleAngleSpread = MathHelper.TwoPi,
                 ParticleAngularVelocityMin = 0.0f,
@@ -233,9 +233,9 @@ namespace Lumen
                 ParticleColorEnd = Color.White,
                 ParticleColorVariation = 0.5f,
                 ParticleLifetimeMin = 0.2f,
-                ParticleLifetimeMax = 0.5f,
+                ParticleLifetimeMax = 0.7f,
                 ParticleScaleMin = 0.7f,
-                ParticleScaleMax = 1.2f,
+                ParticleScaleMax = 1.5f,
                 ParticleVelocityMin = 50.0f,
                 ParticleVelocityMax = 170.0f,
                 Texture = TextureManager.GetTexture("hit_particle"),
@@ -347,7 +347,7 @@ namespace Lumen
         private void DrawEnemyInformation(Vector2 topLeft, float alpha)
         {
             _spriteBatch.Begin();
-            DrawingHelper.DrawHorizontalFilledBar(topLeft, _spriteBatch, Color.White*alpha, Color.Blue*alpha, 32, 8, 1, _gameManager.Guardian.EnergyRemaining/GameVariables.EnemyAttackMaxRadius);
+            //DrawingHelper.DrawHorizontalFilledBar(topLeft, _spriteBatch, Color.White*alpha, Color.Blue*alpha, 32, 8, 1, _gameManager.Guardian.EnergyRemaining/GameVariables.EnemyAttackMaxRadius);
             _spriteBatch.End();
         }
 
