@@ -42,197 +42,204 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="player.png">
+    <Compile Include="Textures\player.png">
       <Name>player</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LightDrawer.fx">
+    <Compile Include="Shaders\LightDrawer.fx">
       <Name>LightDrawer</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="background.png">
+    <Compile Include="Textures\background.png">
       <Name>background</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Combiner.fx">
+    <Compile Include="Shaders\Combiner.fx">
       <Name>Combiner</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="debug_font.spritefont">
+    <Compile Include="Fonts\debug_font.spritefont">
       <Name>debug_font</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="death_sound.wav">
+    <Compile Include="Sounds\death_sound.wav">
       <Name>death_sound</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
-    <Compile Include="footstep.wav">
+    <Compile Include="Sounds\footstep.wav">
       <Name>footstep</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bigFont.spritefont">
+    <Compile Include="Fonts\bigFont.spritefont">
       <Name>bigFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="crystal.png">
+    <Compile Include="Textures\crystal.png">
       <Name>crystal</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="blank.png">
+    <Compile Include="Textures\blank.png">
       <Name>blank</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="crystal_get.wav">
+    <Compile Include="Sounds\crystal_get.wav">
       <Name>crystal_get</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="guardian.png">
+    <Compile Include="Textures\guardian.png">
       <Name>guardian</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="player1.png">
+    <Compile Include="Textures\player1.png">
       <Name>player1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="player1_mini.png">
+    <Compile Include="Textures\player1_mini.png">
       <Name>player1_mini</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="player2.png">
+    <Compile Include="Textures\player2.png">
       <Name>player2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="player2_mini.png">
+    <Compile Include="Textures\player2_mini.png">
       <Name>player2_mini</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="player3.png">
+    <Compile Include="Textures\player3.png">
       <Name>player3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="player3_mini.png">
+    <Compile Include="Textures\player3_mini.png">
       <Name>player3_mini</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="player_portrait.png">
+    <Compile Include="Textures\player_portrait.png">
       <Name>player_portrait</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="player_hit.wav">
+    <Compile Include="Sounds\player_hit.wav">
       <Name>player_hit</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="health.png">
+    <Compile Include="Textures\health.png">
       <Name>health</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="player_orb.png">
+    <Compile Include="Textures\player_orb.png">
       <Name>player_orb</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="hit_particle.png">
+    <Compile Include="Textures\hit_particle.png">
       <Name>hit_particle</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="main_bgm.mp3">
+    <Compile Include="Sounds\main_bgm.mp3">
       <Name>main_bgm</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="guardian_charge.wav">
+    <Compile Include="Sounds\guardian_charge.wav">
       <Name>guardian_charge</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="guardian_release.wav">
+    <Compile Include="Sounds\guardian_release.wav">
       <Name>guardian_release</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="player_light.wav">
+    <Compile Include="Sounds\player_light.wav">
       <Name>player_light</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="crystal_charge.wav">
+    <Compile Include="Sounds\crystal_charge.wav">
       <Name>crystal_charge</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="crystal_hit.wav">
+    <Compile Include="Sounds\crystal_hit.wav">
       <Name>crystal_hit</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="player_dead.png">
+    <Compile Include="Textures\player_dead.png">
       <Name>player_dead</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\mainmenu_logo.png">
+      <Name>mainmenu_logo</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

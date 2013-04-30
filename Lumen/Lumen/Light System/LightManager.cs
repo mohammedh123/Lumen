@@ -13,22 +13,22 @@ namespace Lumen.Light_System
     class LightManager
     {
         private VertexPositionColorTexture[] _verts = { new VertexPositionColorTexture(), new VertexPositionColorTexture() };
-        private RenderTarget2D _accumulatorRT;
+        private RenderTarget2D _accumulatorRt;
         private Texture2D _screenTex;
-        private Effect _lightAccumulatorFX, _lightCombinerFX;
+        private Effect _lightAccumulatorFx, _lightCombinerFx;
         
         public void LoadContent(GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, ContentManager content)
         {
-            _lightAccumulatorFX = content.Load<Effect>("LightDrawer");
-            _lightCombinerFX = content.Load<Effect>("Combiner");
+            _lightAccumulatorFx = content.Load<Effect>("Shaders/LightDrawer");
+            _lightCombinerFx = content.Load<Effect>("Shaders/Combiner");
 
-            _accumulatorRT = new RenderTarget2D(graphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            _accumulatorRt = new RenderTarget2D(graphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             _screenTex = new Texture2D(graphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
         private void AccumulateLights(IEnumerable<ILightProvider> lights, SpriteBatch sb, GraphicsDevice graphicsDevice)
         {
-            graphicsDevice.SetRenderTarget(_accumulatorRT);
+            graphicsDevice.SetRenderTarget(_accumulatorRt);
             graphicsDevice.Clear(Color.Black);
 
 
@@ -36,15 +36,15 @@ namespace Lumen.Light_System
             {
                 if (!light.IsVisible) continue;
 
-                sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFX, GameVariables.CameraZoomMatrix);
-                var normalizedPosition = new Vector2(light.Position.X / _accumulatorRT.Width,
-                                                     light.Position.Y / _accumulatorRT.Height);
+                sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFx, GameVariables.CameraZoomMatrix);
+                var normalizedPosition = new Vector2(light.Position.X / _accumulatorRt.Width,
+                                                     light.Position.Y / _accumulatorRt.Height);
 
-                _lightAccumulatorFX.Parameters["lightPosition"].SetValue(normalizedPosition);
-                _lightAccumulatorFX.Parameters["lightRadius"].SetValue(light.LightRadius);
-                _lightAccumulatorFX.Parameters["lightIntensity"].SetValue(light.LightIntensity);
+                _lightAccumulatorFx.Parameters["lightPosition"].SetValue(normalizedPosition);
+                _lightAccumulatorFx.Parameters["lightRadius"].SetValue(light.LightRadius);
+                _lightAccumulatorFx.Parameters["lightIntensity"].SetValue(light.LightIntensity);
 
-                sb.Draw(_screenTex, new Rectangle(0, 0, _accumulatorRT.Width, _accumulatorRT.Height), Color.White);
+                sb.Draw(_screenTex, new Rectangle(0, 0, _accumulatorRt.Width, _accumulatorRt.Height), Color.White);
                 sb.End();
             }
             
@@ -61,16 +61,16 @@ namespace Lumen.Light_System
 
         public Texture2D GetAccumulatedLights()
         {
-            return _accumulatorRT;
+            return _accumulatorRt;
         }
 
         public void DrawLightDarkness(GraphicsDevice graphicsDevice, SpriteBatch sb, RenderTarget2D sceneRt)
         {
             graphicsDevice.SetRenderTarget(null);
 
-            sb.Begin(SpriteSortMode.Immediate, null, null, null, null, _lightCombinerFX);
+            sb.Begin(SpriteSortMode.Immediate, null, null, null, null, _lightCombinerFx);
 
-            sb.Draw(_accumulatorRT, new Rectangle(0, 0, _accumulatorRT.Width, _accumulatorRT.Height), Color.White);
+            sb.Draw(_accumulatorRt, new Rectangle(0, 0, _accumulatorRt.Width, _accumulatorRt.Height), Color.White);
 
             sb.End();
         }
