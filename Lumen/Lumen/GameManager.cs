@@ -126,11 +126,23 @@ namespace Lumen
 
                 if(TimeTillNextRound <= 0.0f) {
                     TimeTillNextRound = 0.0f;
+                    RoundNumber++;
                     StartNextRound();
                 }
             }
             else if(State == GameState.EnemyWins) {
-                HandleRestartInput();
+                //HandleRestartInput();
+                TimeTillNextRound -= dt;
+
+                if (TimeTillNextRound <= 0.0f)
+                {
+                    TimeTillNextRound = 0.0f;
+                    if (RoundNumber > 1)
+                        RoundNumber--;
+
+                    StartNextRound();
+                }
+
             }
         }
 
@@ -155,7 +167,7 @@ namespace Lumen
 
         private void StartNextRound()
         {
-            RoundNumber++;
+            //RoundNumber++;
             State = GameState.StillGoing;
 
             foreach(var kvp in DeadPlayers) {
@@ -357,7 +369,7 @@ namespace Lumen
         {
             if (CrystalsRemaining == 0) {
                 State = GameState.PlayersWin;
-                TimeTillNextRound = 5.0f;
+                TimeTillNextRound = 3.0f;
 
                 foreach (var player in Players)
                     GamePad.SetVibration(player.ControllerIndex, 0, 0);
@@ -504,7 +516,10 @@ namespace Lumen
         public void KillPlayer(Player player)
         {
             if (Players.Count == 1)
+            {
                 State = GameState.EnemyWins;
+                TimeTillNextRound = 3.0f;
+            }
 
             if(player.CollectionTarget != null)
                 player.ResetCollecting();
