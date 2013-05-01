@@ -199,6 +199,7 @@ namespace Lumen.Entities
 
             _attackTimer = 0.0f;
             SoundManager.GetSoundInstance("guardian_release").Play();
+            ParticleSystemManager.Instance.FireParticleSystem("guardian_attack", Position.X, Position.Y);
         }
 
         private void StopAttack()
@@ -206,7 +207,7 @@ namespace Lumen.Entities
             OrbitRing.IsVisible = false;
             _attackTimer = -1.0f;
 
-            LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 0.33333333333333333f);
+            LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 0.10f);
 
             FinalRadiusOfAttack = 0.0f;
         }

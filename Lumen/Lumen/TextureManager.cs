@@ -64,24 +64,28 @@ namespace Lumen
 
         private static void LoadTextureInformation(ContentManager contentManager)
         {
-            _textureDetails.Add("blank", new TextureDetails(contentManager.Load<Texture2D>("blank"), new Vector2(12, 12)));
-            _textureDetails.Add("player_portrait", new TextureDetails(contentManager.Load<Texture2D>("player_portrait"), new Vector2(64, 64)));
-            _textureDetails.Add("player_dead_portrait", new TextureDetails(contentManager.Load<Texture2D>("player_dead"), new Vector2(64, 64)));
-            _textureDetails.Add("player1_portrait", new TextureDetails(contentManager.Load<Texture2D>("player1"), new Vector2(64, 64)));
-            _textureDetails.Add("player2_portrait", new TextureDetails(contentManager.Load<Texture2D>("player2"), new Vector2(64, 64)));
-            _textureDetails.Add("player3_portrait", new TextureDetails(contentManager.Load<Texture2D>("player3"), new Vector2(64, 64)));
-            _textureDetails.Add("player1", new TextureDetails(contentManager.Load<Texture2D>("player1_mini"), new Vector2(16, 16)));
-            _textureDetails.Add("player2", new TextureDetails(contentManager.Load<Texture2D>("player2_mini"), new Vector2(16, 16)));
-            _textureDetails.Add("player3", new TextureDetails(contentManager.Load<Texture2D>("player3_mini"), new Vector2(16, 16)));
-            _textureDetails.Add("guardian", new TextureDetails(contentManager.Load<Texture2D>("guardian"), new Vector2(32, 32)));
-            _textureDetails.Add("player_orb", new TextureDetails(contentManager.Load<Texture2D>("player_orb"), new Vector2(8, 8)));
-            _textureDetails.Add("crystal", new TextureDetails(contentManager.Load<Texture2D>("crystal"), new Vector2(16, 16)));
-            _textureDetails.Add("health", new TextureDetails(contentManager.Load<Texture2D>("health"), new Vector2(16, 16)));
-            _textureDetails.Add("hit_particle", new TextureDetails(contentManager.Load<Texture2D>("hit_particle"), new Vector2(1, 1)));
-            _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("background"), new Vector2(512, 384)));
+            //main game state textures
+            _textureDetails.Add("blank", new TextureDetails(contentManager.Load<Texture2D>("Textures/blank"), new Vector2(12, 12)));
+            _textureDetails.Add("player_portrait", new TextureDetails(contentManager.Load<Texture2D>("Textures/player_portrait"), new Vector2(64, 64)));
+            _textureDetails.Add("player_dead_portrait", new TextureDetails(contentManager.Load<Texture2D>("Textures/player_dead"), new Vector2(64, 64)));
+            _textureDetails.Add("player1_portrait", new TextureDetails(contentManager.Load<Texture2D>("Textures/player1"), new Vector2(64, 64)));
+            _textureDetails.Add("player2_portrait", new TextureDetails(contentManager.Load<Texture2D>("Textures/player2"), new Vector2(64, 64)));
+            _textureDetails.Add("player3_portrait", new TextureDetails(contentManager.Load<Texture2D>("Textures/player3"), new Vector2(64, 64)));
+            _textureDetails.Add("player1", new TextureDetails(contentManager.Load<Texture2D>("Textures/player1_mini"), new Vector2(16, 16)));
+            _textureDetails.Add("player2", new TextureDetails(contentManager.Load<Texture2D>("Textures/player2_mini"), new Vector2(16, 16)));
+            _textureDetails.Add("player3", new TextureDetails(contentManager.Load<Texture2D>("Textures/player3_mini"), new Vector2(16, 16)));
+            _textureDetails.Add("guardian", new TextureDetails(contentManager.Load<Texture2D>("Textures/guardian"), new Vector2(32, 32)));
+            _textureDetails.Add("player_orb", new TextureDetails(contentManager.Load<Texture2D>("Textures/player_orb"), new Vector2(8, 8)));
+            _textureDetails.Add("crystal", new TextureDetails(contentManager.Load<Texture2D>("Textures/crystal"), new Vector2(16, 16)));
+            _textureDetails.Add("health", new TextureDetails(contentManager.Load<Texture2D>("Textures/health"), new Vector2(16, 16)));
+            _textureDetails.Add("hit_particle", new TextureDetails(contentManager.Load<Texture2D>("Textures/hit_particle"), new Vector2(1, 1)));
+            _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("Textures/background"), new Vector2(512, 384)));
 
-            _fontDetails.Add("debug", contentManager.Load<SpriteFont>("debug_font"));
-            _fontDetails.Add("big", contentManager.Load<SpriteFont>("bigFont"));
+            //main menu state textures
+            _textureDetails.Add("mainmenu_logo", new TextureDetails(contentManager.Load<Texture2D>("Textures/mainmenu_logo"), new Vector2(357, 117)));
+
+            _fontDetails.Add("debug", contentManager.Load<SpriteFont>("Fonts/debug_font"));
+            _fontDetails.Add("big", contentManager.Load<SpriteFont>("Fonts/bigFont"));
         }
     }
 }
