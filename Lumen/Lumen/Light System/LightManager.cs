@@ -17,13 +17,13 @@ namespace Lumen.Light_System
         private Texture2D _screenTex;
         private Effect _lightAccumulatorFx, _lightCombinerFx;
         
-        public void LoadContent(GraphicsDeviceManager graphics, GraphicsDevice graphicsDevice, ContentManager content)
+        public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content, int width, int height)
         {
             _lightAccumulatorFx = content.Load<Effect>("Shaders/LightDrawer");
             _lightCombinerFx = content.Load<Effect>("Shaders/Combiner");
 
-            _accumulatorRt = new RenderTarget2D(graphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            _screenTex = new Texture2D(graphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            _accumulatorRt = new RenderTarget2D(graphicsDevice, width, height);
+            _screenTex = new Texture2D(graphicsDevice, width, height);
         }
 
         private void AccumulateLights(IEnumerable<ILightProvider> lights, SpriteBatch sb, GraphicsDevice graphicsDevice)

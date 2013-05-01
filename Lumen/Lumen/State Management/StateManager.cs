@@ -34,6 +34,7 @@ namespace Lumen.State_Management
         
         public void PushState(State state)
         {
+            state.LoadContent(Game.Content, Game.GraphicsDevice);
             state.Initialize(Game);
             _states.Add(state);
         }
@@ -57,11 +58,11 @@ namespace Lumen.State_Management
             while (PopState() != null);
         }
 
-        public void Update(double delta)
+        public void Update(GameTime gameTime)
         {
             if (_states.Count > 0)
             {
-                _states[_states.Count - 1].Update(delta);
+                _states[_states.Count - 1].Update(gameTime);
             }
         }
 
