@@ -27,7 +27,6 @@ namespace Lumen
         public static float EnemyEnergyRegeneration = 20.0f;
         public static float EnemySpeedWhileCharging = 30.0f;
 
-        public static float PlayerVibrationDetectionRadius = 100.0f;
         public static bool IsScreenWrapping = false;
 
         public static float CameraZoom = 1.0f;
@@ -45,7 +44,6 @@ namespace Lumen
         public static float CrystalCollectionTime = 3.0f;
         public static int CrystalHarvestRequirement = 3;
         public static float CrystalGlowRadius = 120.0f;
-        public static float CrystalMaxVibration = 0.8f;
 
         public static float CrystalMinimumSpawnDistanceBetween = 50.0f;
         public static int CrystalSpawningMaxAttempts = 100;
