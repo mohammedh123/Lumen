@@ -18,7 +18,7 @@ namespace Lumen.Entities
             get
             {
                 if(IsAttacking) {
-                    return GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack * (_attackTimer / GameVariables.EnemyAttackTotalDuration);
+                    return ChargingAttackRadius * (_attackTimer / GameVariables.EnemyAttackTotalDuration);
                 }
 
                 return IsChargingUp ? GameVariables.EnemyLightRadiusWhileCharging : 0.0f;
@@ -28,6 +28,11 @@ namespace Lumen.Entities
 
         public float LightIntensity { get; set; }
         public float EnergyRemaining { get; set; }
+
+        public float ChargingAttackRadius
+        {
+            get { return (GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack); }
+        }
 
         public float InternalAttackRadius
         {
@@ -127,7 +132,7 @@ namespace Lumen.Entities
         private void SetOrbitRingProperties(bool visible)
         {
             OrbitRing.IsVisible = visible;
-            OrbitRing.Radius = IsAttacking ? LightRadius : GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack;
+            OrbitRing.Radius = IsAttacking ? LightRadius : ChargingAttackRadius;
             OrbitRing.OrbitPeriod = MathHelper.Lerp(1.0f, 0.2f, OrbitRing.Radius / GameVariables.EnemyAttackMaxRadius);
         }
 
@@ -207,7 +212,7 @@ namespace Lumen.Entities
             OrbitRing.IsVisible = false;
             _attackTimer = -1.0f;
 
-            LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 0.10f);
+            LightSpawner.Instance.AddStaticLight(Position, 1.0f, ChargingAttackRadius, 0.10f);
 
             FinalRadiusOfAttack = 0.0f;
         }

@@ -104,16 +104,24 @@ namespace Lumen
                 if (isEnemyMoving)
                     SoundManager.GetSoundInstance("footstep").Play();
                 if (Guardian != null) {
-                    if (Guardian.IsChargingUp)
+                    if (Guardian.IsChargingUp) {
                         GameVariables.ScreenShakeAmount = GameVariables.MaxScreenShake*
-                                                          (Guardian.InternalAttackRadius/
+                                                          (Guardian.ChargingAttackRadius/
                                                            GameVariables.EnemyAttackMaxRadius);
-                    else if (Guardian.IsAttacking)
+                        GamePad.SetVibration(Guardian.ControllerIndex,
+                                             (Guardian.ChargingAttackRadius/GameVariables.EnemyAttackMaxRadius),
+                                             (Guardian.InternalAttackRadius/GameVariables.EnemyAttackMaxRadius));
+                    }
+                    else if (Guardian.IsAttacking) {
                         GameVariables.ScreenShakeAmount = GameVariables.MaxScreenShake*
-                                                          (Guardian.FinalRadiusOfAttack/
+                                                          (Guardian.ChargingAttackRadius/
                                                            GameVariables.EnemyAttackMaxRadius);
-                    else
+                        GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
+                    }
+                    else {
                         GameVariables.ScreenShakeAmount = 0;
+                        GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
+                    }
                 }
 
                 HandlePropCollision();
