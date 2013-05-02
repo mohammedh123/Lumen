@@ -65,8 +65,6 @@ namespace Lumen
                 foreach (var player in Players) {
                     player.Update(dt);
 
-                    SetPlayerCrystalVibration(player);
-
                     HandleCrystalCollection(player, dt);
                 }
 
@@ -372,29 +370,7 @@ namespace Lumen
                 GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
             }
         }
-
-        private void SetPlayerCrystalVibration<T>(T player) where T : Entity, IControllerCapable
-        {
-            float closestDist = 2000*2000;
-
-            foreach (var prop in Props) {
-                if (prop.PropType == PropTypeEnum.Crystal) {
-                    var dist = (prop.Position - player.Position).LengthSquared();
-
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                    }
-                }
-            }
-
-            var vibRat = closestDist / (GameVariables.PlayerVibrationDetectionRadius * GameVariables.PlayerVibrationDetectionRadius);
-            vibRat *= vibRat;
-
-            if (GamePad.GetState(player.ControllerIndex).IsConnected) {
-                GamePad.SetVibration(player.ControllerIndex, Math.Max(0, GameVariables.CrystalMaxVibration * (1 - vibRat)), Math.Max(0, GameVariables.CrystalMaxVibration * (1 - vibRat)));
-            }
-        }
-
+        
         private void HandlePropCollision()
         {
             var collidingProps = new List<Prop>();
