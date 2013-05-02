@@ -143,6 +143,12 @@ namespace Lumen
             else if(State == GameState.PlayersWin) {
                 TimeTillNextRound -= dt;
 
+                Players.ForEach(p => GamePad.SetVibration(p.ControllerIndex, 0, 0));
+                foreach (var p in DeadPlayers.Keys)
+                    GamePad.SetVibration(p.ControllerIndex, 0, 0);
+                if (Guardian != null)
+                    GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
+
                 if(TimeTillNextRound <= 0.0f) {
                     TimeTillNextRound = 0.0f;
                     StartNextRound();
@@ -150,6 +156,12 @@ namespace Lumen
             }
             else if(State == GameState.EnemyWins) {
                 HandleRestartInput();
+
+                Players.ForEach(p => GamePad.SetVibration(p.ControllerIndex, 0, 0));
+                foreach(var p in DeadPlayers.Keys)
+                    GamePad.SetVibration(p.ControllerIndex, 0, 0);
+                if(Guardian != null)
+                    GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
             }
         }
 
