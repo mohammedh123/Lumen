@@ -212,9 +212,10 @@ namespace Lumen.States
 #endif
             string s = null;
             if (_gameManager.State == GameState.PlayersWin)
-                s = "Round won!\nNext round in: " + _gameManager.TimeTillNextRound.ToString("0.0");
+                s = "Wisps win round " + _gameManager.RoundNumber.ToString("0") + "!\nNext round in: " + _gameManager.TimeTillNextRound.ToString("0.0");
             else if (_gameManager.State == GameState.EnemyWins)
-                s = "The guardian has won.\n(Start) Retry?\n(Back) Restart?";
+                //s = "The guardian has won.\n(Start) Retry?\n(Back) Restart?";
+                s = "Guardian wins!\nNext round in: " + _gameManager.TimeTillNextRound.ToString("0.0");
 
             if (s != null)
             {
