@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Lumen.States
 {
@@ -95,6 +96,11 @@ namespace Lumen.States
 
         public override void Update(GameTime delta)
         {
+            var song = SoundManager.GetSong("main_bgm");
+
+            if (MediaPlayer.State == MediaState.Stopped)
+                MediaPlayer.Play(song);
+            
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Game.Exit();
 
@@ -105,11 +111,12 @@ namespace Lumen.States
             if (_state == SetupState.SettingPlayersUp) {
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
                     if (GamePad.GetState(i).IsConnected) {
-                        if (InputManager.GamepadButtonPressed(i, Buttons.X)) {
+                        if (InputManager.GamepadButtonPressed(i, Buttons.A)) {
                             if (!_playersPlaying[(int)i])
                             {
                                 _playersLight[(int)i].LightRadius = 64;
                                 _playersLight[(int)i].LightIntensity = 1.0f;
+                                SoundManager.GetSoundInstance("player_light").Play();
 
                                 _playersPlaying[(int) i] = true;
                                 _lastPlayerReady = i;

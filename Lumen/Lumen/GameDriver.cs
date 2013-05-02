@@ -34,6 +34,7 @@ namespace Lumen
             var graphicsOptions = new GraphicsOptions();
             graphicsOptions.ApplySettings(_graphics);
 
+
             Content.RootDirectory = "Content";
         }
 

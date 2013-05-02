@@ -13,7 +13,7 @@ namespace Lumen
             graphics.PreferredBackBufferWidth = 1024;
             graphics.PreferredBackBufferHeight = 768;
             graphics.PreferMultiSampling = true;
-
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
         }
     }
