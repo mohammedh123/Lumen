@@ -329,8 +329,9 @@ namespace Lumen
                 }
                 else
                 {
+                    //if player is out of range of crystal OR crystal is gone OR crystal is mined out
                     if (!Collider.IsPlayerWithinRadius(player, player.CollectionTarget.Position,
-                                                      GameVariables.CrystalCollectionRadius))
+                                                      GameVariables.CrystalCollectionRadius) || player.CollectionTarget.IsToBeRemoved || player.CollectionTarget.Health <= 0)
                     {
                         player.ResetCollecting();
                         return;
