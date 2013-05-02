@@ -26,7 +26,8 @@ namespace Lumen.Entities
         public OrbitingRing OrbitRing;
 
         private float _lightVisibilityTimer = -1.0f, _lightModulationSoundTimer = 0.0f;
-        
+        private float _recentlyHitTimer = -1.0f;
+
         public bool IsLightOn
         {
             get { return _lightVisibilityTimer >= 0.0f; }
@@ -40,6 +41,11 @@ namespace Lumen.Entities
         public bool IsAlive
         {
             get { return Health > 0; }
+        }
+
+        public bool WasRecentlyHit
+        {
+            get { return _recentlyHitTimer >= 0.0f; }
         }
 
         public Player(string textureKey, Vector2 position) : base(textureKey, position)
@@ -58,33 +64,47 @@ namespace Lumen.Entities
 
         public override void Update(float dt)
         {
+            if (IsAlive) {
 #if DEBUG
-            if (ControllerIndex <= PlayerIndex.Two)
-            {
-                ProcessKeyDownAction(dt);
-                ProcessKeyUpAction(dt);
-                ProcessKeyPressAction(dt);
-            }
+                if (ControllerIndex <= PlayerIndex.Two) {
+                    ProcessKeyDownAction(dt);
+                    ProcessKeyUpAction(dt);
+                    ProcessKeyPressAction(dt);
+                }
 #endif
-            ProcessControllerInput(dt);
+                ProcessControllerInput(dt);
 
-            if(IsLightOn)
+                if (IsLightOn) {
+                    _lightVisibilityTimer += dt;
+                    _lightModulationSoundTimer += dt;
+                    if (_lightModulationSoundTimer <= MathHelper.TwoPi/3)
+                        SoundManager.GetSound("player_light").Play(1.0f,
+                                                                   0.25f*
+                                                                   (float) Math.Cos(_lightModulationSoundTimer*3.0f),
+                                                                   0);
+                }
+                else {
+                    _lightModulationSoundTimer = 0.0f;
+                }
+
+                if (AttachedLight != null) AttachedLight.IsVisible = IsLightOn;
+
+                if (_lightVisibilityTimer >= GameVariables.PlayerLightDuration)
+                    TurnOffLight();
+            }
+
+            if (WasRecentlyHit)
             {
-                _lightVisibilityTimer += dt;
-                _lightModulationSoundTimer += dt;
-                if (_lightModulationSoundTimer <= MathHelper.TwoPi / 3)
-                    SoundManager.GetSound("player_light").Play(1.0f,
-                                                               0.25f*(float) Math.Cos(_lightModulationSoundTimer*3.0f),
-                                                               0);
+                _recentlyHitTimer -= dt;
+                if (GamePad.GetState(ControllerIndex).IsConnected)
+                    GamePad.SetVibration(ControllerIndex, 1.0f, 1.0f);
             }
-            else {
-                _lightModulationSoundTimer = 0.0f;
+            else
+            {
+                _recentlyHitTimer = -1.0f;
+                if (GamePad.GetState(ControllerIndex).IsConnected)
+                    GamePad.SetVibration(ControllerIndex, 0, 0);
             }
-                
-            if (AttachedLight != null) AttachedLight.IsVisible = IsLightOn;
-            
-            if(_lightVisibilityTimer >= GameVariables.PlayerLightDuration)
-                TurnOffLight();
         }
 
         public void ProcessControllerInput(float dt)
@@ -172,6 +192,8 @@ namespace Lumen.Entities
         public void TakeDamage(int n)
         {
             Health -= n;
+
+            _recentlyHitTimer = GameVariables.PlayerHitVibrationDuration;
 
             int count = 0;
             foreach(var orb in OrbitRing.Satellites) {

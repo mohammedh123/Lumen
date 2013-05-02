@@ -68,6 +68,9 @@ namespace Lumen
                     HandleCrystalCollection(player, dt);
                 }
 
+                foreach(var deadPlayer in DeadPlayers)
+                    deadPlayer.Key.Update(dt);
+
                 Guardian.Update(dt);
 
                 HandlePropsToBeRemoved();
