@@ -79,7 +79,7 @@ namespace Lumen.Entities
             Health = Int32.MaxValue;
             EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
 
-            OrbitRing = new OrbitingRing(0, 20, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
+            OrbitRing = new OrbitingRing(0, 10, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
             OrbitRing.IsVisible = false;
         }
 
@@ -199,6 +199,7 @@ namespace Lumen.Entities
 
             _attackTimer = 0.0f;
             SoundManager.GetSoundInstance("guardian_release").Play();
+            ParticleSystemManager.Instance.FireParticleSystem("guardian_attack", Position.X, Position.Y);
         }
 
         private void StopAttack()
@@ -206,7 +207,7 @@ namespace Lumen.Entities
             OrbitRing.IsVisible = false;
             _attackTimer = -1.0f;
 
-            LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 0.33333333333333333f);
+            LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.EnemyLightRadiusWhileCharging + FinalRadiusOfAttack, 0.10f);
 
             FinalRadiusOfAttack = 0.0f;
         }

@@ -100,8 +100,9 @@ namespace Lumen.Entities
 
             if (Velocity != Vector2.Zero)
                 Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
-            
-            AttachedBlinkingLight.IsVisible = Velocity != Vector2.Zero;
+
+            if (AttachedBlinkingLight.IsVisible)
+                AttachedBlinkingLight.IsVisible = Velocity != Vector2.Zero;
             
             if (InputManager.GamepadButtonDown(ControllerIndex, Buttons.A))
                 TurnOnLight();
@@ -182,13 +183,14 @@ namespace Lumen.Entities
                 }
             }
             ResetCollecting();
+            AttachedBlinkingLight.IsVisible = true;
             ParticleSystemManager.Instance.FireParticleSystem("player_hit", Position.X, Position.Y);
         }
 
         public void IncrementCrystalCount()
         {
             CrystalCount++;
-            AttachedBlinkingLight.IncreaseFrequency(1.5f);
+            AttachedBlinkingLight.IncreaseFrequency(1.2f);
         }
     }
 }

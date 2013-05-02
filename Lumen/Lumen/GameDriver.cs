@@ -141,8 +141,32 @@ namespace Lumen
             };
             var playerHitParticleSystem = new ParticleSystem(playerHitParticleSystemInfo);
 
+            var guardianAttackParticleSystemInfo = new ParticleSystemInfo
+            {
+                FiringDuration = 0.2f,
+                NumberOfParticlesPerSecond = 400.0f,
+                ParticleAngle = 0.0f,
+                ParticleAngleSpread = MathHelper.TwoPi,
+                ParticleAngularVelocityMin = 0.0f,
+                ParticleAngularVelocityMax = 0.0f,
+                ParticleColorStart = Color.LightPink,
+                ParticleColorEnd = Color.MistyRose,
+                ParticleColorVariation = 0.0f,
+                ParticleLifetimeMin = 0.4f,
+                ParticleLifetimeMax = 0.7f,
+                ParticleScaleMin = 0.9f,
+                ParticleScaleMax = 1.4f,
+                ParticleVelocityMin = 175.0f,
+                ParticleVelocityMax = 250.0f,
+                Texture = TextureManager.GetTexture("hit_particle"),
+                TextureOrigin = new Vector2(1, 1),
+                TextureRect = new Rectangle(0, 0, 2, 2)
+            };
+            var guardianAttackParticleSystem = new ParticleSystem(guardianAttackParticleSystemInfo);
+
             psm.RegisterParticleSystem("sample", sampleParticleSystem);
             psm.RegisterParticleSystem("player_hit", playerHitParticleSystem);
+            psm.RegisterParticleSystem("guardian_attack", guardianAttackParticleSystem);
         }
 
         protected override void UnloadContent()

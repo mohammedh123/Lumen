@@ -253,7 +253,7 @@ namespace Lumen.States
         private void DrawEnemyInformation(SpriteBatch spriteBatch, Vector2 topLeft, float alpha)
         {
             spriteBatch.Begin();
-            DrawingHelper.DrawHorizontalFilledBar(topLeft, spriteBatch, Color.White * alpha, Color.Blue * alpha, 32, 8, 1, _gameManager.Guardian.EnergyRemaining / GameVariables.EnemyAttackMaxRadius);
+            //DrawingHelper.DrawHorizontalFilledBar(topLeft, spriteBatch, Color.White * alpha, Color.Blue * alpha, 32, 8, 1, _gameManager.Guardian.EnergyRemaining / GameVariables.EnemyAttackMaxRadius);
             spriteBatch.End();
         }
 

@@ -77,7 +77,7 @@ namespace Lumen
 
                 var isEnemyMoving = false;
                 
-                SetPlayerCrystalVibration(Guardian);
+                //SetPlayerCrystalVibration(Guardian);
                 ResolveOutOfBoundsCollision(Guardian);
                 Guardian.OrbitRing.Update(dt);
 
