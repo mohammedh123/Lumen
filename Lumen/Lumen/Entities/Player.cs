@@ -113,17 +113,14 @@ namespace Lumen.Entities
         {
             var speedToUse = GameVariables.PlayerSpeed;
 
-            if (!IsCollecting)
-            {
-                if(InputManager.KeyDown(Keys.Left))
-                    AdjustVelocity(-speedToUse*dt, 0);
-                if(InputManager.KeyDown(Keys.Right))
-                    AdjustVelocity(speedToUse*dt, 0);
-                if(InputManager.KeyDown(Keys.Up))
-                    AdjustVelocity(0, -speedToUse*dt);
-                if(InputManager.KeyDown(Keys.Down))
-                    AdjustVelocity(0, speedToUse*dt);
-            }
+            if(InputManager.KeyDown(Keys.Left))
+                AdjustVelocity(-speedToUse*dt, 0);
+            if(InputManager.KeyDown(Keys.Right))
+                AdjustVelocity(speedToUse*dt, 0);
+            if(InputManager.KeyDown(Keys.Up))
+                AdjustVelocity(0, -speedToUse*dt);
+            if(InputManager.KeyDown(Keys.Down))
+                AdjustVelocity(0, speedToUse*dt);
 
             if(InputManager.KeyDown(Keys.Z))
                 IsInteractingWithProp = true;
@@ -131,17 +128,12 @@ namespace Lumen.Entities
 
         public void ProcessKeyUpAction(float dt)
         {
-            if(!GamePad.GetState(ControllerIndex).IsConnected && InputManager.KeyUp(Keys.Space))
-                ResetCollecting();
-
             if(InputManager.KeyUp(Keys.Z))
                 IsInteractingWithProp = false;
         }
 
         public void ProcessKeyPressAction(float dt)
         {
-            if (InputManager.KeyPressed(Keys.Space))
-                Collect();
         }
 
         public void TurnOnLight()

@@ -238,6 +238,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\mainmenu_bg.png">
+      <Name>mainmenu_bg</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\white_player.png">
+      <Name>white_player</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Textures\mainmenu_logo.png">
       <Name>mainmenu_logo</Name>
       <Importer>TextureImporter</Importer>

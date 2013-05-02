@@ -20,15 +20,19 @@ namespace Lumen.States
         private readonly GameManager _gameManager;
         private readonly LightManager _lightManager;
 
+        private PlayerIndex _enemyPlayerIndex;
+
         private RenderTarget2D _sceneRt;
 #if DEBUG
         public bool IsShowingDebugInformation = false;
 #endif
 
-        public MainGameState()
+        public MainGameState(PlayerIndex enemyPlayer)
         {
             _gameManager = new GameManager(GameDriver.DisplayResolution);
             _lightManager = new LightManager();
+
+            _enemyPlayerIndex = enemyPlayer;
         }
 
         public override void Initialize(GameDriver g)
@@ -85,24 +89,22 @@ namespace Lumen.States
             _gameManager.Update(gameTime);
         }
 
-        private void ResetRound(bool shufflePlayers = true, bool reloadVariables = true)
+        private void ResetRound(bool recreatePlayers = true, bool reloadVariables = true)
         {
             if (reloadVariables)
                 LoadVariables();
 
-            if (shufflePlayers)
+            if (recreatePlayers)
             {
                 _gameManager.ResetCompletely();
-
-                var randomEnemyIdx = GameDriver.RandomGen.Next(1, 1);
-
+                
                 var playerNum = 1;
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++)
                 {
                     if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Two)
                     {
 
-                        if (i == PlayerIndex.One + randomEnemyIdx)
+                        if (i == _enemyPlayerIndex)
                         {
                             _gameManager.AddEnemy(
                                 new Guardian(new Vector2(GameDriver.DisplayResolution.X - 64, GameDriver.DisplayResolution.Y / 2)),
@@ -196,7 +198,7 @@ namespace Lumen.States
             _lightManager.DrawScene(_gameManager.GetLights(), graphicsDevice, spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);
-            DrawFullscreenQuad(_sceneRt, spriteBatch, true);
+            GameDriver.DrawFullscreenQuad(_sceneRt, spriteBatch, true);
             spriteBatch.End();
             _lightManager.DrawLightDarkness(graphicsDevice, spriteBatch, _sceneRt);
 
@@ -269,11 +271,6 @@ namespace Lumen.States
             }
 
             spriteBatch.End();
-        }
-
-        private void DrawFullscreenQuad(Texture2D tex, SpriteBatch sb, bool useScreenShake = false)
-        {
-            sb.Draw(tex, new Rectangle(useScreenShake ? (int)(GameDriver.RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, useScreenShake ? (int)(GameDriver.RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, (int)GameDriver.DisplayResolution.X, (int)GameDriver.DisplayResolution.Y), Color.White);
         }
     }
 }

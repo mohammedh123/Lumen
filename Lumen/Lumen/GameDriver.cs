@@ -61,6 +61,12 @@ namespace Lumen
             return new Vector2(rect.X + av, rect.Y + bv);
         }
 #endif
+        public static Vector2 GetFontPositionAtCenter(string str, SpriteFont font, Vector2 goalCenter)
+        {
+            var x = font.MeasureString(str);
+
+            return goalCenter - x*0.5f;
+        }
 
         protected override void Initialize()
         {
@@ -157,6 +163,11 @@ namespace Lumen
             StateManager.Instance.Draw(_spriteBatch, GraphicsDevice);
 
             base.Draw(gameTime);
+        }
+
+        public static void DrawFullscreenQuad(Texture2D tex, SpriteBatch sb, bool useScreenShake = false)
+        {
+            sb.Draw(tex, new Rectangle(useScreenShake ? (int)(RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, useScreenShake ? (int)(RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, (int)DisplayResolution.X, (int)DisplayResolution.Y), Color.White);
         }
     }
 }

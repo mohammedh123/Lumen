@@ -74,6 +74,7 @@ namespace Lumen
             _textureDetails.Add("player1", new TextureDetails(contentManager.Load<Texture2D>("Textures/player1_mini"), new Vector2(16, 16)));
             _textureDetails.Add("player2", new TextureDetails(contentManager.Load<Texture2D>("Textures/player2_mini"), new Vector2(16, 16)));
             _textureDetails.Add("player3", new TextureDetails(contentManager.Load<Texture2D>("Textures/player3_mini"), new Vector2(16, 16)));
+            _textureDetails.Add("player4", new TextureDetails(contentManager.Load<Texture2D>("Textures/white_player"), new Vector2(16, 16)));
             _textureDetails.Add("guardian", new TextureDetails(contentManager.Load<Texture2D>("Textures/guardian"), new Vector2(32, 32)));
             _textureDetails.Add("player_orb", new TextureDetails(contentManager.Load<Texture2D>("Textures/player_orb"), new Vector2(8, 8)));
             _textureDetails.Add("crystal", new TextureDetails(contentManager.Load<Texture2D>("Textures/crystal"), new Vector2(16, 16)));
@@ -81,7 +82,10 @@ namespace Lumen
             _textureDetails.Add("hit_particle", new TextureDetails(contentManager.Load<Texture2D>("Textures/hit_particle"), new Vector2(1, 1)));
             _textureDetails.Add("background", new TextureDetails(contentManager.Load<Texture2D>("Textures/background"), new Vector2(512, 384)));
 
+            _textureDetails.Add("white_player", new TextureDetails(contentManager.Load<Texture2D>("Textures/white_player"), new Vector2(16, 16)));
+
             //main menu state textures
+            _textureDetails.Add("mainmenu_bg", new TextureDetails(contentManager.Load<Texture2D>("Textures/mainmenu_bg"), new Vector2(0, 0)));
             _textureDetails.Add("mainmenu_logo", new TextureDetails(contentManager.Load<Texture2D>("Textures/mainmenu_logo"), new Vector2(357, 117)));
 
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("Fonts/debug_font"));
