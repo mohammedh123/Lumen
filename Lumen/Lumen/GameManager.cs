@@ -331,9 +331,9 @@ namespace Lumen
 
                 foreach (var prop in Props) {
                     if (prop.PropType == PropTypeEnum.Crystal) {
-                        if (!((Crystal) prop).IsSomeoneCollectingThis &&
-                            Collider.IsPlayerWithinRadius(player, prop.Position,
-                                                          GameVariables.CrystalCollectionRadius)) {
+                        if (Collider.IsPlayerWithinRadius(player, prop.Position,
+                                                          GameVariables.CrystalCollectionRadius))
+                        {
                             colTar = (Crystal) prop;
                             SoundManager.GetSound("crystal_hit").Play();
                             break;
