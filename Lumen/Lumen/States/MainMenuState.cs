@@ -144,6 +144,8 @@ namespace Lumen.States
 
         public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
+            const string pressAStr = "Press (X)";
+
             graphicsDevice.SetRenderTarget(_sceneRt);
             DrawScene(spriteBatch);
 
@@ -155,7 +157,9 @@ namespace Lumen.States
             _lightManager.DrawLightDarkness(graphicsDevice, spriteBatch, _sceneRt);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(_lumenLogo, _logoPosition, null, Color.White, 0.0f, _logoOrigin, 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(_lumenLogo, _logoPosition, null, Color.White, 0.0f, _logoOrigin, 1.0f, SpriteEffects.None,
+                             0);
+            spriteBatch.DrawString(_mainMenuFont, pressAStr, GameDriver.GetFontPositionAtCenter(pressAStr, _mainMenuFont, _textPosition), Color.White);
             spriteBatch.End();
         }
 
@@ -166,13 +170,9 @@ namespace Lumen.States
 
         private void DrawScene(SpriteBatch spriteBatch)
         {
-            const string pressAStr = "Press (X)";
-
             spriteBatch.Begin();
             spriteBatch.Draw(_lumenBackground, Vector2.Zero, Color.White);
 
-            spriteBatch.DrawString(_mainMenuFont, pressAStr, GameDriver.GetFontPositionAtCenter(pressAStr, _mainMenuFont, _textPosition), Color.White);
-            
             foreach(var player in _players)
             {
                 DrawPlayerInformation(player, spriteBatch);

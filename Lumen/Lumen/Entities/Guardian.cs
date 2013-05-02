@@ -84,7 +84,7 @@ namespace Lumen.Entities
             Health = Int32.MaxValue;
             EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
 
-            OrbitRing = new OrbitingRing(0, 10, 1.0f, 1.0f, "hit_particle", new Rectangle(0,0,2,2), this);
+            OrbitRing = new OrbitingRing(0, 10, 1.0f, 0.5f, "hit_particle", new Rectangle(0,0,2,2), this);
             OrbitRing.IsVisible = false;
         }
 
@@ -133,7 +133,7 @@ namespace Lumen.Entities
         {
             OrbitRing.IsVisible = visible;
             OrbitRing.Radius = IsAttacking ? LightRadius : ChargingAttackRadius;
-            OrbitRing.OrbitPeriod = MathHelper.Lerp(1.0f, 0.2f, OrbitRing.Radius / GameVariables.EnemyAttackMaxRadius);
+            OrbitRing.OrbitPeriod = MathHelper.Lerp(1.0f, 0.4f, OrbitRing.Radius / GameVariables.EnemyAttackMaxRadius);
         }
 
         public override void Draw(SpriteBatch sb)
