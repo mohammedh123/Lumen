@@ -82,8 +82,18 @@ namespace Lumen
                 ResolveOutOfBoundsCollision(Guardian);
                 Guardian.OrbitRing.Update(dt);
 
-                foreach (var prop in Props)
+                foreach (var prop in Props) {
                     prop.Update(dt);
+
+                    var crystal = prop as Crystal;
+
+                    if(crystal != null) {
+                        if (crystal.Collector != null) {
+                            IncreasePlayerCrystalCount(crystal.Collector);
+                            crystal.Collector = null;
+                        }
+                    }
+                }
 
                 Guardian.ResetVelocity();
 
@@ -301,54 +311,38 @@ namespace Lumen
         {
             Props.RemoveAll(p => p.IsToBeRemoved);
         }
-        
+
         private void HandleCrystalCollection(Player player, float dt)
         {
-            if (player.IsCollecting) {
-                if (player.CollectionTarget == null) {
-                    Crystal colTar = null;
+            if (player.CollectionTarget == null) {
+                Crystal colTar = null;
 
-                    foreach (var prop in Props) {
-                        if (prop.PropType == PropTypeEnum.Crystal) {
-                            if (!((Crystal)prop).IsSomeoneCollectingThis && Collider.IsPlayerWithinRadius(player, prop.Position,
-                                                              GameVariables.CrystalCollectionRadius)) {
-                                                                  colTar = (Crystal)prop;
-                                                                  SoundManager.GetSound("crystal_hit").Play();
-                                break;
-                            }
+                foreach (var prop in Props) {
+                    if (prop.PropType == PropTypeEnum.Crystal) {
+                        if (!((Crystal) prop).IsSomeoneCollectingThis &&
+                            Collider.IsPlayerWithinRadius(player, prop.Position,
+                                                          GameVariables.CrystalCollectionRadius)) {
+                            colTar = (Crystal) prop;
+                            SoundManager.GetSound("crystal_hit").Play();
+                            break;
                         }
                     }
-
-                    if (colTar == null || colTar.IsToBeRemoved) {
-                        player.ResetCollecting();
-                    }
-                    else {
-                        player.CollectionTarget = colTar;
-                        player.CollectionTarget.IncrementCollectorCount(player);
-                    }
                 }
-                else
-                {
-                    //if player is out of range of crystal OR crystal is gone OR crystal is mined out
-                    if (!Collider.IsPlayerWithinRadius(player, player.CollectionTarget.Position,
-                                                      GameVariables.CrystalCollectionRadius) || player.CollectionTarget.IsToBeRemoved || player.CollectionTarget.Health <= 0)
-                    {
-                        player.ResetCollecting();
-                        return;
-                    }
 
-                    player.CollectingTime += dt;
-
-                    if (player.CollectingTime >= GameVariables.CrystalCollectionTime) {
-                        player.CollectionTarget.DecrementCount();
-
-                        player.ResetCollecting();
-
-                        IncreasePlayerCrystalCount(player);
-                    }
-                    else {
-                        SoundManager.GetSoundInstance("crystal_charge").Play();
-                    }
+                if (colTar == null || colTar.IsToBeRemoved) {
+                    player.ResetCollecting();
+                }
+                else {
+                    player.CollectionTarget = colTar;
+                    player.CollectionTarget.IncrementCollectorCount(player);
+                }
+            }
+            else {
+                //if player is out of range of crystal OR crystal is gone OR crystal is mined out
+                if (!Collider.IsPlayerWithinRadius(player, player.CollectionTarget.Position,
+                                                   GameVariables.CrystalCollectionRadius) ||
+                    player.CollectionTarget.IsToBeRemoved || player.CollectionTarget.Health <= 0) {
+                    player.ResetCollecting();
                 }
             }
         }

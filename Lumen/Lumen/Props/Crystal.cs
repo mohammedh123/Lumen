@@ -16,12 +16,15 @@ namespace Lumen.Props
             {
                 if (!IsSomeoneCollectingThis) return 0;
 
-                return (_collectors.Max(p => p.CollectingTime)/GameVariables.CrystalCollectionTime)*
+                return (1-(_collectionTimeLeft/GameVariables.CrystalCollectionTime))*
                        GameVariables.CrystalGlowRadius;
             }
             set { }
         }
 
+        public Player Collector;
+
+        private float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
         public float LightIntensity { get; set; }
 
         private int _collectorCount = 0;
@@ -46,7 +49,7 @@ namespace Lumen.Props
 
         public override bool CanCollide
         {
-            get { return true; }
+            get { return false; }
         }
 
         public Crystal(Vector2 position)
@@ -61,6 +64,26 @@ namespace Lumen.Props
         public override void OnCollide(Entity collider)
         {
             var player = collider as Player;
+        }
+
+        public override void Update(float dt)
+        {
+            base.Update(dt);
+            
+            if (IsSomeoneCollectingThis) {
+                SoundManager.GetSoundInstance("crystal_charge").Play();
+
+                _collectionTimeLeft -= dt*_collectorCount;
+
+                if (_collectionTimeLeft <= 0) {
+                    DecrementCount();
+                    Collector = _collectors.First();
+                    _collectors.ForEach(p => p.ResetCollecting());
+                }
+            }
+            else {
+                _collectionTimeLeft = GameVariables.CrystalCollectionTime;
+            }
         }
 
         public void DecrementCount()

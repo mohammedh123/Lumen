@@ -20,7 +20,6 @@ namespace Lumen.Entities
         public Light AttachedLight = null;
         public BlinkingLight AttachedBlinkingLight = null;
         public Crystal CollectionTarget;
-        public float CollectingTime = -1;
         public int CrystalCount = 0;
 
         public OrbitingRing OrbitRing;
@@ -32,12 +31,7 @@ namespace Lumen.Entities
         {
             get { return _lightVisibilityTimer >= 0.0f; }
         }
-
-        public bool IsCollecting
-        {
-            get { return CollectingTime >= 0.0f; } 
-        }
-
+        
         public bool IsAlive
         {
             get { return Health > 0; }
@@ -53,8 +47,6 @@ namespace Lumen.Entities
             Health = GameVariables.PlayerStartingHealth;
 
             OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod,textureKey, new Rectangle(0,0,32,32), this);
-
-            CollectingTime = 0.0f;
         }
 
         public void ResetOrbs()
@@ -168,11 +160,6 @@ namespace Lumen.Entities
             if (AttachedLight != null) AttachedLight.IsVisible = false;
         }
 
-        public void Collect()
-        {
-            CollectingTime = 0.0f;
-        }
-
         public override void Draw(SpriteBatch sb)
         {
             base.Draw(sb);
@@ -186,7 +173,6 @@ namespace Lumen.Entities
                 CollectionTarget.DecrementCollectorCount(this);
 
             CollectionTarget = null;
-            CollectingTime = 0.0f;
         }
 
         public void TakeDamage(int n)
