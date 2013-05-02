@@ -115,9 +115,11 @@ namespace Lumen.Entities
                 SetOrbitRingProperties(true);
                 if(_attackTimer >= GameVariables.EnemyAttackTotalDuration)
                     StopAttack();
+                _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
             }
             else {
                 _attackTimer = -1.0f;
+                _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
             }
 
             if (Velocity != Vector2.Zero)
@@ -125,8 +127,6 @@ namespace Lumen.Entities
 
             if(!IsChargingUp)// || IsChargingUp && EnergyRemaining == 0)
                 EnergyRemaining = Math.Min(GameVariables.EnemyAttackMaxRadius, EnergyRemaining + GameVariables.EnemyEnergyRegeneration*dt);
-
-            _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
         }
 
         private void SetOrbitRingProperties(bool visible)
