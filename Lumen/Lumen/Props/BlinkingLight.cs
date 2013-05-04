@@ -6,13 +6,6 @@ namespace Lumen.Props
 {
     class BlinkingLight : Light
     {
-        private enum BlinkingLightFadeState
-        {
-            None,
-            FadingIn,
-            FadingOut
-        }
-
         private BlinkingLightFadeState _fadeState = BlinkingLightFadeState.None;
         private float _timer, _durationTimer, _fadeTimer=-1.0f;
         private readonly float _lightRadius;

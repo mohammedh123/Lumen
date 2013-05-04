@@ -17,19 +17,19 @@ namespace Lumen.Entities
 
         public bool IsInteractingWithProp = false;
 
-        public Light AttachedLight = null;
+        public DurationLimitedFadingLight AttachedLight = null;
         public BlinkingLight AttachedBlinkingLight = null;
         public Crystal CollectionTarget;
         public int CrystalCount = 0;
 
         public OrbitingRing OrbitRing;
 
-        private float _lightVisibilityTimer = -1.0f, _lightModulationSoundTimer = 0.0f;
+        private float _lightModulationSoundTimer = 0.0f;
         private float _recentlyHitTimer = -1.0f;
 
         public bool IsLightOn
         {
-            get { return _lightVisibilityTimer >= 0.0f; }
+            get { return AttachedLight.IsVisible; }
         }
         
         public bool IsAlive
@@ -67,7 +67,6 @@ namespace Lumen.Entities
                 ProcessControllerInput(dt);
 
                 if (IsLightOn) {
-                    _lightVisibilityTimer += dt;
                     _lightModulationSoundTimer += dt;
                     if (_lightModulationSoundTimer <= MathHelper.TwoPi/3)
                         SoundManager.GetSound("player_light").Play(1.0f,
@@ -78,11 +77,6 @@ namespace Lumen.Entities
                 else {
                     _lightModulationSoundTimer = 0.0f;
                 }
-
-                if (AttachedLight != null) AttachedLight.IsVisible = IsLightOn;
-
-                if (_lightVisibilityTimer >= GameVariables.PlayerLightDuration)
-                    TurnOffLight();
             }
 
             if (WasRecentlyHit)
@@ -134,6 +128,8 @@ namespace Lumen.Entities
                 AdjustVelocity(0, -speedToUse*dt);
             if(InputManager.KeyDown(Keys.Down))
                 AdjustVelocity(0, speedToUse*dt);
+            if (InputManager.KeyDown(Keys.Space))
+                TurnOnLight();
 
             if(InputManager.KeyDown(Keys.Z))
                 IsInteractingWithProp = true;
@@ -151,13 +147,7 @@ namespace Lumen.Entities
 
         public void TurnOnLight()
         {
-            _lightVisibilityTimer = 0.0f;
-        }
-
-        public void TurnOffLight()
-        {
-            _lightVisibilityTimer = -1.0f;
-            if (AttachedLight != null) AttachedLight.IsVisible = false;
+            AttachedLight.TurnOn();
         }
 
         public override void Draw(SpriteBatch sb)

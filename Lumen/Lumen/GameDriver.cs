@@ -21,7 +21,7 @@ namespace Lumen
         
         public static Random RandomGen;
 
-        public static readonly Vector2 DisplayResolution = new Vector2(1024,768);
+        public static readonly Vector2 DisplayResolution = new Vector2(1152,864);
 
         public GameDriver()
         {
