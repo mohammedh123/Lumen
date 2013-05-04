@@ -116,7 +116,7 @@ namespace Lumen.States
                             {
                                 _playersLight[(int)i].LightRadius = 64;
                                 _playersLight[(int)i].LightIntensity = 1.0f;
-                                _players[(int)i].SetTexture("player" + (i+1));
+                                _players[(int)i].SetTexture("player" + (_playersPlaying.Count(b => b)+1));
                                 SoundManager.GetSoundInstance("player_light").Play();
 
                                 _playersPlaying[(int) i] = true;
