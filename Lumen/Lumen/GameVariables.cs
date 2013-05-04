@@ -71,7 +71,7 @@ namespace Lumen
             return CrystalsToSpawn(roundNum) - collectedCrystalCount;
         }
 
-        public static int RoundOneGoal = 3;
+        public static int RoundOneGoal = 7;
         public static int FinalCrystalBuffer = 2;
 
         public static float ScreenShakeAmount = 0.0f;

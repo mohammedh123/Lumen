@@ -10,10 +10,10 @@ namespace Lumen
     {
         public virtual void ApplySettings(GraphicsDeviceManager graphics)
         {
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 768;
+            graphics.PreferredBackBufferWidth = 1152;
+            graphics.PreferredBackBufferHeight = 864;
             graphics.PreferMultiSampling = true;
-            graphics.IsFullScreen = true;
+            //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
         }
     }
