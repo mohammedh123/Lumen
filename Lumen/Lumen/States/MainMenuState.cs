@@ -27,7 +27,7 @@ namespace Lumen.States
         private Texture2D _lumenBackground, _lumenLogo, _playerSprites;
         private Vector2 _logoOrigin, _logoPosition, _playerOrigin, _textPosition;
         private SpriteFont _mainMenuFont;
-        private readonly bool[] _playersPlaying = new bool[4];
+        private readonly List<PlayerIndex> _playersPlaying = new List<PlayerIndex>();
         private readonly BasicLight[] _playersLight = new BasicLight[4];
         private readonly Player[] _players = new Player[4];
         private PlayerIndex _lastPlayerReady;
@@ -41,7 +41,7 @@ namespace Lumen.States
 
         private bool AreAllPlayersReady
         {
-            get { return _playersPlaying.All(b => b); }
+            get { return _playersPlaying.Count == 4; }
         }
 
         public MainMenuState()
@@ -112,14 +112,14 @@ namespace Lumen.States
                 for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
                     if (GamePad.GetState(i).IsConnected) {
                         if (InputManager.GamepadButtonPressed(i, Buttons.A)) {
-                            if (!_playersPlaying[(int)i])
+                            if (!_playersPlaying.Contains(i))
                             {
                                 _playersLight[(int)i].LightRadius = 64;
                                 _playersLight[(int)i].LightIntensity = 1.0f;
-                                _players[(int)i].SetTexture("player" + (_playersPlaying.Count(b => b)+1));
+                                _players[(int)i].SetTexture("player" + (_playersPlaying.Count()+1));
                                 SoundManager.GetSoundInstance("player_light").Play();
 
-                                _playersPlaying[(int) i] = true;
+                                _playersPlaying.Add(i);
                                 _lastPlayerReady = i;
 
                                 if (AreAllPlayersReady) {
@@ -140,7 +140,7 @@ namespace Lumen.States
 
         private void TransitionToMainGame()
         {
-            StateManager.Instance.PushState(new MainGameState(_lastPlayerReady));
+            StateManager.Instance.PushState(new MainGameState(_playersPlaying));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
@@ -185,10 +185,10 @@ namespace Lumen.States
         private void DrawPlayerInformation(Player player, SpriteBatch spriteBatch)
         {
             if (GamePad.GetState(player.ControllerIndex).IsConnected)
-                if (_playersPlaying[(int)player.ControllerIndex])
+                if (_playersPlaying.Contains(player.ControllerIndex))
                     player.Draw(spriteBatch);
                 else
-                    spriteBatch.Draw(_playerSprites, player.Position, null, _playersPlaying[(int)player.ControllerIndex] ? Color.Lerp(PlayerColors[(int)player.ControllerIndex], Color.White, 0.5f) : Color.White, 0.0f, _playerOrigin, 1.0f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(_playerSprites, player.Position, null, _playersPlaying.Contains(player.ControllerIndex) ? Color.Lerp(PlayerColors[(int)player.ControllerIndex], Color.White, 0.5f) : Color.White, 0.0f, _playerOrigin, 1.0f, SpriteEffects.None, 0);
             else
                 spriteBatch.Draw(_playerSprites, player.Position, null, Color.White*0.25f, 0.0f, _playerOrigin, 1.0f, SpriteEffects.None, 0);
         }

@@ -20,19 +20,17 @@ namespace Lumen.States
         private readonly GameManager _gameManager;
         private readonly LightManager _lightManager;
 
-        private PlayerIndex _enemyPlayerIndex;
+        private List<PlayerIndex> _playerOrder;
 
         private RenderTarget2D _sceneRt;
 #if DEBUG
         public bool IsShowingDebugInformation = false;
 #endif
 
-        public MainGameState(PlayerIndex enemyPlayer)
+        public MainGameState(List<PlayerIndex> playerOrder)
         {
             _gameManager = new GameManager(GameDriver.DisplayResolution);
             _lightManager = new LightManager();
-
-            _enemyPlayerIndex = enemyPlayer;
         }
 
         public override void Initialize(GameDriver g)
@@ -99,24 +97,25 @@ namespace Lumen.States
                 _gameManager.ResetCompletely();
                 
                 var playerNum = 1;
-                for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++)
+                for (var i = 0; i < 4; i++)
                 {
-                    if (GamePad.GetState(i).IsConnected || i <= PlayerIndex.Two)
+                    var playerIndex = _playerOrder[i];
+                    if (GamePad.GetState(playerIndex).IsConnected || playerIndex <= PlayerIndex.Two)
                     {
 
-                        if (i == _enemyPlayerIndex)
+                        if (i == 3)
                         {
                             _gameManager.AddEnemy(
                                 new Guardian(new Vector2(GameDriver.DisplayResolution.X - 64, GameDriver.DisplayResolution.Y / 2)),
-                                i);
+                                playerIndex);
                         }
                         else
                         {
                             _gameManager.AddPlayer(
                                 new Player("player" + playerNum++,
                                            new Vector2(64, GameDriver.DisplayResolution.Y / 2 - 96 + 32 * playerNum)),
-                                i);
-                            _gameManager.Players.Last().PlayerSpriteIndex = playerNum - 1;
+                                playerIndex);
+                            _gameManager.Players.Last().PlayerSpriteIndex = playerNum + i;
                         }
                     }
                 }
