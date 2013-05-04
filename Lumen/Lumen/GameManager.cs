@@ -288,8 +288,10 @@ namespace Lumen
                     GameVariables.CrystalMinimumSpawnDistanceBetween*GameVariables.CrystalMinimumSpawnDistanceBetween) {
                     AddCrystal(pt);
                 }
-                else {
-                    for (int i = 0; i < GameVariables.CrystalSpawningMaxAttempts; i++) {
+                else
+                {
+                    int i;
+                    for (i = 0; i < GameVariables.CrystalSpawningMaxAttempts; i++) {
                         pt = GameDriver.GetPointWithinRect(rectToTry);
 
                         crystalLengths = Props.Where(p => p is Crystal).Select(v => (pt - v.Position).LengthSquared()).ToList();
@@ -308,7 +310,8 @@ namespace Lumen
                         }
                     }
 
-                    AddCrystal(bestAttempt);
+                    if(i == GameVariables.CrystalSpawningMaxAttempts)
+                       AddCrystal(bestAttempt);
                 }
             }
         }
