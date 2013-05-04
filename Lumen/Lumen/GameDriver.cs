@@ -38,7 +38,6 @@ namespace Lumen
             Content.RootDirectory = "Content";
         }
 
-#if DEBUG
         public static Vector2 GetPointWithinRect(Rectangle rect)
         {
             var g = rect.Width > rect.Height ? rect.Height : rect.Width;
@@ -61,7 +60,7 @@ namespace Lumen
 
             return new Vector2(rect.X + av, rect.Y + bv);
         }
-#endif
+
         public static Vector2 GetFontPositionAtCenter(string str, SpriteFont font, Vector2 goalCenter)
         {
             var x = font.MeasureString(str);
