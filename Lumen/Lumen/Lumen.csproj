@@ -122,6 +122,8 @@
     <Compile Include="Particle System\ParticleSystemInfo.cs" />
     <Compile Include="Particle System\ParticleSystemManager.cs" />
     <Compile Include="Props\BlinkingLight.cs" />
+    <Compile Include="Props\BlinkingLightFadeState.cs" />
+    <Compile Include="Props\DurationLimitedFadingLight.cs" />
     <Compile Include="Props\Light.cs" />
     <Compile Include="Entities\Guardian.cs" />
     <Compile Include="Entities\Entity.cs" />

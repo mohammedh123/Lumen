@@ -15,6 +15,8 @@ namespace Lumen
         public static float PlayerOrbsPeriod = 0.5f;
         public static float PlayerLightDuration = 1.0f;
         public static float PlayerLightRadius = 150.0f;
+        public static float PlayerLightFadeInDuration = 0.3f;
+        public static float PlayerLightFadeOutDuration = 0.3f;
         public static float PlayerHitVibrationDuration = 0.25f;
         
         public static float EnemySpeed = 80.0f;

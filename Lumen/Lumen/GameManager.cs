@@ -464,7 +464,7 @@ namespace Lumen
         {
             if (Players.Contains(p)) return false;
 
-            var light = new Light("blank", GameVariables.PlayerLightRadius, p.Position, p);
+            var light = new DurationLimitedFadingLight("blank", p, GameVariables.PlayerLightRadius);
             var blinkingLight = new BlinkingLight("blank", p, GameVariables.BlinkingRadius);
             Props.Add(light);
             Props.Add(blinkingLight);
