@@ -1,14 +1,13 @@
-- Screens
+Finalize variables to consts
 
 Assets
 ------
 Art
-	- Guardian
-	- Crystal
+	- GUI Crystal Outline
+	- 3-player triangle
+	- Tutorial screen
 
 Sound
-	- Win
-	- Lose
-	- Guardian energy depletion
-	- Guardian energy recharged to full
-	- "Footstep" (movement) noise
+	- Guardian Win
+	- Wisp Win
+	- Next Round
