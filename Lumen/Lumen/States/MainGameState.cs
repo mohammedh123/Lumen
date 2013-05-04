@@ -31,6 +31,8 @@ namespace Lumen.States
         {
             _gameManager = new GameManager(GameDriver.DisplayResolution);
             _lightManager = new LightManager();
+
+            _playerOrder = playerOrder;
         }
 
         public override void Initialize(GameDriver g)
@@ -115,7 +117,7 @@ namespace Lumen.States
                                 new Player("player" + playerNum++,
                                            new Vector2(64, GameDriver.DisplayResolution.Y / 2 - 96 + 32 * playerNum)),
                                 playerIndex);
-                            _gameManager.Players.Last().PlayerSpriteIndex = playerNum + i;
+                            _gameManager.Players.Last().PlayerSpriteIndex = playerNum-1;
                         }
                     }
                 }
