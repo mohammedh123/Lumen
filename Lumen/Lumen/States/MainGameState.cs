@@ -249,6 +249,8 @@ namespace Lumen.States
 
             DrawEnemyInformation(spriteBatch, 
                 new Vector2(_gameManager.Guardian.Position.X - 16, _gameManager.Guardian.Position.Y - 32), alpha);
+            
+            DrawCrystalsRemainingInformation(spriteBatch, new Vector2(GameDriver.DisplayResolution.X/2, 800), alpha);
         }
 
         private void DrawEnemyInformation(SpriteBatch spriteBatch, Vector2 topLeft, float alpha)
@@ -266,11 +268,18 @@ namespace Lumen.States
             spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), GameVariables.UIScale, SpriteEffects.None, 0);
             spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
 
-            for (int i = 0; i < player.CrystalCount; i++)
-            {
-                spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(32 + 16 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale * 2, SpriteEffects.None, 0);
-            }
+            spriteBatch.End();
+        }
 
+        private void DrawCrystalsRemainingInformation(SpriteBatch spriteBatch, Vector2 center, float alpha)
+        {
+            spriteBatch.Begin();
+            center -= new Vector2(_gameManager.CrystalsRemaining*8,0);
+
+            for (int i = 0; i < _gameManager.CrystalsRemaining; i++)
+            {
+                spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(16 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale * 2, SpriteEffects.None, 0);
+            }
             spriteBatch.End();
         }
     }
