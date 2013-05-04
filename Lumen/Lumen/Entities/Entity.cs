@@ -24,6 +24,12 @@ namespace Lumen.Entities
             Position = position;
         }
 
+        public void SetTexture(string textureKeyName)
+        {
+            Texture = TextureManager.GetTexture(textureKeyName);
+            TextureOrigin = TextureManager.GetOrigin(textureKeyName);
+        }
+
         public abstract void Update(float dt);
         
         public virtual void Draw(SpriteBatch sb)
