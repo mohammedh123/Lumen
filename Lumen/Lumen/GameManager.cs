@@ -6,6 +6,8 @@ using Lumen.Entities;
 using Lumen.Light_System;
 using Lumen.Particle_System;
 using Lumen.Props;
+using Lumen.State_Management;
+using Lumen.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -39,6 +41,8 @@ namespace Lumen
         public GameState State = GameState.StillGoing;
         private readonly Vector2 _gameResolution;
         public int RoundNumber { get; private set; }
+        private int _currentStreak = 0;
+        private bool _isStreakForPlayer = false;
         public float TimeTillNextRound { get; private set; }
 
         public GameManager(Vector2 gameResolution)
@@ -203,6 +207,35 @@ namespace Lumen
 
         private void StartNextRound()
         {
+            if(State == GameState.PlayersWin)
+            {
+                if (_isStreakForPlayer)
+                    _currentStreak++;
+                else
+                    _currentStreak = 1;
+
+                _isStreakForPlayer = true;
+            }
+            else if(State == GameState.EnemyWins)
+            {
+                if (_isStreakForPlayer)
+                    _currentStreak = 1;
+                else
+                {
+                    _currentStreak++;
+                }
+
+                _isStreakForPlayer = false;
+            }
+
+            if(_currentStreak == 3)
+            {
+                StateManager.Instance.PopState();
+                StateManager.Instance.PushState(new MainMenuState());
+                _currentStreak = 0;
+                _isStreakForPlayer = false;
+            }
+
             //RoundNumber++;
             State = GameState.StillGoing;
 
