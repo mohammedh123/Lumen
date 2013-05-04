@@ -27,7 +27,7 @@ namespace Lumen.States
         private Texture2D _lumenBackground, _lumenLogo, _playerSprites;
         private Vector2 _logoOrigin, _logoPosition, _playerOrigin, _textPosition;
         private SpriteFont _mainMenuFont;
-        private readonly List<PlayerIndex> _playersPlaying = new List<PlayerIndex>();
+        private List<PlayerIndex> _playersPlaying = new List<PlayerIndex>();
         private readonly BasicLight[] _playersLight = new BasicLight[4];
         private readonly Player[] _players = new Player[4];
         private PlayerIndex _lastPlayerReady;
@@ -104,7 +104,10 @@ namespace Lumen.States
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Game.Exit();
 
-            if(InputManager.KeyPressed(Keys.Enter)) {
+            if(InputManager.KeyPressed(Keys.Enter))
+            {
+                _playersPlaying = new List<PlayerIndex>
+                                      {PlayerIndex.One, PlayerIndex.Two, PlayerIndex.Three, PlayerIndex.Four};
                 TransitionToMainGame();
             }
 
