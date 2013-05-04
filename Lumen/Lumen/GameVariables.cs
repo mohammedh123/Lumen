@@ -46,7 +46,7 @@ namespace Lumen
         public static int CrystalHarvestRequirement = 1;
         public static float CrystalGlowRadius = 120.0f;
 
-        public static float CrystalMinimumSpawnDistanceBetween = 50.0f;
+        public static float CrystalMinimumSpawnDistanceBetween = 120.0f;
         public static int CrystalSpawningMaxAttempts = 100;
 
         public static Matrix CameraZoomMatrix

@@ -88,6 +88,11 @@ namespace Lumen
                     var crystal = prop as Crystal;
 
                     if(crystal != null) {
+                        if (!crystal.IsSomeoneCollectingThis)
+                        {
+                            crystal._collectionTimeLeft = GameVariables.CrystalCollectionTime / (4-Players.Count);
+                        }
+
                         if (crystal.Collector != null) {
                             IncreasePlayerCrystalCount(crystal.Collector);
                             crystal.Collector = null;

@@ -106,6 +106,7 @@ namespace Lumen.Entities
             }
             else {
                 _chargingTimer = 0.0f;
+                _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
             }
 
             if (IsAttacking)
@@ -115,11 +116,9 @@ namespace Lumen.Entities
                 SetOrbitRingProperties(true);
                 if(_attackTimer >= GameVariables.EnemyAttackTotalDuration)
                     StopAttack();
-                _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
             }
             else {
                 _attackTimer = -1.0f;
-                _chargeCooldown = Math.Max(_chargeCooldown - dt, 0.0f);
             }
 
             if (Velocity != Vector2.Zero)
@@ -203,7 +202,7 @@ namespace Lumen.Entities
             PlayersHitThisAttack.Clear();
 
             _attackTimer = 0.0f;
-            SoundManager.GetSoundInstance("guardian_release").Play();
+            SoundManager.GetSound("guardian_release").Play();
             ParticleSystemManager.Instance.FireParticleSystem("guardian_attack", Position.X, Position.Y);
         }
 

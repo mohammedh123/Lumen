@@ -24,7 +24,7 @@ namespace Lumen.Props
 
         public Player Collector;
 
-        private float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
+        public float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
         public float LightIntensity { get; set; }
 
         private int _collectorCount = 0;
