@@ -49,6 +49,12 @@ namespace Lumen.Entities
             OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod,textureKey, new Rectangle(0,0,32,32), this);
         }
 
+        public override void SetTexture(string textureKeyName)
+        {
+            base.SetTexture(textureKeyName);
+            OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod, textureKeyName, new Rectangle(0, 0, 32, 32), this);
+        }
+
         public void ResetOrbs()
         {
             OrbitRing.IsVisible = true;
