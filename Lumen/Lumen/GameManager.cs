@@ -28,7 +28,6 @@ namespace Lumen
         public Dictionary<Player,List<Light>> DeadPlayers = new Dictionary<Player, List<Light>>(); 
         public Guardian Guardian { get; set; }
         public List<Prop> Props { get; set; }
-        public List<Block> Blocks { get; set; }
         public List<Prop> PropsToBeAdded { get; set; }
 
         public int CrystalsCollected { get; private set; }
@@ -49,7 +48,6 @@ namespace Lumen
         {
             Players = new List<Player>();
             Props = new List<Prop>();
-            Blocks = new List<Block>();
             PropsToBeAdded = new List<Prop>();
             RoundNumber = 1;
 
@@ -475,9 +473,6 @@ namespace Lumen
 
             Guardian.Draw(sb);
 
-            foreach (var block in Blocks)
-                block.Draw(sb);
-
             sb.End();
         }
 
@@ -524,11 +519,6 @@ namespace Lumen
             Guardian = e;
 
             return true;
-        }
-
-        public void AddBlock(Vector2 topLeftCorner, int size)
-        {
-            Blocks.Add(new Block(topLeftCorner, size));
         }
 
         public void AddCrystal(Vector2 position)
@@ -588,7 +578,6 @@ namespace Lumen
             Players.Clear();
             DeadPlayers.Clear();
             Props.Clear();
-            Blocks.Clear();
             PropsToBeAdded.Clear();
 
             Guardian = null;

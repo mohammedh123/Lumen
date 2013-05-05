@@ -21,19 +21,6 @@ namespace Lumen
                                   GameVariables.EnemyCollisionRadius);
         }
 
-        internal static bool Collides(Player player, Block block, bool useVelocity = false)
-        {
-            if(useVelocity)
-            {
-                
-            }
-            else
-            {
-                
-            }
-
-            return false;
-        }
 
         internal static bool Collides(Player player, Player otherPlayer, bool useVelocityPlayerOne = false, bool useVelocityPlayerTwo = false)
         {
