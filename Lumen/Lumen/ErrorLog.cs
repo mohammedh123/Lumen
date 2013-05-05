@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Lumen
 {
-    public class ErrorLog
+    public static class ErrorLog
     {
-        public const string LogFileName = "log.txt";
+        private const string LogFileName = "log.txt";
 
         public static void Log(string logMessage)
         {

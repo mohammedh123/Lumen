@@ -32,7 +32,7 @@ namespace Lumen
             RandomGen = new Random();
             _graphics = new GraphicsDeviceManager(this);
             var graphicsOptions = new GraphicsOptions();
-            graphicsOptions.ApplySettings(_graphics);
+            GraphicsOptions.ApplySettings(_graphics);
 
 
             Content.RootDirectory = "Content";

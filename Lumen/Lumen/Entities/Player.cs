@@ -60,7 +60,7 @@ namespace Lumen.Entities
             OrbitRing.IsVisible = true;
         }
 
-        public override void Update(float dt)
+        public virtual void Update(float dt)
         {
             if (IsAlive) {
 #if DEBUG
@@ -109,10 +109,7 @@ namespace Lumen.Entities
             var speedToUse = GameVariables.PlayerSpeed;
 
             AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
-
-            if (Velocity != Vector2.Zero)
-                Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
-
+            
             if (AttachedBlinkingLight.IsVisible)
                 AttachedBlinkingLight.IsVisible = Velocity != Vector2.Zero;
             

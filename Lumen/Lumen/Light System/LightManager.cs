@@ -12,7 +12,6 @@ namespace Lumen.Light_System
 {
     class LightManager
     {
-        private VertexPositionColorTexture[] _verts = { new VertexPositionColorTexture(), new VertexPositionColorTexture() };
         private RenderTarget2D _accumulatorRt;
         private Texture2D _screenTex;
         private Effect _lightAccumulatorFx, _lightCombinerFx;
@@ -49,19 +48,6 @@ namespace Lumen.Light_System
             sb.End();
             
             graphicsDevice.SetRenderTarget(null);
-
-            //if (lights.Any())
-            //{
-            //    using (var stream = new FileStream("output.png", FileMode.OpenOrCreate))
-            //    {
-            //        _accumulatorRT.SaveAsPng(stream, _accumulatorRT.Width, _accumulatorRT.Height);
-            //    }
-            //}
-        }
-
-        public Texture2D GetAccumulatedLights()
-        {
-            return _accumulatorRt;
         }
 
         public void DrawLightDarkness(GraphicsDevice graphicsDevice, SpriteBatch sb, RenderTarget2D sceneRt)

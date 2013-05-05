@@ -84,12 +84,13 @@ namespace Lumen.Entities
             Health = Int32.MaxValue;
             EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
 
-            OrbitRing = new OrbitingRing(0, 10, 1.0f, 0.5f, "hit_particle", new Rectangle(0,0,2,2), this);
-            OrbitRing.IsVisible = false;
+            OrbitRing = new OrbitingRing(0, 10, 1.0f, 0.5f, "hit_particle", new Rectangle(0,0,2,2), this)
+                        {IsVisible = false};
         }
 
-        public override void Update(float dt)
+        public virtual void Update(float dt)
         {
+            SpriteAngle += (float)Math.PI*2*dt;
 #if DEBUG
             if (ControllerIndex <= PlayerIndex.Two && !GamePad.GetState(ControllerIndex).IsConnected)
             {
@@ -123,10 +124,7 @@ namespace Lumen.Entities
             else {
                 _attackTimer = -1.0f;
             }
-
-            if (Velocity != Vector2.Zero)
-                Angle = (float)Math.Atan2(Velocity.Y, Velocity.X);
-
+            
             if(!IsChargingUp)// || IsChargingUp && EnergyRemaining == 0)
                 EnergyRemaining = Math.Min(GameVariables.EnemyAttackMaxRadius, EnergyRemaining + GameVariables.EnemyEnergyRegeneration*dt);
         }

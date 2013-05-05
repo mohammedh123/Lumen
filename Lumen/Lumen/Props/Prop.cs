@@ -28,7 +28,7 @@ namespace Lumen.Props
             Lifetime = 0.0f;
         }
         
-        public override void Update(float dt)
+        public virtual void Update(float dt)
         {
             Lifetime += dt;
         }

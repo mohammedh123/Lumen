@@ -107,8 +107,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionType.cs" />
-    <Compile Include="Block.cs" />
     <Compile Include="Collider.cs" />
     <Compile Include="DrawingHelper.cs" />
     <Compile Include="Entities\IControllerCapable.cs" />

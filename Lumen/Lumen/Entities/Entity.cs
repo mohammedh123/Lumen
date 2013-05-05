@@ -6,13 +6,13 @@ namespace Lumen.Entities
     abstract class Entity
     {
         protected Texture2D Texture { get; set; }
-        protected Vector2 TextureOrigin { get; set; }
+        private Vector2 TextureOrigin { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
         public int Health { get; set; }
 
-        public float Angle = 0f, SpriteAngle = 0f;
-        public Color Color = Color.White;
+        public float SpriteAngle = 0f;
+        protected Color Color = Color.White;
 
         public bool IsVisible { get; set; }
 
@@ -30,8 +30,6 @@ namespace Lumen.Entities
             TextureOrigin = TextureManager.GetOrigin(textureKeyName);
         }
 
-        public abstract void Update(float dt);
-        
         public virtual void Draw(SpriteBatch sb)
         {
             if(IsVisible)

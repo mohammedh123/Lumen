@@ -25,12 +25,12 @@ namespace Lumen
     internal class GameManager
     {
         public List<Player> Players { get; set; }
-        public Dictionary<Player,List<Light>> DeadPlayers = new Dictionary<Player, List<Light>>(); 
+        public readonly Dictionary<Player,List<Light>> DeadPlayers = new Dictionary<Player, List<Light>>(); 
         public Guardian Guardian { get; set; }
         public List<Prop> Props { get; set; }
-        public List<Prop> PropsToBeAdded { get; set; }
+        private List<Prop> PropsToBeAdded { get; set; }
 
-        public int CrystalsCollected { get; private set; }
+        private int CrystalsCollected { get; set; }
 
         public int CrystalsRemaining
         {
@@ -77,8 +77,6 @@ namespace Lumen
 
                 HandlePropsToBeRemoved();
                 HandlePropsToBeAdded(dt);
-
-                var isEnemyMoving = false;
                 
                 //SetPlayerCrystalVibration(Guardian);
                 ResolveOutOfBoundsCollision(Guardian);
@@ -119,8 +117,6 @@ namespace Lumen
                     }
                 }
 
-                if (isEnemyMoving)
-                    SoundManager.GetSoundInstance("footstep").Play();
                 if (Guardian != null) {
                     if (Guardian.IsChargingUp) {
                         GameVariables.ScreenShakeAmount = GameVariables.MaxScreenShake*

@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 
 namespace Lumen
 {
-    class GraphicsOptions
+    sealed class GraphicsOptions
     {
-        public virtual void ApplySettings(GraphicsDeviceManager graphics)
+        public static void ApplySettings(GraphicsDeviceManager graphics)
         {
             graphics.PreferredBackBufferWidth = 1152;
             graphics.PreferredBackBufferHeight = 864;
