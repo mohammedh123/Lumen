@@ -114,9 +114,11 @@ namespace Lumen.Entities
                 Velocity = Vector2.Zero;
                 if (_attackTimer >= GameVariables.EnemyAttackTotalDuration)
                     StopAttack();
-
-                _attackTimer += dt;
-                SetOrbitRingProperties(true);
+                else
+                {
+                    _attackTimer += dt;
+                    SetOrbitRingProperties(true);
+                }
             }
             else {
                 _attackTimer = -1.0f;
