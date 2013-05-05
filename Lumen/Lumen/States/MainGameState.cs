@@ -203,12 +203,11 @@ namespace Lumen.States
             spriteBatch.End();
             _lightManager.DrawLightDarkness(graphicsDevice, spriteBatch, _sceneRt);
 
+            spriteBatch.Begin();
 #if DEBUG
             if (IsShowingDebugInformation)
             {
-                spriteBatch.Begin();
                 spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", GameVariables.CameraZoom), Vector2.Zero, Color.White);
-                spriteBatch.End();
             }
 #endif
             string s = null;
@@ -220,21 +219,20 @@ namespace Lumen.States
 
             if (s != null)
             {
-                spriteBatch.Begin();
                 spriteBatch.DrawString(TextureManager.GetFont("big"), s, new Vector2(0, 300), Color.White);
-                spriteBatch.End();
             }
 
             var alphaToUse = 1.0f;
 
-            var uiRect = new Rectangle(128, 48, (int)GameDriver.DisplayResolution.X - 128 - 100, (int)GameDriver.DisplayResolution.Y - 48);
+            //var uiRect = new Rectangle(128, 48, (int)GameDriver.DisplayResolution.X - 128 - 100, (int)GameDriver.DisplayResolution.Y - 48);
 
-            if (!_gameManager.Players.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)) || !uiRect.Contains((int)_gameManager.Guardian.Position.X, (int)_gameManager.Guardian.Position.Y) || !_gameManager.Props.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)))
-            {
-                //alphaToUse = 0.25f;
-            }
+            //if (!_gameManager.Players.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)) || !uiRect.Contains((int)_gameManager.Guardian.Position.X, (int)_gameManager.Guardian.Position.Y) || !_gameManager.Props.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)))
+            //{
+            //    //alphaToUse = 0.25f;
+            //}
 
             DrawUI(spriteBatch, alphaToUse);
+            spriteBatch.End();
         }
 
         private void DrawUI(SpriteBatch spriteBatch, float alpha = 1)
@@ -256,32 +254,24 @@ namespace Lumen.States
 
         private void DrawEnemyInformation(SpriteBatch spriteBatch, Vector2 topLeft, float alpha)
         {
-            spriteBatch.Begin();
             //DrawingHelper.DrawHorizontalFilledBar(topLeft, spriteBatch, Color.White * alpha, Color.Blue * alpha, 32, 8, 1, _gameManager.Guardian.EnergyRemaining / GameVariables.EnemyAttackMaxRadius);
-            spriteBatch.End();
         }
 
         private void DrawPlayerInformation(SpriteBatch spriteBatch, Vector2 center, Player player, float alpha)
         {
-            spriteBatch.Begin();
-
             var str = "player" + (player.IsAlive ? "" + player.PlayerSpriteIndex : "_dead") + "_portrait";
             spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("player_portrait"), GameVariables.UIScale, SpriteEffects.None, 0);
             spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White * alpha, 0.0f, TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
-
-            spriteBatch.End();
         }
 
         private void DrawCrystalsRemainingInformation(SpriteBatch spriteBatch, Vector2 center, float alpha)
         {
-            spriteBatch.Begin();
             center -= new Vector2(_gameManager.CrystalsRemaining*8,0);
 
             for (int i = 0; i < _gameManager.CrystalsRemaining; i++)
             {
                 spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(16 * i, 0), null, Color.White * alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale * 2, SpriteEffects.None, 0);
             }
-            spriteBatch.End();
         }
     }
 }

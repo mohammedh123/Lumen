@@ -32,11 +32,11 @@ namespace Lumen.Light_System
             graphicsDevice.Clear(Color.Black);
 
 
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFx, GameVariables.CameraZoomMatrix);
             foreach (var light in lights)
             {
                 if (!light.IsVisible) continue;
 
-                sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFx, GameVariables.CameraZoomMatrix);
                 var normalizedPosition = new Vector2(light.Position.X / _accumulatorRt.Width,
                                                      light.Position.Y / _accumulatorRt.Height);
 
@@ -45,8 +45,8 @@ namespace Lumen.Light_System
                 _lightAccumulatorFx.Parameters["lightIntensity"].SetValue(light.LightIntensity);
 
                 sb.Draw(_screenTex, new Rectangle(0, 0, _accumulatorRt.Width, _accumulatorRt.Height), Color.White);
-                sb.End();
             }
+            sb.End();
             
             graphicsDevice.SetRenderTarget(null);
 
