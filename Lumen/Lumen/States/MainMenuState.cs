@@ -106,8 +106,7 @@ namespace Lumen.States
 
             if(InputManager.KeyPressed(Keys.Enter))
             {
-                _playersPlaying = new List<PlayerIndex>
-                                      {PlayerIndex.One, PlayerIndex.Two, PlayerIndex.Three, PlayerIndex.Four};
+                _playersPlaying = new List<PlayerIndex> { PlayerIndex.One, PlayerIndex.Four, PlayerIndex.Three, PlayerIndex.Two };
                 TransitionToMainGame();
             }
 
