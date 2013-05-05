@@ -57,7 +57,7 @@ namespace Lumen.States
 
             _textPosition = new Vector2(GameDriver.DisplayResolution.X/2, 500);
 
-            for (int i = 0; i < 4; i++) {
+            for (var i = 0; i < 4; i++) {
                 _players[i] = new Player("player" + (i + 1),
                                          leftMostPlayerPos + new Vector2(i*DistanceBetweenPlayerSprites, 0))
                               {ControllerIndex = PlayerIndex.One + i};
@@ -94,7 +94,7 @@ namespace Lumen.States
 
         public override void Update(GameTime delta)
         {
-            Song song = SoundManager.GetSong("main_bgm");
+            var song = SoundManager.GetSong("main_bgm");
 
             if (MediaPlayer.State == MediaState.Stopped) {
                 MediaPlayer.Play(song);
@@ -133,7 +133,7 @@ namespace Lumen.States
                 }
             }
 
-            foreach (Player player in _players) {
+            foreach (var player in _players) {
                 player.OrbitRing.Update((float) delta.ElapsedGameTime.TotalSeconds);
             }
 
@@ -178,7 +178,7 @@ namespace Lumen.States
             spriteBatch.Begin();
             spriteBatch.Draw(_lumenBackground, Vector2.Zero, Color.White);
 
-            foreach (Player player in _players) {
+            foreach (var player in _players) {
                 DrawPlayerInformation(player, spriteBatch);
             }
 

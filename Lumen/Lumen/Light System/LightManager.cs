@@ -28,7 +28,7 @@ namespace Lumen.Light_System
 
             sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None,
                      RasterizerState.CullCounterClockwise, _lightAccumulatorFx, GameVariables.CameraZoomMatrix);
-            foreach (ILightProvider light in lights) {
+            foreach (var light in lights) {
                 if (!light.IsVisible) {
                     continue;
                 }

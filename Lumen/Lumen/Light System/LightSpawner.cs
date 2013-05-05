@@ -35,14 +35,14 @@ namespace Lumen.Light_System
 
         public void AddStaticLight(Vector2 position, float intensity, float radius, float intensityDecay)
         {
-            ILightProvider l = CreateLight(position, intensity, radius);
+            var l = CreateLight(position, intensity, radius);
 
             _managedLights.Add(l, new LightData {IntensityDecay = intensityDecay});
         }
 
         public void AddAttachedLight(Entity e, float intensity, float radius, float intensityDecay)
         {
-            ILightProvider l = CreateLight(e.Position, intensity, radius);
+            var l = CreateLight(e.Position, intensity, radius);
 
             _managedLights.Add(l, new LightData {IntensityDecay = intensityDecay, EntityAttachedTo = e});
         }
@@ -75,7 +75,7 @@ namespace Lumen.Light_System
                 }
             }
 
-            foreach (ILightProvider light in lightsToRemove) {
+            foreach (var light in lightsToRemove) {
                 _managedLights.Remove(light);
             }
         }

@@ -38,10 +38,10 @@ namespace Lumen
             _gameResolution = gameResolution;
         }
 
-        public List<Player> Players { get; set; }
+        public List<Player> Players { get; private set; }
 
-        public Guardian Guardian { get; set; }
-        public List<Prop> Props { get; set; }
+        public Guardian Guardian { get; private set; }
+        public List<Prop> Props { get; private set; }
         private List<Prop> PropsToBeAdded { get; set; }
 
         private int CrystalsCollected { get; set; }
@@ -57,7 +57,7 @@ namespace Lumen
         public void Update(GameTime gameTime)
         {
             var dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
-            Song song = SoundManager.GetSong("main_bgm");
+            var song = SoundManager.GetSong("main_bgm");
 
             if (MediaPlayer.State == MediaState.Stopped) {
                 MediaPlayer.Play(song);
@@ -65,7 +65,7 @@ namespace Lumen
 
             if (State == GameState.StillGoing) {
                 //iterate through all entities and update them (their deltas will be set at the end of update)
-                foreach (Player player in Players) {
+                foreach (var player in Players) {
                     player.Update(dt);
 
                     HandleCrystalCollection(player, dt);
@@ -84,7 +84,7 @@ namespace Lumen
                 ResolveOutOfBoundsCollision(Guardian);
                 Guardian.OrbitRing.Update(dt);
 
-                foreach (Prop prop in Props) {
+                foreach (var prop in Props) {
                     prop.Update(dt);
 
                     var crystal = prop as Crystal;
@@ -103,8 +103,8 @@ namespace Lumen
 
                 Guardian.ResetVelocity();
 
-                for (int i = 0; i < Players.Count; i++) {
-                    Player player = Players[i];
+                for (var i = 0; i < Players.Count; i++) {
+                    var player = Players[i];
 
                     ResolveOutOfBoundsCollision(player);
                     player.OrbitRing.Update(dt);
@@ -148,7 +148,7 @@ namespace Lumen
                 TimeTillNextRound -= dt;
 
                 Players.ForEach(p => GamePad.SetVibration(p.ControllerIndex, 0, 0));
-                foreach (Player p in DeadPlayers.Keys) {
+                foreach (var p in DeadPlayers.Keys) {
                     GamePad.SetVibration(p.ControllerIndex, 0, 0);
                 }
                 if (Guardian != null) {
@@ -176,7 +176,7 @@ namespace Lumen
 
 
                 Players.ForEach(p => GamePad.SetVibration(p.ControllerIndex, 0, 0));
-                foreach (Player p in DeadPlayers.Keys) {
+                foreach (var p in DeadPlayers.Keys) {
                     GamePad.SetVibration(p.ControllerIndex, 0, 0);
                 }
                 if (Guardian != null) {
@@ -244,7 +244,7 @@ namespace Lumen
 
             DeadPlayers.Clear();
 
-            foreach (Player player in Players) {
+            foreach (var player in Players) {
                 player.CrystalCount = 0;
                 CrystalsCollected = 0;
                 player.Health = GameVariables.PlayerStartingHealth;
@@ -263,7 +263,7 @@ namespace Lumen
 
             Props.RemoveAll(p => p is Crystal);
 
-            for (int i = 0; i < GameVariables.CrystalsToSpawn(RoundNumber); i++) {
+            for (var i = 0; i < GameVariables.CrystalsToSpawn(RoundNumber); i++) {
                 SpawnCrystalUniformly();
             }
         }
@@ -271,17 +271,17 @@ namespace Lumen
         public void SpawnCrystalUniformly()
         {
             var rectToTry = new Rectangle(150, 0, (int) _gameResolution.X - 16 - 150, (int) _gameResolution.Y - 100);
-            Vector2 pt = GameDriver.GetPointWithinRect(rectToTry);
+            var pt = GameDriver.GetPointWithinRect(rectToTry);
 
             if (!Props.Any(p => p is Crystal)) {
                 AddCrystal(pt);
             }
             else {
-                List<float> crystalLengths =
+                var crystalLengths =
                     Props.Where(p => p is Crystal).Select(v => (pt - v.Position).LengthSquared()).ToList();
-                float closestCrystalDistance = crystalLengths.Min();
+                var closestCrystalDistance = crystalLengths.Min();
 
-                Vector2 bestAttempt = Vector2.Zero;
+                var bestAttempt = Vector2.Zero;
 
                 if (closestCrystalDistance >=
                     GameVariables.CrystalMinimumSpawnDistanceBetween*GameVariables.CrystalMinimumSpawnDistanceBetween) {
@@ -356,8 +356,8 @@ namespace Lumen
 
         private void HandlePropsToBeAdded(float dt)
         {
-            for (int i = 0; i < PropsToBeAdded.Count; i++) {
-                Prop prop = PropsToBeAdded[i];
+            for (var i = 0; i < PropsToBeAdded.Count; i++) {
+                var prop = PropsToBeAdded[i];
                 prop.Lifetime += dt;
 
                 if (prop.Lifetime > 0) {
@@ -379,7 +379,7 @@ namespace Lumen
             if (player.CollectionTarget == null) {
                 Crystal colTar = null;
 
-                foreach (Prop prop in Props) {
+                foreach (var prop in Props) {
                     if (prop.PropType == PropTypeEnum.Crystal) {
                         if (Collider.IsPlayerWithinRadius(player, prop.Position,
                                                           GameVariables.CrystalCollectionRadius)) {
@@ -424,7 +424,7 @@ namespace Lumen
                 State = GameState.PlayersWin;
                 TimeTillNextRound = 3.0f;
 
-                foreach (Player player in Players) {
+                foreach (var player in Players) {
                     GamePad.SetVibration(player.ControllerIndex, 0, 0);
                 }
                 GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
@@ -436,11 +436,11 @@ namespace Lumen
             var collidingProps = new List<Prop>();
             var interactingProps = new List<Prop>();
 
-            foreach (Player player in Players) {
+            foreach (var player in Players) {
                 collidingProps.Clear();
                 interactingProps.Clear();
 
-                foreach (Prop prop in Props.Where(p => !(p is BlinkingLight))) {
+                foreach (var prop in Props.Where(p => !(p is BlinkingLight))) {
                     if (Collider.Collides(player, prop)) {
                         if (player.IsInteractingWithProp) {
                             if (prop.CanInteract) {
@@ -464,11 +464,11 @@ namespace Lumen
 
             ParticleSystemManager.Instance.Draw(sb);
 
-            foreach (Prop prop in Props.OrderByDescending(p => p.PropType)) {
+            foreach (var prop in Props.OrderByDescending(p => p.PropType)) {
                 prop.Draw(sb);
             }
 
-            foreach (Player player in Players) {
+            foreach (var player in Players) {
                 player.Draw(sb);
             }
 
@@ -535,10 +535,10 @@ namespace Lumen
 
         private List<Light> RemovePlayersLight(Player player)
         {
-            List<Light> lights =
+            var lights =
                 Props.FindAll(p => p is Light && ((Light) p).EntityAttachedTo == player).Cast<Light>().ToList();
 
-            foreach (Light prop in lights) {
+            foreach (var prop in lights) {
                 Props.Remove(prop);
             }
 
@@ -559,7 +559,7 @@ namespace Lumen
             GamePad.SetVibration(player.ControllerIndex, 0, 0);
 
             //find the light that belongs to this Guardian and eliminate it
-            List<Light> lights = RemovePlayersLight(player);
+            var lights = RemovePlayersLight(player);
 
             Players.Remove(player);
             DeadPlayers.Add(player, lights);
@@ -584,7 +584,7 @@ namespace Lumen
         {
             var lights = new List<ILightProvider>(50);
 
-            foreach (Prop prop in Props) {
+            foreach (var prop in Props) {
                 var asLight = prop as ILightProvider;
 
                 if (asLight != null) {

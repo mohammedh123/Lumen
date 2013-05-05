@@ -9,7 +9,7 @@ namespace Lumen.Particle_System
     internal class OrbitingRing
     {
         private readonly float _particleScale;
-        public List<OrbitingParticle> Satellites;
+        public readonly List<OrbitingParticle> Satellites;
         private bool _isVisible = true;
         private float _orbitPeriod;
         private Entity _orbitTarget;
@@ -29,8 +29,8 @@ namespace Lumen.Particle_System
 
             Satellites = new List<OrbitingParticle>();
 
-            for (int i = 0; i < initialCount; i++) {
-                float atu = i*(MathHelper.TwoPi/initialCount);
+            for (var i = 0; i < initialCount; i++) {
+                var atu = i*(MathHelper.TwoPi/initialCount);
 
                 Satellites.Add(new OrbitingParticle(TextureManager.GetTexture(textureKey), textureRect,
                                                     TextureManager.GetOrigin(textureKey), orbitTarget, _radius,
@@ -50,7 +50,7 @@ namespace Lumen.Particle_System
             set
             {
                 _radius = value;
-                foreach (OrbitingParticle orb in Satellites) {
+                foreach (var orb in Satellites) {
                     orb.DistanceFromCenter = value;
                 }
             }
@@ -58,11 +58,10 @@ namespace Lumen.Particle_System
 
         public float OrbitPeriod
         {
-            get { return _orbitPeriod; }
             set
             {
                 _orbitPeriod = value;
-                foreach (OrbitingParticle orb in Satellites) {
+                foreach (var orb in Satellites) {
                     orb.OrbitPeriod = value;
                 }
             }
@@ -74,7 +73,7 @@ namespace Lumen.Particle_System
             set
             {
                 _isVisible = value;
-                foreach (OrbitingParticle orb in Satellites) {
+                foreach (var orb in Satellites) {
                     orb.IsVisible = value;
                 }
             }
@@ -87,14 +86,14 @@ namespace Lumen.Particle_System
 
         public void Update(float dt)
         {
-            foreach (OrbitingParticle orb in Satellites) {
+            foreach (var orb in Satellites) {
                 orb.Update(dt);
             }
         }
 
         public void Draw(SpriteBatch sb)
         {
-            foreach (OrbitingParticle orb in Satellites) {
+            foreach (var orb in Satellites) {
                 orb.Draw(sb);
             }
         }

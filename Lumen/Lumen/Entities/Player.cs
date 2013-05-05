@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Lumen.Entities
 {
-    internal class Player : Entity, IKeyboardCapable, IControllerCapable
+    internal sealed class Player : Entity, IKeyboardCapable, IControllerCapable
     {
         public BlinkingLight AttachedBlinkingLight = null;
         public DurationLimitedFadingLight AttachedLight = null;
@@ -30,7 +30,7 @@ namespace Lumen.Entities
                                          textureKey, new Rectangle(0, 0, 32, 32), this);
         }
 
-        public bool IsLightOn
+        private bool IsLightOn
         {
             get { return AttachedLight.IsVisible; }
         }
@@ -40,7 +40,7 @@ namespace Lumen.Entities
             get { return Health > 0; }
         }
 
-        public bool WasRecentlyHit
+        private bool WasRecentlyHit
         {
             get { return _recentlyHitTimer >= 0.0f; }
         }
@@ -55,9 +55,9 @@ namespace Lumen.Entities
                 return;
             }
 
-            Vector2 changeLeft = InputManager.GamepadLeft(ControllerIndex);
+            var changeLeft = InputManager.GamepadLeft(ControllerIndex);
 
-            float speedToUse = GameVariables.PlayerSpeed;
+            var speedToUse = GameVariables.PlayerSpeed;
 
             AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
 
@@ -78,7 +78,7 @@ namespace Lumen.Entities
 
         public void ProcessKeyDownAction(float dt)
         {
-            float speedToUse = GameVariables.PlayerSpeed;
+            var speedToUse = GameVariables.PlayerSpeed;
 
             if (InputManager.KeyDown(Keys.Left)) {
                 AdjustVelocity(-speedToUse*dt, 0);
@@ -126,7 +126,7 @@ namespace Lumen.Entities
             OrbitRing.IsVisible = true;
         }
 
-        public virtual void Update(float dt)
+        public void Update(float dt)
         {
             if (IsAlive) {
 #if DEBUG
@@ -166,7 +166,7 @@ namespace Lumen.Entities
             }
         }
 
-        public void TurnOnLight()
+        private void TurnOnLight()
         {
             AttachedLight.TurnOn();
         }
@@ -193,8 +193,8 @@ namespace Lumen.Entities
 
             _recentlyHitTimer = GameVariables.PlayerHitVibrationDuration;
 
-            int count = 0;
-            foreach (OrbitingParticle orb in OrbitRing.Satellites) {
+            var count = 0;
+            foreach (var orb in OrbitRing.Satellites) {
                 if (count >= n) {
                     break;
                 }

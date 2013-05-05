@@ -33,9 +33,9 @@ namespace Lumen
 
         public static Vector2 GetPointWithinRect(Rectangle rect)
         {
-            int g = rect.Width > rect.Height ? rect.Height : rect.Width;
-            int a = rect.Width;
-            int b = rect.Height;
+            var g = rect.Width > rect.Height ? rect.Height : rect.Width;
+            var a = rect.Width;
+            var b = rect.Height;
             int am, bm;
 
             if (a > b) {
@@ -47,15 +47,15 @@ namespace Lumen
                 bm = (int) Math.Floor((double) g*b/a);
             }
 
-            float av = a*RandomGen.Next(0, am)/(float) am;
-            float bv = b*RandomGen.Next(0, bm)/(float) bm;
+            var av = a*RandomGen.Next(0, am)/(float) am;
+            var bv = b*RandomGen.Next(0, bm)/(float) bm;
 
             return new Vector2(rect.X + av, rect.Y + bv);
         }
 
         public static Vector2 GetFontPositionAtCenter(string str, SpriteFont font, Vector2 goalCenter)
         {
-            Vector2 x = font.MeasureString(str);
+            var x = font.MeasureString(str);
 
             return goalCenter - x*0.5f;
         }
@@ -85,7 +85,7 @@ namespace Lumen
 
         private void LoadParticleSystems()
         {
-            ParticleSystemManager psm = ParticleSystemManager.Instance;
+            var psm = ParticleSystemManager.Instance;
 
             var sampleParticleSystemInfo = new ParticleSystemInfo
                                            {

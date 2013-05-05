@@ -81,7 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collider.cs" />
-    <Compile Include="DrawingHelper.cs" />
     <Compile Include="Entities\IControllerCapable.cs" />
     <Compile Include="Entities\IKeyboardCapable.cs" />
     <Compile Include="Light System\BasicLight.cs" />

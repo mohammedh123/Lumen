@@ -5,8 +5,8 @@ namespace Lumen.Entities
 {
     internal abstract class Entity
     {
-        protected Color Color = Color.White;
-        public float SpriteAngle = 0f;
+        private Color Color = Color.White;
+        public float SpriteAngle;
 
         protected Entity(string textureKeyName, Vector2 position)
         {
@@ -16,7 +16,7 @@ namespace Lumen.Entities
             Position = position;
         }
 
-        protected Texture2D Texture { get; set; }
+        private Texture2D Texture { get; set; }
         private Vector2 TextureOrigin { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
@@ -59,8 +59,8 @@ namespace Lumen.Entities
 
         public void WrapPositionAround()
         {
-            float posX = Position.X;
-            float posY = Position.Y;
+            var posX = Position.X;
+            var posY = Position.Y;
 
             if (posX >= GameDriver.DisplayResolution.X) {
                 posX -= GameDriver.DisplayResolution.X;

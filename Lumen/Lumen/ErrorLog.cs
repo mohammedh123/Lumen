@@ -9,7 +9,7 @@ namespace Lumen
 
         public static void Log(string logMessage)
         {
-            using (StreamWriter w = File.AppendText(LogFileName)) {
+            using (var w = File.AppendText(LogFileName)) {
                 w.Write(Environment.NewLine + "Log ({0} {1}): ", DateTime.Now.ToLongTimeString(),
                         DateTime.Now.ToLongDateString());
                 w.WriteLine();

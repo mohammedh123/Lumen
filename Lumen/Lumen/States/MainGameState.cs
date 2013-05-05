@@ -74,7 +74,7 @@ namespace Lumen.States
                 ResetRound();
             }
 
-            float scale = 1.0f + Mouse.GetState().ScrollWheelValue/12000.0f;
+            var scale = 1.0f + Mouse.GetState().ScrollWheelValue/12000.0f;
             GameVariables.CameraZoom = scale;
 
             if (Keyboard.GetState().IsKeyDown(Keys.Tab)) {
@@ -97,9 +97,9 @@ namespace Lumen.States
             if (recreatePlayers) {
                 _gameManager.ResetCompletely();
 
-                int playerNum = 1;
-                for (int i = 0; i < 4; i++) {
-                    PlayerIndex playerIndex = _playerOrder[i];
+                var playerNum = 1;
+                for (var i = 0; i < 4; i++) {
+                    var playerIndex = _playerOrder[i];
                     if (GamePad.GetState(playerIndex).IsConnected || playerIndex <= PlayerIndex.Two) {
                         if (i == 3) {
                             _gameManager.AddEnemy(
@@ -118,7 +118,7 @@ namespace Lumen.States
                 }
             }
 
-            for (int i = 0; i < GameVariables.CrystalsToSpawn(_gameManager.RoundNumber); i++) {
+            for (var i = 0; i < GameVariables.CrystalsToSpawn(_gameManager.RoundNumber); i++) {
                 _gameManager.SpawnCrystalUniformly();
             }
         }
@@ -140,31 +140,31 @@ namespace Lumen.States
                             continue;
                         }
 
-                        string variableName = line.Substring(0, line.IndexOf(' ')).Trim();
-                        string variableValue = line.Substring(line.IndexOf('=') + 1).Trim();
+                        var variableName = line.Substring(0, line.IndexOf(' ')).Trim();
+                        var variableValue = line.Substring(line.IndexOf('=') + 1).Trim();
 
                         try {
-                            FieldInfo actualVariable = typeof (GameVariables).GetField(variableName);
-                            object actualVariableValue = Convert.ChangeType(variableValue, actualVariable.FieldType);
+                            var actualVariable = typeof (GameVariables).GetField(variableName);
+                            var actualVariableValue = Convert.ChangeType(variableValue, actualVariable.FieldType);
                             actualVariable.SetValue(null, actualVariableValue);
 
                             if (variableName == "PlayerLanternRadius") {
-                                foreach (Prop lantern in _gameManager.Props.Where(p => p is BlinkingLight)) {
+                                foreach (var lantern in _gameManager.Props.Where(p => p is BlinkingLight)) {
                                     (lantern as BlinkingLight).LightRadius = (float) actualVariableValue;
                                 }
                             }
                             else if (variableName == "PlayerOrbsDistance") {
-                                foreach (Player p in _gameManager.Players) {
+                                foreach (var p in _gameManager.Players) {
                                     p.OrbitRing.Radius = (float) actualVariableValue;
                                 }
                             }
                             else if (variableName == "PlayerOrbsPeriod") {
-                                foreach (Player p in _gameManager.Players) {
+                                foreach (var p in _gameManager.Players) {
                                     p.OrbitRing.OrbitPeriod = (float) actualVariableValue;
                                 }
                             }
                             else if (variableName == "PlayerLightDuration") {
-                                foreach (Prop light in _gameManager.Props.Where(p => p is Light)) {
+                                foreach (var light in _gameManager.Props.Where(p => p is Light)) {
                                     (light as Light).LightRadius = (float) actualVariableValue;
                                 }
                             }
@@ -214,7 +214,7 @@ namespace Lumen.States
                 spriteBatch.DrawString(TextureManager.GetFont("big"), s, new Vector2(0, 300), Color.White);
             }
 
-            float alphaToUse = 1.0f;
+            var alphaToUse = 1.0f;
 
             //var uiRect = new Rectangle(128, 48, (int)GameDriver.DisplayResolution.X - 128 - 100, (int)GameDriver.DisplayResolution.Y - 48);
 
@@ -229,11 +229,11 @@ namespace Lumen.States
 
         private void DrawUI(SpriteBatch spriteBatch, float alpha = 1)
         {
-            List<Player> allPlayers =
+            var allPlayers =
                 _gameManager.Players.Union(_gameManager.DeadPlayers.Keys).OrderBy(p => p.ControllerIndex).ToList();
 
-            for (int i = 0; i < allPlayers.Count(); i++) {
-                Player player = allPlayers[i];
+            for (var i = 0; i < allPlayers.Count(); i++) {
+                var player = allPlayers[i];
 
                 DrawPlayerInformation(spriteBatch, new Vector2(66 + 360*i, GameDriver.DisplayResolution.Y - 64), player,
                                       alpha);
@@ -253,7 +253,7 @@ namespace Lumen.States
 
         private void DrawPlayerInformation(SpriteBatch spriteBatch, Vector2 center, Player player, float alpha)
         {
-            string str = "player" + (player.IsAlive ? "" + player.PlayerSpriteIndex : "_dead") + "_portrait";
+            var str = "player" + (player.IsAlive ? "" + player.PlayerSpriteIndex : "_dead") + "_portrait";
             spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White*alpha, 0.0f,
                              TextureManager.GetOrigin("player_portrait"), GameVariables.UIScale, SpriteEffects.None, 0);
             spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White*alpha, 0.0f,
@@ -264,7 +264,7 @@ namespace Lumen.States
         {
             center -= new Vector2(_gameManager.CrystalsRemaining*8, 0);
 
-            for (int i = 0; i < _gameManager.CrystalsRemaining; i++) {
+            for (var i = 0; i < _gameManager.CrystalsRemaining; i++) {
                 spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(16*i, 0), null,
                                  Color.White*alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale*2,
                                  SpriteEffects.None, 0);

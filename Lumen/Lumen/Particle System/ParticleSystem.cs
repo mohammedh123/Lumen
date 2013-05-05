@@ -16,21 +16,20 @@ namespace Lumen.Particle_System
 
         public Vector2 Position = Vector2.Zero;
         private int _freeParticleIndex, _numParticlesAlive;
-        private Vector2 _spawningPosition = Vector2.Zero;
 
         public ParticleSystem(ParticleSystemInfo psInfo)
         {
             _systemInfo = psInfo;
             _spawningInterval = 1.0f/_systemInfo.NumberOfParticlesPerSecond;
 
-            for (int i = 0; i < MaxParticles; i++) {
+            for (var i = 0; i < MaxParticles; i++) {
                 _particles[i] = new Particle();
             }
         }
 
         private bool GetNextParticleIndex()
         {
-            int count = 0;
+            var count = 0;
 
             if (_numParticlesAlive == MaxParticles) {
                 return false;
@@ -50,8 +49,8 @@ namespace Lumen.Particle_System
 
         public void Update(float dt, Vector2 bounds)
         {
-            for (int i = 0; i < _spawnInfos.Count; i++) {
-                SpawningInfo si = _spawnInfos[i];
+            for (var i = 0; i < _spawnInfos.Count; i++) {
+                var si = _spawnInfos[i];
                 si.Timer += dt;
 
                 while (si.Timer >= _spawningInterval) {
@@ -107,8 +106,8 @@ namespace Lumen.Particle_System
 
             var screenBounds = new Rectangle(0, 0, (int) bounds.X, (int) bounds.Y);
 
-            for (int i = 0; i < _particles.Length; i++) {
-                Particle particle = _particles[i];
+            for (var i = 0; i < _particles.Length; i++) {
+                var particle = _particles[i];
                 if (particle.Lifetime <= 0.0f) {
                     continue;
                 }
@@ -142,7 +141,7 @@ namespace Lumen.Particle_System
 
         public void Draw(SpriteBatch sb)
         {
-            foreach (Particle p in _particles) {
+            foreach (var p in _particles) {
                 if (p.Lifetime <= 0.0f) {
                     continue;
                 }
@@ -160,11 +159,6 @@ namespace Lumen.Particle_System
                                 Position = Position + new Vector2(x, y),
                                 Timer = 0.0f
                             });
-        }
-
-        public void MoveTo(float x, float y)
-        {
-            Position = new Vector2(x, y);
         }
 
         #region Nested type: SpawningInfo

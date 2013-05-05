@@ -135,8 +135,8 @@ namespace Lumen
             newKeyState = Keyboard.GetState();
             newMouseState = Mouse.GetState();
 
-            for (int i = 0; i < 4; i++) {
-                GamePadState state = GamePad.GetState((PlayerIndex) ((int) PlayerIndex.One + i));
+            for (var i = 0; i < 4; i++) {
+                var state = GamePad.GetState((PlayerIndex) ((int) PlayerIndex.One + i));
                 if (state.IsConnected) {
                     newGamePadStates[i] = state;
                 }
@@ -151,7 +151,7 @@ namespace Lumen
             oldKeyState = newKeyState;
             oldMouseState = newMouseState;
 
-            for (int i = 0; i < 4; i++) {
+            for (var i = 0; i < 4; i++) {
                 oldGamePadStates[i] = newGamePadStates[i];
             }
         }

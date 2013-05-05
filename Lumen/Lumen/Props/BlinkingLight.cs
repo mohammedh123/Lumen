@@ -57,7 +57,7 @@ namespace Lumen.Props
         public override void Update(float dt)
         {
             Position = EntityAttachedTo.Position;
-            float invFreq = (1.0f/_frequency);
+            var invFreq = (1.0f/_frequency);
             if (CanBeginBlink) //begin fading in
             {
                 _timer = GameVariables.BlinkingPeriod*invFreq;

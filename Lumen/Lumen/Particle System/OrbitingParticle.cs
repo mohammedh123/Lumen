@@ -11,7 +11,6 @@ namespace Lumen.Particle_System
         private readonly Texture2D _texture;
         private readonly Vector2 _textureOrigin;
         private readonly Rectangle _textureRect;
-        private float _initialAngle;
 
         public OrbitingParticle(Texture2D tex, Rectangle texRect, Vector2 texOrigin, Entity e, float distFromCenter,
                                 float orbitPeriod, float startingAngle)
@@ -20,7 +19,7 @@ namespace Lumen.Particle_System
             LightRadius = 8.0f;
             LightIntensity = 1.0f;
 
-            _initialAngle = Angle = startingAngle;
+            Angle = startingAngle;
             _texture = tex;
             _textureRect = texRect;
             _textureOrigin = texOrigin;

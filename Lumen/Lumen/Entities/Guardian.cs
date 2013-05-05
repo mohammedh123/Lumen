@@ -8,11 +8,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Lumen.Entities
 {
-    internal class Guardian : Entity, IControllerCapable, IKeyboardCapable, ILightProvider
+    internal sealed class Guardian : Entity, IControllerCapable, IKeyboardCapable, ILightProvider
     {
-        public OrbitingRing OrbitRing;
+        public readonly OrbitingRing OrbitRing;
 
-        public List<Player> PlayersHitThisAttack = new List<Player>();
+        public readonly List<Player> PlayersHitThisAttack = new List<Player>();
         private float _attackTimer = -1.0f;
         private float _chargeCooldown;
         private float _chargingTimer;
@@ -27,7 +27,7 @@ namespace Lumen.Entities
                         {IsVisible = false};
         }
 
-        public float EnergyRemaining { get; set; }
+        public float EnergyRemaining { private get; set; }
 
         public float ChargingAttackRadius
         {
@@ -44,7 +44,7 @@ namespace Lumen.Entities
             }
         }
 
-        public float ChargingSpeed
+        private float ChargingSpeed
         {
             get
             {
@@ -53,14 +53,14 @@ namespace Lumen.Entities
             }
         }
 
-        public float FinalRadiusOfAttack { get; private set; }
+        private float FinalRadiusOfAttack { get; set; }
 
         public bool IsAttacking
         {
             get { return _attackTimer >= 0.0f; }
         }
 
-        public bool CanChargeUp
+        private bool CanChargeUp
         {
             get { return _chargeCooldown <= 0.0f; }
         }
@@ -68,11 +68,6 @@ namespace Lumen.Entities
         public bool IsChargingUp
         {
             get { return _chargingTimer > 0.0f; }
-        }
-
-        public bool IsFullyCharged
-        {
-            get { return FinalRadiusOfAttack + float.Epsilon >= GameVariables.EnemyAttackMaxRadius; }
         }
 
         #region IControllerCapable Members
@@ -92,9 +87,9 @@ namespace Lumen.Entities
                 StopChargingAndRelease();
             }
 
-            Vector2 changeLeft = InputManager.GamepadLeft(ControllerIndex);
+            var changeLeft = InputManager.GamepadLeft(ControllerIndex);
 
-            float speedToUse = !IsChargingUp ? GameVariables.EnemySpeed : ChargingSpeed;
+            var speedToUse = !IsChargingUp ? GameVariables.EnemySpeed : ChargingSpeed;
 
             AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
         }
@@ -105,7 +100,7 @@ namespace Lumen.Entities
 
         public void ProcessKeyDownAction(float dt)
         {
-            float speedToUse = GameVariables.EnemySpeed;
+            var speedToUse = GameVariables.EnemySpeed;
 
             if (InputManager.KeyDown(Keys.Left)) {
                 AdjustVelocity(-speedToUse*dt, 0);
@@ -162,7 +157,7 @@ namespace Lumen.Entities
 
         #endregion
 
-        public virtual void Update(float dt)
+        public void Update(float dt)
         {
             SpriteAngle += (float) Math.PI*2*dt;
 #if DEBUG
@@ -260,7 +255,7 @@ namespace Lumen.Entities
         {
             if (IsChargingUp) {
                 _chargingTimer += dt;
-                float radiusChange = Math.Min(EnergyRemaining, dt*(GameVariables.EnemyAttackRadiusGrowth +
+                var radiusChange = Math.Min(EnergyRemaining, dt*(GameVariables.EnemyAttackRadiusGrowth +
                                                                    _chargingTimer*
                                                                    GameVariables.EnemyAttackRadiusAcceleration));
 
