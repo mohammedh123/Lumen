@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Lumen.Entities;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Lumen.Light_System
 {
-    class LightManager
+    internal class LightManager
     {
         private RenderTarget2D _accumulatorRt;
-        private Texture2D _screenTex;
         private Effect _lightAccumulatorFx, _lightCombinerFx;
-        
+        private Texture2D _screenTex;
+
         public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content, int width, int height)
         {
             _lightAccumulatorFx = content.Load<Effect>("Shaders/LightDrawer");
@@ -31,13 +26,15 @@ namespace Lumen.Light_System
             graphicsDevice.Clear(Color.Black);
 
 
-            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, _lightAccumulatorFx, GameVariables.CameraZoomMatrix);
-            foreach (var light in lights)
-            {
-                if (!light.IsVisible) continue;
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None,
+                     RasterizerState.CullCounterClockwise, _lightAccumulatorFx, GameVariables.CameraZoomMatrix);
+            foreach (ILightProvider light in lights) {
+                if (!light.IsVisible) {
+                    continue;
+                }
 
-                var normalizedPosition = new Vector2(light.Position.X / _accumulatorRt.Width,
-                                                     light.Position.Y / _accumulatorRt.Height);
+                var normalizedPosition = new Vector2(light.Position.X/_accumulatorRt.Width,
+                                                     light.Position.Y/_accumulatorRt.Height);
 
                 _lightAccumulatorFx.Parameters["lightPosition"].SetValue(normalizedPosition);
                 _lightAccumulatorFx.Parameters["lightRadius"].SetValue(light.LightRadius);
@@ -46,7 +43,7 @@ namespace Lumen.Light_System
                 sb.Draw(_screenTex, new Rectangle(0, 0, _accumulatorRt.Width, _accumulatorRt.Height), Color.White);
             }
             sb.End();
-            
+
             graphicsDevice.SetRenderTarget(null);
         }
 

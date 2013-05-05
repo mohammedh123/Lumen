@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Lumen.Props
+﻿namespace Lumen.Props
 {
-    enum BlinkingLightFadeState
+    internal enum BlinkingLightFadeState
     {
         None,
         FadingIn,

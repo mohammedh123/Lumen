@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Lumen
 {
     public class GameVariables
     {
+        public const int PlayerStartingHealth = 3; //CHANGIN THIS REQUIRES A CHANGE OF ART+CODE
+        public const float MaxScreenShake = 0.0f;
         public static float PlayerSpeed = 100; //pixels per second
         public static float PlayerCollisionRadius = 10.0f;
-        public const int PlayerStartingHealth = 3; //CHANGIN THIS REQUIRES A CHANGE OF ART+CODE
         public static float PlayerOrbsDistance = 20.0f;
         public static float PlayerOrbsPeriod = 0.5f;
         public static float PlayerLightDuration = 1.0f;
@@ -18,7 +15,7 @@ namespace Lumen
         public static float PlayerLightFadeInDuration = 0.3f;
         public static float PlayerLightFadeOutDuration = 0.3f;
         public static float PlayerHitVibrationDuration = 0.25f;
-        
+
         public static float EnemySpeed = 80.0f;
         public static float EnemyCollisionRadius = 24.0f;
         public static float EnemyAttackCooldown = 3.0f;
@@ -51,11 +48,18 @@ namespace Lumen
         public static float CrystalMinimumSpawnDistanceBetween = 180.0f;
         public static int CrystalSpawningMaxAttempts = 100;
 
+        public static int RoundOneGoal = 7;
+        public static int FinalCrystalBuffer = 2;
+
+        public static float ScreenShakeAmount = 0.0f;
+
+        public static float UIScale = 0.25f;
+
         public static Matrix CameraZoomMatrix
         {
             get { return Matrix.CreateScale(CameraZoom); }
         }
-        
+
         public static int CrystalsToSpawn(int roundNum)
         {
             return (CrystalRoundGoal(roundNum) + FinalCrystalBuffer);
@@ -70,13 +74,5 @@ namespace Lumen
         {
             return CrystalsToSpawn(roundNum) - collectedCrystalCount;
         }
-
-        public static int RoundOneGoal = 7;
-        public static int FinalCrystalBuffer = 2;
-
-        public static float ScreenShakeAmount = 0.0f;
-        public const float MaxScreenShake = 0.0f;
-
-        public static float UIScale = 0.25f;
     }
 }

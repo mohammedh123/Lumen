@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Lumen.Entities;
+﻿using Lumen.Entities;
 using Lumen.Props;
 using Microsoft.Xna.Framework;
 

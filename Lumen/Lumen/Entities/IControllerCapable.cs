@@ -2,7 +2,7 @@
 
 namespace Lumen.Entities
 {
-    interface IControllerCapable
+    internal interface IControllerCapable
     {
         PlayerIndex ControllerIndex { get; set; }
 

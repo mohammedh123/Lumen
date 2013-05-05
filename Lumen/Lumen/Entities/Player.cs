@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Lumen.Light_System;
 using Lumen.Particle_System;
 using Lumen.Props;
@@ -9,29 +8,33 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Lumen.Entities
 {
-    class Player : Entity, IKeyboardCapable, IControllerCapable
+    internal class Player : Entity, IKeyboardCapable, IControllerCapable
     {
-        public PlayerIndex ControllerIndex { get; set; }
-
-        public int PlayerSpriteIndex;
-
-        public bool IsInteractingWithProp = false;
-
-        public DurationLimitedFadingLight AttachedLight = null;
         public BlinkingLight AttachedBlinkingLight = null;
+        public DurationLimitedFadingLight AttachedLight = null;
         public Crystal CollectionTarget;
         public int CrystalCount = 0;
+        public bool IsInteractingWithProp = false;
 
         public OrbitingRing OrbitRing;
+        public int PlayerSpriteIndex;
 
-        private float _lightModulationSoundTimer = 0.0f;
+        private float _lightModulationSoundTimer;
         private float _recentlyHitTimer = -1.0f;
+
+        public Player(string textureKey, Vector2 position) : base(textureKey, position)
+        {
+            Health = GameVariables.PlayerStartingHealth;
+
+            OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod,
+                                         textureKey, new Rectangle(0, 0, 32, 32), this);
+        }
 
         public bool IsLightOn
         {
             get { return AttachedLight.IsVisible; }
         }
-        
+
         public bool IsAlive
         {
             get { return Health > 0; }
@@ -42,17 +45,80 @@ namespace Lumen.Entities
             get { return _recentlyHitTimer >= 0.0f; }
         }
 
-        public Player(string textureKey, Vector2 position) : base(textureKey, position)
-        {
-            Health = GameVariables.PlayerStartingHealth;
+        #region IControllerCapable Members
 
-            OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod,textureKey, new Rectangle(0,0,32,32), this);
+        public PlayerIndex ControllerIndex { get; set; }
+
+        public void ProcessControllerInput(float dt)
+        {
+            if (!GamePad.GetState(ControllerIndex).IsConnected) {
+                return;
+            }
+
+            Vector2 changeLeft = InputManager.GamepadLeft(ControllerIndex);
+
+            float speedToUse = GameVariables.PlayerSpeed;
+
+            AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
+
+            if (AttachedBlinkingLight.IsVisible) {
+                AttachedBlinkingLight.IsVisible = Velocity != Vector2.Zero;
+            }
+
+            if (InputManager.GamepadButtonDown(ControllerIndex, Buttons.A)) {
+                TurnOnLight();
+            }
+
+            IsInteractingWithProp = InputManager.GamepadButtonPressed(ControllerIndex, Buttons.A);
         }
+
+        #endregion
+
+        #region IKeyboardCapable Members
+
+        public void ProcessKeyDownAction(float dt)
+        {
+            float speedToUse = GameVariables.PlayerSpeed;
+
+            if (InputManager.KeyDown(Keys.Left)) {
+                AdjustVelocity(-speedToUse*dt, 0);
+            }
+            if (InputManager.KeyDown(Keys.Right)) {
+                AdjustVelocity(speedToUse*dt, 0);
+            }
+            if (InputManager.KeyDown(Keys.Up)) {
+                AdjustVelocity(0, -speedToUse*dt);
+            }
+            if (InputManager.KeyDown(Keys.Down)) {
+                AdjustVelocity(0, speedToUse*dt);
+            }
+            if (InputManager.KeyDown(Keys.Space)) {
+                TurnOnLight();
+            }
+
+            if (InputManager.KeyDown(Keys.Z)) {
+                IsInteractingWithProp = true;
+            }
+        }
+
+        public void ProcessKeyUpAction(float dt)
+        {
+            if (InputManager.KeyUp(Keys.Z)) {
+                IsInteractingWithProp = false;
+            }
+        }
+
+        public void ProcessKeyPressAction(float dt)
+        {
+        }
+
+        #endregion
 
         public override void SetTexture(string textureKeyName)
         {
             base.SetTexture(textureKeyName);
-            OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod, textureKeyName, new Rectangle(0, 0, 32, 32), this);
+            OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod,
+                                         textureKeyName, new Rectangle(0, 0, 32, 32), this);
         }
 
         public void ResetOrbs()
@@ -74,78 +140,30 @@ namespace Lumen.Entities
 
                 if (IsLightOn) {
                     _lightModulationSoundTimer += dt;
-                    if (_lightModulationSoundTimer <= MathHelper.TwoPi/3)
+                    if (_lightModulationSoundTimer <= MathHelper.TwoPi/3) {
                         SoundManager.GetSound("player_light").Play(1.0f,
                                                                    0.25f*
                                                                    (float) Math.Cos(_lightModulationSoundTimer*3.0f),
                                                                    0);
+                    }
                 }
                 else {
                     _lightModulationSoundTimer = 0.0f;
                 }
             }
 
-            if (WasRecentlyHit)
-            {
+            if (WasRecentlyHit) {
                 _recentlyHitTimer -= dt;
-                if (GamePad.GetState(ControllerIndex).IsConnected)
+                if (GamePad.GetState(ControllerIndex).IsConnected) {
                     GamePad.SetVibration(ControllerIndex, 1.0f, 1.0f);
+                }
             }
-            else
-            {
+            else {
                 _recentlyHitTimer = -1.0f;
-                if (GamePad.GetState(ControllerIndex).IsConnected)
+                if (GamePad.GetState(ControllerIndex).IsConnected) {
                     GamePad.SetVibration(ControllerIndex, 0, 0);
+                }
             }
-        }
-
-        public void ProcessControllerInput(float dt)
-        {
-            if (!GamePad.GetState(ControllerIndex).IsConnected)
-                return;
-            
-            var changeLeft = InputManager.GamepadLeft(ControllerIndex);
-
-            var speedToUse = GameVariables.PlayerSpeed;
-
-            AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
-            
-            if (AttachedBlinkingLight.IsVisible)
-                AttachedBlinkingLight.IsVisible = Velocity != Vector2.Zero;
-            
-            if (InputManager.GamepadButtonDown(ControllerIndex, Buttons.A))
-                TurnOnLight();
-
-            IsInteractingWithProp = InputManager.GamepadButtonPressed(ControllerIndex, Buttons.A);
-        }
-
-        public void ProcessKeyDownAction(float dt)
-        {
-            var speedToUse = GameVariables.PlayerSpeed;
-
-            if(InputManager.KeyDown(Keys.Left))
-                AdjustVelocity(-speedToUse*dt, 0);
-            if(InputManager.KeyDown(Keys.Right))
-                AdjustVelocity(speedToUse*dt, 0);
-            if(InputManager.KeyDown(Keys.Up))
-                AdjustVelocity(0, -speedToUse*dt);
-            if(InputManager.KeyDown(Keys.Down))
-                AdjustVelocity(0, speedToUse*dt);
-            if (InputManager.KeyDown(Keys.Space))
-                TurnOnLight();
-
-            if(InputManager.KeyDown(Keys.Z))
-                IsInteractingWithProp = true;
-        }
-
-        public void ProcessKeyUpAction(float dt)
-        {
-            if(InputManager.KeyUp(Keys.Z))
-                IsInteractingWithProp = false;
-        }
-
-        public void ProcessKeyPressAction(float dt)
-        {
         }
 
         public void TurnOnLight()
@@ -162,8 +180,9 @@ namespace Lumen.Entities
 
         public void ResetCollecting()
         {
-            if(CollectionTarget != null)
+            if (CollectionTarget != null) {
                 CollectionTarget.DecrementCollectorCount(this);
+            }
 
             CollectionTarget = null;
         }
@@ -175,9 +194,11 @@ namespace Lumen.Entities
             _recentlyHitTimer = GameVariables.PlayerHitVibrationDuration;
 
             int count = 0;
-            foreach(var orb in OrbitRing.Satellites) {
-                if (count >= n) break;
-                if(orb.IsVisible) {
+            foreach (OrbitingParticle orb in OrbitRing.Satellites) {
+                if (count >= n) {
+                    break;
+                }
+                if (orb.IsVisible) {
                     count++;
                     orb.IsVisible = false;
                     LightSpawner.Instance.AddStaticLight(orb.Position, 1.0f, 12.0f, 2.0f);

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Lumen.Props
 {
-    enum PropTypeEnum
+    internal enum PropTypeEnum
     {
         Wax,
         Candle,
@@ -12,8 +12,13 @@ namespace Lumen.Props
         Crystal
     }
 
-    class Prop : Entity
+    internal class Prop : Entity
     {
+        public Prop(string textureKeyName, Vector2 position) : base(textureKeyName, position)
+        {
+            Lifetime = 0.0f;
+        }
+
         public float Lifetime { get; set; }
         public PropTypeEnum PropType { get; set; }
 
@@ -23,11 +28,6 @@ namespace Lumen.Props
 
         public bool IsToBeRemoved { get; set; }
 
-        public Prop(string textureKeyName, Vector2 position) : base(textureKeyName, position)
-        {
-            Lifetime = 0.0f;
-        }
-        
         public virtual void Update(float dt)
         {
             Lifetime += dt;

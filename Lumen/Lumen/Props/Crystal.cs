@@ -7,28 +7,55 @@ using Microsoft.Xna.Framework;
 
 namespace Lumen.Props
 {
-    class Crystal : Prop, ILightProvider
+    internal class Crystal : Prop, ILightProvider
     {
+        private readonly List<Player> _collectors = new List<Player>();
+        public Player Collector;
+
+        public float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
+
+        private int _collectorCount;
+
+        public Crystal(Vector2 position)
+            : base("crystal", position)
+        {
+            LightIntensity = 1.0f;
+            PropType = PropTypeEnum.Crystal;
+
+            Health = GameVariables.CrystalHarvestRequirement;
+        }
+
+        public bool IsSomeoneCollectingThis
+        {
+            get { return _collectorCount > 0; }
+        }
+
+        public override bool CanCollide
+        {
+            get { return false; }
+        }
+
+        #region ILightProvider Members
+
         public Color LightColor { get; set; }
+
         public float LightRadius
         {
             get
             {
-                if (!IsSomeoneCollectingThis) return 0;
+                if (!IsSomeoneCollectingThis) {
+                    return 0;
+                }
 
-                return (1-(_collectionTimeLeft/GameVariables.CrystalCollectionTime))*
+                return (1 - (_collectionTimeLeft/GameVariables.CrystalCollectionTime))*
                        GameVariables.CrystalGlowRadius;
             }
             set { }
         }
 
-        public Player Collector;
-
-        public float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
         public float LightIntensity { get; set; }
 
-        private int _collectorCount = 0;
-        private readonly List<Player> _collectors = new List<Player>();
+        #endregion
 
         public void DecrementCollectorCount(Player p)
         {
@@ -42,25 +69,6 @@ namespace Lumen.Props
             _collectors.Add(p);
         }
 
-        public bool IsSomeoneCollectingThis
-        {
-            get { return _collectorCount > 0; }
-        }
-
-        public override bool CanCollide
-        {
-            get { return false; }
-        }
-
-        public Crystal(Vector2 position)
-            : base("crystal", position)
-        {
-            LightIntensity = 1.0f;
-            PropType = PropTypeEnum.Crystal;
-
-            Health = GameVariables.CrystalHarvestRequirement;
-        }
-
         public override void OnCollide(Entity collider)
         {
             var player = collider as Player;
@@ -69,7 +77,7 @@ namespace Lumen.Props
         public override void Update(float dt)
         {
             base.Update(dt);
-            
+
             if (IsSomeoneCollectingThis) {
                 SoundManager.GetSoundInstance("crystal_charge").Play();
 
@@ -94,7 +102,7 @@ namespace Lumen.Props
                 IsToBeRemoved = true;
             }
 
-            LightSpawner.Instance.AddStaticLight(Position, 1.0f,GameVariables.CrystalGlowRadius, 1);
+            LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.CrystalGlowRadius, 1);
         }
     }
 }

@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Lumen.Entities;
-using Lumen.Light_System;
 using Lumen.Particle_System;
-using Lumen.Props;
 using Lumen.State_Management;
 using Lumen.States;
 using Microsoft.Xna.Framework;
@@ -16,12 +10,11 @@ namespace Lumen
 {
     public class GameDriver : Game
     {
-        private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        
         public static Random RandomGen;
 
-        public static readonly Vector2 DisplayResolution = new Vector2(1152,864);
+        public static readonly Vector2 DisplayResolution = new Vector2(1152, 864);
+        private readonly GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
         public GameDriver()
         {
@@ -40,30 +33,29 @@ namespace Lumen
 
         public static Vector2 GetPointWithinRect(Rectangle rect)
         {
-            var g = rect.Width > rect.Height ? rect.Height : rect.Width;
-            var a = rect.Width;
-            var b = rect.Height;
+            int g = rect.Width > rect.Height ? rect.Height : rect.Width;
+            int a = rect.Width;
+            int b = rect.Height;
             int am, bm;
 
-            if(a > b) {
+            if (a > b) {
                 bm = g;
-                am = (int)Math.Floor((double)g*a/b);
+                am = (int) Math.Floor((double) g*a/b);
             }
-            else
-            {
+            else {
                 am = g;
-                bm = (int)Math.Floor((double)g * b / a);
+                bm = (int) Math.Floor((double) g*b/a);
             }
 
-            var av = a*RandomGen.Next(0, am)/(float)am;
-            var bv = b*RandomGen.Next(0, bm)/(float) bm;
+            float av = a*RandomGen.Next(0, am)/(float) am;
+            float bv = b*RandomGen.Next(0, bm)/(float) bm;
 
             return new Vector2(rect.X + av, rect.Y + bv);
         }
 
         public static Vector2 GetFontPositionAtCenter(string str, SpriteFont font, Vector2 goalCenter)
         {
-            var x = font.MeasureString(str);
+            Vector2 x = font.MeasureString(str);
 
             return goalCenter - x*0.5f;
         }
@@ -75,7 +67,7 @@ namespace Lumen
 
         private void Cleanup(object sender, EventArgs e)
         {
-            for(var gp = PlayerIndex.One; gp <= PlayerIndex.Four; gp++) {
+            for (var gp = PlayerIndex.One; gp <= PlayerIndex.Four; gp++) {
                 GamePad.SetVibration(gp, 0, 0);
             }
         }
@@ -93,75 +85,75 @@ namespace Lumen
 
         private void LoadParticleSystems()
         {
-            var psm = ParticleSystemManager.Instance;
+            ParticleSystemManager psm = ParticleSystemManager.Instance;
 
             var sampleParticleSystemInfo = new ParticleSystemInfo
-            {
-                FiringDuration = 1.0f,
-                NumberOfParticlesPerSecond = 1.0f,
-                ParticleAngle = 0.0f,
-                ParticleAngleSpread = MathHelper.TwoPi,
-                ParticleAngularVelocityMin = 0.0f,
-                ParticleAngularVelocityMax = 0.0f,
-                ParticleColorStart = Color.Red,
-                ParticleColorEnd = Color.Orange,
-                ParticleColorVariation = 0.5f,
-                ParticleLifetimeMin = 1.0f,
-                ParticleLifetimeMax = 2.0f,
-                ParticleScaleMin = 0.5f,
-                ParticleScaleMax = 1.0f,
-                ParticleVelocityMin = 50.0f,
-                ParticleVelocityMax = 150.0f,
-                Texture = TextureManager.GetTexture("guardian"),
-                TextureOrigin = new Vector2(32, 32),
-                TextureRect = new Rectangle(0, 0, 64, 64)
-            };
+                                           {
+                                               FiringDuration = 1.0f,
+                                               NumberOfParticlesPerSecond = 1.0f,
+                                               ParticleAngle = 0.0f,
+                                               ParticleAngleSpread = MathHelper.TwoPi,
+                                               ParticleAngularVelocityMin = 0.0f,
+                                               ParticleAngularVelocityMax = 0.0f,
+                                               ParticleColorStart = Color.Red,
+                                               ParticleColorEnd = Color.Orange,
+                                               ParticleColorVariation = 0.5f,
+                                               ParticleLifetimeMin = 1.0f,
+                                               ParticleLifetimeMax = 2.0f,
+                                               ParticleScaleMin = 0.5f,
+                                               ParticleScaleMax = 1.0f,
+                                               ParticleVelocityMin = 50.0f,
+                                               ParticleVelocityMax = 150.0f,
+                                               Texture = TextureManager.GetTexture("guardian"),
+                                               TextureOrigin = new Vector2(32, 32),
+                                               TextureRect = new Rectangle(0, 0, 64, 64)
+                                           };
             var sampleParticleSystem = new ParticleSystem(sampleParticleSystemInfo);
 
             var playerHitParticleSystemInfo = new ParticleSystemInfo
-            {
-                FiringDuration = 0.2f,
-                NumberOfParticlesPerSecond = 400.0f,
-                ParticleAngle = 0.1f,
-                ParticleAngleSpread = MathHelper.TwoPi,
-                ParticleAngularVelocityMin = 0.0f,
-                ParticleAngularVelocityMax = MathHelper.TwoPi,
-                ParticleColorStart = Color.Cyan,
-                ParticleColorEnd = Color.White,
-                ParticleColorVariation = 0.5f,
-                ParticleLifetimeMin = 0.2f,
-                ParticleLifetimeMax = 0.5f,
-                ParticleScaleMin = 0.7f,
-                ParticleScaleMax = 1.2f,
-                ParticleVelocityMin = 50.0f,
-                ParticleVelocityMax = 170.0f,
-                Texture = TextureManager.GetTexture("hit_particle"),
-                TextureOrigin = new Vector2(1, 1),
-                TextureRect = new Rectangle(0, 0, 2, 2)
-            };
+                                              {
+                                                  FiringDuration = 0.2f,
+                                                  NumberOfParticlesPerSecond = 400.0f,
+                                                  ParticleAngle = 0.1f,
+                                                  ParticleAngleSpread = MathHelper.TwoPi,
+                                                  ParticleAngularVelocityMin = 0.0f,
+                                                  ParticleAngularVelocityMax = MathHelper.TwoPi,
+                                                  ParticleColorStart = Color.Cyan,
+                                                  ParticleColorEnd = Color.White,
+                                                  ParticleColorVariation = 0.5f,
+                                                  ParticleLifetimeMin = 0.2f,
+                                                  ParticleLifetimeMax = 0.5f,
+                                                  ParticleScaleMin = 0.7f,
+                                                  ParticleScaleMax = 1.2f,
+                                                  ParticleVelocityMin = 50.0f,
+                                                  ParticleVelocityMax = 170.0f,
+                                                  Texture = TextureManager.GetTexture("hit_particle"),
+                                                  TextureOrigin = new Vector2(1, 1),
+                                                  TextureRect = new Rectangle(0, 0, 2, 2)
+                                              };
             var playerHitParticleSystem = new ParticleSystem(playerHitParticleSystemInfo);
 
             var guardianAttackParticleSystemInfo = new ParticleSystemInfo
-            {
-                FiringDuration = 0.2f,
-                NumberOfParticlesPerSecond = 600.0f,
-                ParticleAngle = 0.0f,
-                ParticleAngleSpread = MathHelper.TwoPi,
-                ParticleAngularVelocityMin = 0.0f,
-                ParticleAngularVelocityMax = 0.0f,
-                ParticleColorStart = Color.LightPink,
-                ParticleColorEnd = Color.MistyRose,
-                ParticleColorVariation = 0.0f,
-                ParticleLifetimeMin = 0.3f,
-                ParticleLifetimeMax = 0.5f,
-                ParticleScaleMin = 0.8f,
-                ParticleScaleMax = 1.3f,
-                ParticleVelocityMin = 250.0f,
-                ParticleVelocityMax = 300.0f,
-                Texture = TextureManager.GetTexture("hit_particle"),
-                TextureOrigin = new Vector2(1, 1),
-                TextureRect = new Rectangle(0, 0, 2, 2)
-            };
+                                                   {
+                                                       FiringDuration = 0.2f,
+                                                       NumberOfParticlesPerSecond = 600.0f,
+                                                       ParticleAngle = 0.0f,
+                                                       ParticleAngleSpread = MathHelper.TwoPi,
+                                                       ParticleAngularVelocityMin = 0.0f,
+                                                       ParticleAngularVelocityMax = 0.0f,
+                                                       ParticleColorStart = Color.LightPink,
+                                                       ParticleColorEnd = Color.MistyRose,
+                                                       ParticleColorVariation = 0.0f,
+                                                       ParticleLifetimeMin = 0.3f,
+                                                       ParticleLifetimeMax = 0.5f,
+                                                       ParticleScaleMin = 0.8f,
+                                                       ParticleScaleMax = 1.3f,
+                                                       ParticleVelocityMin = 250.0f,
+                                                       ParticleVelocityMax = 300.0f,
+                                                       Texture = TextureManager.GetTexture("hit_particle"),
+                                                       TextureOrigin = new Vector2(1, 1),
+                                                       TextureRect = new Rectangle(0, 0, 2, 2)
+                                                   };
             var guardianAttackParticleSystem = new ParticleSystem(guardianAttackParticleSystemInfo);
 
             psm.RegisterParticleSystem("sample", sampleParticleSystem);
@@ -191,7 +183,10 @@ namespace Lumen
 
         public static void DrawFullscreenQuad(Texture2D tex, SpriteBatch sb, bool useScreenShake = false)
         {
-            sb.Draw(tex, new Rectangle(useScreenShake ? (int)(RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, useScreenShake ? (int)(RandomGen.NextDouble() * GameVariables.ScreenShakeAmount) : 0, (int)DisplayResolution.X, (int)DisplayResolution.Y), Color.White);
+            sb.Draw(tex,
+                    new Rectangle(useScreenShake ? (int) (RandomGen.NextDouble()*GameVariables.ScreenShakeAmount) : 0,
+                                  useScreenShake ? (int) (RandomGen.NextDouble()*GameVariables.ScreenShakeAmount) : 0,
+                                  (int) DisplayResolution.X, (int) DisplayResolution.Y), Color.White);
         }
     }
 }

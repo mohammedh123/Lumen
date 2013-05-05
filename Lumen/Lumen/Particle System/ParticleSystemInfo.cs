@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Lumen.Particle_System
 {
-    class ParticleSystemInfo
+    internal class ParticleSystemInfo
     {
-        public Texture2D Texture;
-        public Rectangle TextureRect;
-        public Vector2 TextureOrigin;
         public float FiringDuration;
         public float NumberOfParticlesPerSecond;
 
-        public float ParticleLifetimeMin, ParticleLifetimeMax;
-
         public float ParticleAngle, ParticleAngleSpread;
 
-        public float ParticleAngularVelocityMin, ParticleAngularVelocityMax;
+        public float ParticleAngularVelocityMax;
+        public float ParticleAngularVelocityMin;
 
-        public float ParticleVelocityMin, ParticleVelocityMax;
-
-        public float ParticleScaleMin, ParticleScaleMax;
-
-        public Color ParticleColorStart, ParticleColorEnd;
+        public Color ParticleColorEnd;
+        public Color ParticleColorStart;
         public float ParticleColorVariation;
+        public float ParticleLifetimeMax;
+        public float ParticleLifetimeMin;
+        public float ParticleScaleMax;
+        public float ParticleScaleMin;
+        public float ParticleVelocityMax;
+        public float ParticleVelocityMin;
+        public Texture2D Texture;
+        public Vector2 TextureOrigin;
+        public Rectangle TextureRect;
     }
 }

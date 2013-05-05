@@ -1,6 +1,6 @@
 ﻿namespace Lumen.Entities
 {
-    interface IKeyboardCapable
+    internal interface IKeyboardCapable
     {
         void ProcessKeyDownAction(float dt);
         void ProcessKeyUpAction(float dt);

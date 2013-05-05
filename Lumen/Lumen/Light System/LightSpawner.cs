@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Lumen.Entities;
-using Lumen.Props;
 using Microsoft.Xna.Framework;
 
 namespace Lumen.Light_System
 {
-    class LightSpawner
+    internal class LightSpawner
     {
-        private struct LightData
-        {
-            public float IntensityDecay;
-            public Entity EntityAttachedTo;
-        };
-
-        private readonly Dictionary<ILightProvider, LightData> _managedLights = new Dictionary<ILightProvider, LightData>();
+        private readonly Dictionary<ILightProvider, LightData> _managedLights =
+            new Dictionary<ILightProvider, LightData>();
 
         #region Singleton Data
+
+        private static LightSpawner _instance;
 
         private LightSpawner()
         {
@@ -27,8 +20,6 @@ namespace Lumen.Light_System
         private LightSpawner(LightSpawner ls)
         {
         }
-
-        private static LightSpawner _instance = null;
 
         public static LightSpawner Instance
         {
@@ -44,50 +35,64 @@ namespace Lumen.Light_System
 
         public void AddStaticLight(Vector2 position, float intensity, float radius, float intensityDecay)
         {
-            var l = CreateLight(position, intensity, radius);
+            ILightProvider l = CreateLight(position, intensity, radius);
 
-            _managedLights.Add(l, new LightData { IntensityDecay = intensityDecay});
+            _managedLights.Add(l, new LightData {IntensityDecay = intensityDecay});
         }
 
         public void AddAttachedLight(Entity e, float intensity, float radius, float intensityDecay)
         {
-            var l = CreateLight(e.Position, intensity, radius);
+            ILightProvider l = CreateLight(e.Position, intensity, radius);
 
-            _managedLights.Add(l, new LightData { IntensityDecay = intensityDecay, EntityAttachedTo = e});
+            _managedLights.Add(l, new LightData {IntensityDecay = intensityDecay, EntityAttachedTo = e});
         }
 
         private static ILightProvider CreateLight(Vector2 position, float intensity, float radius)
         {
             return new BasicLight
                    {
-                            LightIntensity = intensity,
-                            LightRadius = radius,
-                            LightColor = Color.White,
-                            Position = position,
-                            IsVisible = true
-                        };
+                       LightIntensity = intensity,
+                       LightRadius = radius,
+                       LightColor = Color.White,
+                       Position = position,
+                       IsVisible = true
+                   };
         }
 
         public void Update(float dt)
         {
             var lightsToRemove = new List<ILightProvider>(_managedLights.Count);
 
-            foreach(var kvp in _managedLights) {
+            foreach (var kvp in _managedLights) {
                 kvp.Key.LightIntensity -= kvp.Value.IntensityDecay*dt;
 
-                if (kvp.Value.EntityAttachedTo != null)
+                if (kvp.Value.EntityAttachedTo != null) {
                     kvp.Key.Position = kvp.Value.EntityAttachedTo.Position;
+                }
 
-                if(kvp.Key.LightIntensity <= 0)
+                if (kvp.Key.LightIntensity <= 0) {
                     lightsToRemove.Add(kvp.Key);
+                }
             }
 
-            foreach (var light in lightsToRemove) _managedLights.Remove(light);
+            foreach (ILightProvider light in lightsToRemove) {
+                _managedLights.Remove(light);
+            }
         }
 
         public void Reset()
         {
             _managedLights.Clear();
         }
+
+        #region Nested type: LightData
+
+        private struct LightData
+        {
+            public Entity EntityAttachedTo;
+            public float IntensityDecay;
+        };
+
+        #endregion
     }
 }

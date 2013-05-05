@@ -3,18 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Lumen.Entities
 {
-    abstract class Entity
+    internal abstract class Entity
     {
-        protected Texture2D Texture { get; set; }
-        private Vector2 TextureOrigin { get; set; }
-        public Vector2 Position { get; set; }
-        public Vector2 Velocity { get; set; }
-        public int Health { get; set; }
-
-        public float SpriteAngle = 0f;
         protected Color Color = Color.White;
-
-        public bool IsVisible { get; set; }
+        public float SpriteAngle = 0f;
 
         protected Entity(string textureKeyName, Vector2 position)
         {
@@ -24,6 +16,14 @@ namespace Lumen.Entities
             Position = position;
         }
 
+        protected Texture2D Texture { get; set; }
+        private Vector2 TextureOrigin { get; set; }
+        public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
+        public int Health { get; set; }
+
+        public bool IsVisible { get; set; }
+
         public virtual void SetTexture(string textureKeyName)
         {
             Texture = TextureManager.GetTexture(textureKeyName);
@@ -32,8 +32,9 @@ namespace Lumen.Entities
 
         public virtual void Draw(SpriteBatch sb)
         {
-            if(IsVisible)
-                sb.Draw(Texture, Position, null, Color, SpriteAngle,TextureOrigin,1.0f,SpriteEffects.None,0);
+            if (IsVisible) {
+                sb.Draw(Texture, Position, null, Color, SpriteAngle, TextureOrigin, 1.0f, SpriteEffects.None, 0);
+            }
         }
 
         protected void AdjustVelocity(float dx, float dy)
@@ -41,10 +42,11 @@ namespace Lumen.Entities
             Velocity += new Vector2(dx, dy);
         }
 
-        public void ApplyVelocity(bool applyX=true, bool applyY=true)
+        public void ApplyVelocity(bool applyX = true, bool applyY = true)
         {
-            if(applyX && applyY)
+            if (applyX && applyY) {
                 Position += Velocity;
+            }
             else {
                 Position = new Vector2(Position.X + (applyX ? Velocity.X : 0), Position.Y + (applyY ? Velocity.Y : 0));
             }
@@ -57,18 +59,22 @@ namespace Lumen.Entities
 
         public void WrapPositionAround()
         {
-            var posX = Position.X;
-            var posY = Position.Y;
+            float posX = Position.X;
+            float posY = Position.Y;
 
-            if (posX >= GameDriver.DisplayResolution.X)
+            if (posX >= GameDriver.DisplayResolution.X) {
                 posX -= GameDriver.DisplayResolution.X;
-            else if (posX < 0)
+            }
+            else if (posX < 0) {
                 posX = GameDriver.DisplayResolution.X + posX;
+            }
 
-            if (posY >= GameDriver.DisplayResolution.Y)
+            if (posY >= GameDriver.DisplayResolution.Y) {
                 posY -= GameDriver.DisplayResolution.Y;
-            else if (posY < 0)
+            }
+            else if (posY < 0) {
                 posY = GameDriver.DisplayResolution.Y + posY;
+            }
 
             Position = new Vector2(posX, posY);
         }

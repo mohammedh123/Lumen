@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,12 +12,7 @@ namespace Lumen.State_Management
 
         #region Singleton Data
 
-        private static StateManager _instance = null;
-
-        public static StateManager Instance
-        {
-            get { return _instance ?? (_instance = new StateManager()); }
-        }
+        private static StateManager _instance;
 
         private StateManager()
         {
@@ -30,8 +22,13 @@ namespace Lumen.State_Management
         {
         }
 
+        public static StateManager Instance
+        {
+            get { return _instance ?? (_instance = new StateManager()); }
+        }
+
         #endregion
-        
+
         public void PushState(State state)
         {
             state.LoadContent(Game.Content, Game.GraphicsDevice);
@@ -43,8 +40,7 @@ namespace Lumen.State_Management
         {
             State state = null;
 
-            if(_states.Count > 0)
-            {
+            if (_states.Count > 0) {
                 state = _states[_states.Count - 1];
                 _states.RemoveAt(_states.Count - 1);
                 state.Shutdown();
@@ -55,21 +51,21 @@ namespace Lumen.State_Management
 
         public void PopAll()
         {
-            while (PopState() != null);
+            while (PopState() != null) {
+                ;
+            }
         }
 
         public void Update(GameTime gameTime)
         {
-            if (_states.Count > 0)
-            {
+            if (_states.Count > 0) {
                 _states[_states.Count - 1].Update(gameTime);
             }
         }
 
         public void Draw(SpriteBatch g, GraphicsDevice gd)
         {
-            if (_states.Count > 0)
-            {
+            if (_states.Count > 0) {
                 _states[_states.Count - 1].Draw(g, gd);
             }
         }
