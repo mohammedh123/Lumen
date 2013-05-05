@@ -18,7 +18,7 @@ namespace Lumen.Entities
             get
             {
                 if(IsAttacking) {
-                    return ChargingAttackRadius * (_attackTimer / GameVariables.EnemyAttackTotalDuration);
+                    return ChargingAttackRadius * Math.Min(1, _attackTimer / GameVariables.EnemyAttackTotalDuration);
                 }
 
                 return IsChargingUp ? GameVariables.EnemyLightRadiusWhileCharging : 0.0f;
@@ -112,10 +112,11 @@ namespace Lumen.Entities
             if (IsAttacking)
             {
                 Velocity = Vector2.Zero;
+                if (_attackTimer >= GameVariables.EnemyAttackTotalDuration)
+                    StopAttack();
+
                 _attackTimer += dt;
                 SetOrbitRingProperties(true);
-                if(_attackTimer >= GameVariables.EnemyAttackTotalDuration)
-                    StopAttack();
             }
             else {
                 _attackTimer = -1.0f;
