@@ -156,9 +156,33 @@ namespace Lumen
                                                    };
             var guardianAttackParticleSystem = new ParticleSystem(guardianAttackParticleSystemInfo);
 
+            var crystalCollectParticleSystemInfo = new ParticleSystemInfo
+            {
+                FiringDuration = 0.2f,
+                NumberOfParticlesPerSecond = 600.0f,
+                ParticleAngle = 0.0f,
+                ParticleAngleSpread = MathHelper.TwoPi,
+                ParticleAngularVelocityMin = 0.0f,
+                ParticleAngularVelocityMax = 0.0f,
+                ParticleColorStart = Color.LightPink,
+                ParticleColorEnd = Color.MistyRose,
+                ParticleColorVariation = 0.0f,
+                ParticleLifetimeMin = 0.3f,
+                ParticleLifetimeMax = 0.5f,
+                ParticleScaleMin = 0.8f,
+                ParticleScaleMax = 1.3f,
+                ParticleVelocityMin = 250.0f,
+                ParticleVelocityMax = 300.0f,
+                Texture = TextureManager.GetTexture("hit_particle"),
+                TextureOrigin = new Vector2(1, 1),
+                TextureRect = new Rectangle(0, 0, 2, 2)
+            };
+            var crystalCollectParticleSystem = new ParticleSystem(crystalCollectParticleSystemInfo);
+
             psm.RegisterParticleSystem("sample", sampleParticleSystem);
             psm.RegisterParticleSystem("player_hit", playerHitParticleSystem);
             psm.RegisterParticleSystem("guardian_attack", guardianAttackParticleSystem);
+            psm.RegisterParticleSystem("crystal_collect", crystalCollectParticleSystem);
         }
 
         protected override void UnloadContent()
