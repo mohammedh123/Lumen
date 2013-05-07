@@ -51,6 +51,7 @@ namespace Lumen.States
                                           (int) GameDriver.DisplayResolution.Y);
             _lightManager.LoadContent(graphicsDevice, contentManager, (int) GameDriver.DisplayResolution.X,
                                       (int) GameDriver.DisplayResolution.Y);
+            _lightManager.SetDarknessLevel(1.0f);
         }
 
         public override void Shutdown()

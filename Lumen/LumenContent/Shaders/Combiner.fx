@@ -1,4 +1,5 @@
 texture screenTexture;
+float darknessLevel = 1.0;
 
 sampler TextureSampler = sampler_state
 {
@@ -16,7 +17,7 @@ float4 PixelShaderFunction(PixelShaderInput input) : COLOR0
 {
     float4 colorA = tex2D(TextureSampler, input.TexCoord);
     
-	return float4(0, 0, 0, 1-colorA.r);
+	return float4(0, 0, 0, darknessLevel-colorA.r);
 }
 
 technique Technique1

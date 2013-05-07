@@ -20,6 +20,11 @@ namespace Lumen.Light_System
             _screenTex = new Texture2D(graphicsDevice, width, height);
         }
 
+        public void SetDarknessLevel(float d)
+        {
+            _lightCombinerFx.Parameters["darknessLevel"].SetValue(d);
+        }
+
         private void AccumulateLights(IEnumerable<ILightProvider> lights, SpriteBatch sb, GraphicsDevice graphicsDevice)
         {
             graphicsDevice.SetRenderTarget(_accumulatorRt);

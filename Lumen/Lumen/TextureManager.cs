@@ -120,6 +120,30 @@ namespace Lumen
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/mainmenu_logo"),
                                                    new Vector2(357, 117)));
 
+            //round numbers
+
+            _textureDetails.Add("round_five",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/five"),
+                                                   new Vector2(253, 183)));
+            _textureDetails.Add("round_six",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/six"),
+                                                   new Vector2(308, 183)));
+            _textureDetails.Add("round_seven",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/seven"),
+                                                   new Vector2(382, 183)));
+            _textureDetails.Add("round_eight",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/eight"),
+                                                   new Vector2(421, 183)));
+            _textureDetails.Add("round_nine",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/nine"),
+                                                   new Vector2(483, 183)));
+
+            //tutorial screen
+            _textureDetails.Add("tutorial_overlay",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/tutorial_overlay"),
+                                                   new Vector2(0, 0)));
+
+
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("Fonts/debug_font"));
             _fontDetails.Add("big", contentManager.Load<SpriteFont>("Fonts/bigFont"));
         }

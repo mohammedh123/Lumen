@@ -85,7 +85,8 @@ namespace Lumen.States
             _sceneRt = new RenderTarget2D(graphicsDevice, (int) GameDriver.DisplayResolution.X,
                                           (int) GameDriver.DisplayResolution.Y);
             _lightManager.LoadContent(graphicsDevice, contentManager, (int) GameDriver.DisplayResolution.X,
-                                      (int) GameDriver.DisplayResolution.Y);
+                                      (int)GameDriver.DisplayResolution.Y);
+            _lightManager.SetDarknessLevel(0.8f);
         }
 
         public override void Shutdown()
