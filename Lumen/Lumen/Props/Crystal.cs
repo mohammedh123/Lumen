@@ -4,6 +4,7 @@ using System.Linq;
 using Lumen.Entities;
 using Lumen.Light_System;
 using Microsoft.Xna.Framework;
+using Lumen.Particle_System;
 
 namespace Lumen.Props
 {
@@ -103,6 +104,8 @@ namespace Lumen.Props
             }
 
             LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.CrystalGlowRadius, 1);
+            ParticleSystemManager.Instance.FireParticleSystem("crystal_collect", Position.X, Position.Y);
+
         }
     }
 }
