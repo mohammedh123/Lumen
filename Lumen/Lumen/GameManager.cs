@@ -250,6 +250,7 @@ namespace Lumen
                 player.Health = GameVariables.PlayerStartingHealth;
                 player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32*player.PlayerSpriteIndex);
                 player.ResetOrbs();
+                player.ResetRecentlyHitTimer();
                 player.AttachedLight.IsVisible = false;
                 player.AttachedBlinkingLight.IsVisible = true;
                 player.AttachedBlinkingLight.ResetFrequency();

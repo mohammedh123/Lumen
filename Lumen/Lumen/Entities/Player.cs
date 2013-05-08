@@ -30,6 +30,11 @@ namespace Lumen.Entities
                                          textureKey, new Rectangle(0, 0, 32, 32), this);
         }
 
+        public void ResetRecentlyHitTimer()
+        {
+            _recentlyHitTimer = -1.0f;
+        }
+
         private bool IsLightOn
         {
             get { return AttachedLight.IsVisible; }
