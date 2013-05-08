@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -137,6 +138,18 @@ namespace Lumen.Particle_System
             //unsafe for speed
             _numParticlesAlive--;
             _particles[idx].Lifetime = -1.0f;
+        }
+
+        public void StopFiringEntirely()
+        {
+            _spawnInfos.Clear();
+        }
+
+        public void KillAllParticles()
+        {
+            for(int i = 0; i < MaxParticles; i++)
+                if(_particles[i].Lifetime >= 0)
+                    KillParticle(i);
         }
 
         public void Draw(SpriteBatch sb)

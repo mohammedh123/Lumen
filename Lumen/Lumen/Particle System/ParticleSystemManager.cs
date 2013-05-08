@@ -58,6 +58,18 @@ namespace Lumen.Particle_System
             _particleSystems.Clear();
         }
 
+        public void StopFiringAllSystems()
+        {
+            foreach(var kvp in _particleSystems)
+                kvp.Value.StopFiringEntirely();
+        }
+
+        public void KillAllParticles()
+        {
+            foreach (var kvp in _particleSystems)
+                kvp.Value.KillAllParticles();
+        }
+
         public void RegisterParticleSystem(string key, ParticleSystem ps)
         {
             _particleSystems.Add(key, ps);

@@ -28,7 +28,7 @@ namespace Lumen.States
 
         public MainGameState(IEnumerable<PlayerIndex> playerOrder)
         {
-            _gameManager = new GameManager(GameDriver.DisplayResolution);
+            _gameManager = new GameManager(GameDriver.DisplayResolution, playerOrder);
             _lightManager = new LightManager();
 
             _playerOrder = playerOrder.ToList();
@@ -187,6 +187,7 @@ namespace Lumen.States
             graphicsDevice.SetRenderTarget(_sceneRt);
             _gameManager.DrawScene(spriteBatch);
 
+            _lightManager.SetDarknessLevel(1.0f);
             _lightManager.DrawScene(_gameManager.GetLights(), graphicsDevice, spriteBatch);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null);

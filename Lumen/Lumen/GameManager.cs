@@ -25,15 +25,16 @@ namespace Lumen
         public readonly Dictionary<Player, List<Light>> DeadPlayers = new Dictionary<Player, List<Light>>();
         private readonly Vector2 _gameResolution;
         public GameState State = GameState.StillGoing;
-        private int _currentStreak;
-        private bool _isStreakForPlayer;
+        private GameState _lastPlayerState;
+        private List<PlayerIndex> _playerOrder; 
 
-        public GameManager(Vector2 gameResolution)
+        public GameManager(Vector2 gameResolution, IEnumerable<PlayerIndex> playerOrder)
         {
             Players = new List<Player>();
             Props = new List<Prop>();
             PropsToBeAdded = new List<Prop>();
             RoundNumber = 7;
+            _playerOrder = playerOrder.ToList();
 
             _gameResolution = gameResolution;
         }
@@ -53,6 +54,11 @@ namespace Lumen
 
         public int RoundNumber { get; private set; }
         public float TimeTillNextRound { get; private set; }
+
+        private bool IsWinnerDecided
+        {
+            get { return RoundNumber < 5 || RoundNumber > 9; }
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -147,13 +153,7 @@ namespace Lumen
             else if (State == GameState.PlayersWin) {
                 TimeTillNextRound -= dt;
 
-                Players.ForEach(p => GamePad.SetVibration(p.ControllerIndex, 0, 0));
-                foreach (var p in DeadPlayers.Keys) {
-                    GamePad.SetVibration(p.ControllerIndex, 0, 0);
-                }
-                if (Guardian != null) {
-                    GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
-                }
+                ResetVibration();
 
                 if (TimeTillNextRound <= 0.0f) {
                     TimeTillNextRound = 0.0f;
@@ -162,26 +162,26 @@ namespace Lumen
                 }
             }
             else if (State == GameState.EnemyWins) {
-                //HandleRestartInput();
                 TimeTillNextRound -= dt;
+
+                ResetVibration();
 
                 if (TimeTillNextRound <= 0.0f) {
                     TimeTillNextRound = 0.0f;
-                    if (RoundNumber > 1) {
-                        RoundNumber--;
-                    }
-
+                    RoundNumber--;
                     StartNextRound();
                 }
+            }
+        }
 
-
-                Players.ForEach(p => GamePad.SetVibration(p.ControllerIndex, 0, 0));
-                foreach (var p in DeadPlayers.Keys) {
-                    GamePad.SetVibration(p.ControllerIndex, 0, 0);
-                }
-                if (Guardian != null) {
-                    GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
-                }
+        private void ResetVibration()
+        {
+            Players.ForEach(p => GamePad.SetVibration(p.ControllerIndex, 0, 0));
+            foreach (var p in DeadPlayers.Keys) {
+                GamePad.SetVibration(p.ControllerIndex, 0, 0);
+            }
+            if (Guardian != null) {
+                GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
             }
         }
 
@@ -206,35 +206,28 @@ namespace Lumen
 
         private void StartNextRound()
         {
+            if(IsWinnerDecided) {
+                StateManager.Instance.PushState(new GameOverState(State));
+                return;
+            }
+
             if (State == GameState.PlayersWin) {
-                if (_isStreakForPlayer) {
-                    _currentStreak++;
-                }
-                else {
-                    _currentStreak = 1;
+                if (_lastPlayerState == GameState.EnemyWins) {
+                    //reset back to 7
+                    RoundNumber = 1;
                 }
 
-                _isStreakForPlayer = true;
+                _lastPlayerState = GameState.PlayersWin;
             }
             else if (State == GameState.EnemyWins) {
-                if (_isStreakForPlayer) {
-                    _currentStreak = 1;
-                }
-                else {
-                    _currentStreak++;
+                if (_lastPlayerState == GameState.PlayersWin) {
+                    //reset back to 7
+                    RoundNumber = 1;
                 }
 
-                _isStreakForPlayer = false;
+                _lastPlayerState = GameState.EnemyWins;
             }
-
-            if (_currentStreak == 3) {
-                StateManager.Instance.PopState();
-                StateManager.Instance.PushState(new MainMenuState());
-                _currentStreak = 0;
-                _isStreakForPlayer = false;
-            }
-
-            //RoundNumber++;
+            
             State = GameState.StillGoing;
 
             foreach (var kvp in DeadPlayers) {
@@ -267,6 +260,11 @@ namespace Lumen
             for (var i = 0; i < GameVariables.CrystalsToSpawn(RoundNumber); i++) {
                 SpawnCrystalUniformly();
             }
+
+            ParticleSystemManager.Instance.StopFiringAllSystems();
+            ParticleSystemManager.Instance.KillAllParticles();
+
+            StateManager.Instance.PushState(new NextRoundState(CrystalsRemaining, _playerOrder));
         }
 
         public void SpawnCrystalUniformly()
@@ -423,7 +421,7 @@ namespace Lumen
         {
             if (CrystalsRemaining == 0) {
                 State = GameState.PlayersWin;
-                TimeTillNextRound = 3.0f;
+                TimeTillNextRound = 0.0f;
 
                 foreach (var player in Players) {
                     GamePad.SetVibration(player.ControllerIndex, 0, 0);
@@ -550,7 +548,7 @@ namespace Lumen
         {
             if (Players.Count == 1) {
                 State = GameState.EnemyWins;
-                TimeTillNextRound = 3.0f;
+                TimeTillNextRound = 0.0f;
             }
 
             if (player.CollectionTarget != null) {
