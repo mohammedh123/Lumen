@@ -108,7 +108,8 @@ namespace Lumen.States
             if (InputManager.KeyPressed(Keys.Enter)) {
                 _playersPlaying = new List<PlayerIndex>
                                   {PlayerIndex.One, PlayerIndex.Four, PlayerIndex.Three, PlayerIndex.Two};
-                TransitionToMainGame();
+                TransitionToTutorial();
+                return;
             }
 
             if (_state == SetupState.SettingPlayersUp) {
@@ -126,7 +127,8 @@ namespace Lumen.States
 
                                 if (AreAllPlayersReady) {
                                     _state = SetupState.TransitioningToGame;
-                                    TransitionToMainGame();
+                                    TransitionToTutorial();
+                                    return;
                                 }
                             }
                         }
@@ -141,9 +143,9 @@ namespace Lumen.States
             TotalTime += delta.ElapsedGameTime.TotalSeconds;
         }
 
-        private void TransitionToMainGame()
+        private void TransitionToTutorial()
         {
-            StateManager.Instance.PushState(new MainGameState(_playersPlaying));
+            StateManager.Instance.PushState(new TutorialState(_playersPlaying));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)

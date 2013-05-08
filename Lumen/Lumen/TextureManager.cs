@@ -122,19 +122,19 @@ namespace Lumen
 
             //round numbers
 
-            _textureDetails.Add("round_five",
+            _textureDetails.Add("goal_five",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/five"),
                                                    new Vector2(253, 183)));
-            _textureDetails.Add("round_six",
+            _textureDetails.Add("goal_six",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/six"),
                                                    new Vector2(308, 183)));
-            _textureDetails.Add("round_seven",
+            _textureDetails.Add("goal_seven",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/seven"),
                                                    new Vector2(382, 183)));
-            _textureDetails.Add("round_eight",
+            _textureDetails.Add("goal_eight",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/eight"),
                                                    new Vector2(421, 183)));
-            _textureDetails.Add("round_nine",
+            _textureDetails.Add("goal_nine",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/Round Tally/nine"),
                                                    new Vector2(483, 183)));
 

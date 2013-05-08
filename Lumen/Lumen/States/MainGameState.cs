@@ -26,12 +26,12 @@ namespace Lumen.States
         public bool IsShowingDebugInformation = false;
 #endif
 
-        public MainGameState(List<PlayerIndex> playerOrder)
+        public MainGameState(IEnumerable<PlayerIndex> playerOrder)
         {
             _gameManager = new GameManager(GameDriver.DisplayResolution);
             _lightManager = new LightManager();
 
-            _playerOrder = playerOrder;
+            _playerOrder = playerOrder.ToList();
         }
 
         public override void Initialize(GameDriver g)
