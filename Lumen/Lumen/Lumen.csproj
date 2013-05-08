@@ -116,6 +116,7 @@
     <Compile Include="States\GameOverState.cs" />
     <Compile Include="States\MainGameState.cs" />
     <Compile Include="States\MainMenuState.cs" />
+    <Compile Include="States\NextRoundState.cs" />
     <Compile Include="States\TutorialState.cs" />
     <Compile Include="TextureManager.cs" />
   </ItemGroup>
