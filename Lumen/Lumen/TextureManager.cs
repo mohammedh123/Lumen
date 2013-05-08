@@ -87,7 +87,7 @@ namespace Lumen
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/player3_mini"),
                                                    new Vector2(16, 16)));
             _textureDetails.Add("player4",
-                                new TextureDetails(contentManager.Load<Texture2D>("Textures/white_player"),
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/player4_mini"),
                                                    new Vector2(16, 16)));
             _textureDetails.Add("guardian",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/guardian"),
