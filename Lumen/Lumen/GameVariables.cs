@@ -48,7 +48,7 @@ namespace Lumen
         public static float CrystalMinimumSpawnDistanceBetween = 180.0f;
         public static int CrystalSpawningMaxAttempts = 100;
 
-        public static int RoundOneGoal = 7;
+        public static int RoundOneGoal = 1;
         public static int FinalCrystalBuffer = 2;
 
         public static float ScreenShakeAmount = 0.0f;

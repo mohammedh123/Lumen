@@ -33,7 +33,7 @@ namespace Lumen
             Players = new List<Player>();
             Props = new List<Prop>();
             PropsToBeAdded = new List<Prop>();
-            RoundNumber = 1;
+            RoundNumber = 7;
 
             _gameResolution = gameResolution;
         }
