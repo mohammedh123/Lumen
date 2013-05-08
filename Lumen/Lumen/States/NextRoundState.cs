@@ -123,7 +123,6 @@ namespace Lumen.States
         private void TransitionBackToGame()
         {
             StateManager.Instance.PopState();
-            StateManager.Instance.PushState(new MainGameState(_playerOrder));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)

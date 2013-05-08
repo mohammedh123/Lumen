@@ -83,6 +83,7 @@ namespace Lumen.States
         private void TransitionToMainGame()
         {
             StateManager.Instance.PopState();
+            StateManager.Instance.PushState(new MainGameState(_playersPlaying.Keys.ToList()));
             StateManager.Instance.PushState(new NextRoundState(7, _playersPlaying.Keys.ToList()));
         }
 
