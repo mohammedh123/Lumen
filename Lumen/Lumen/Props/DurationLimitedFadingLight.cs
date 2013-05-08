@@ -51,6 +51,15 @@ namespace Lumen.Props
             }
         }
 
+        public void AbruptlyTurnOff()
+        {
+            _durationTimer = 0.0f;
+            _fadeTimer = -1.0f;
+            _fadeState = BlinkingLightFadeState.None;
+            IsVisible = true;
+            LightIntensity = 0.0f;
+        }
+
         public override void Update(float dt)
         {
             Position = EntityAttachedTo.Position;

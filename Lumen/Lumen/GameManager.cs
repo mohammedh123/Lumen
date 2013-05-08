@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Lumen.Entities;
 using Lumen.Light_System;
@@ -241,13 +242,16 @@ namespace Lumen
                 player.CrystalCount = 0;
                 CrystalsCollected = 0;
                 player.Health = GameVariables.PlayerStartingHealth;
-                player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32*player.PlayerSpriteIndex);
+                player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32 + 32*player.PlayerSpriteIndex);
                 player.ResetOrbs();
                 player.ResetRecentlyHitTimer();
                 player.AttachedLight.IsVisible = false;
+                player.AttachedLight.AbruptlyTurnOff();
                 player.AttachedBlinkingLight.IsVisible = true;
                 player.AttachedBlinkingLight.ResetFrequency();
             }
+
+            SoundManager.GetSoundInstance("player_light").Stop();
 
             LightSpawner.Instance.Reset();
 
