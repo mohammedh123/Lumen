@@ -263,7 +263,7 @@ namespace Lumen.States
         private void DrawPlayerInformation(SpriteBatch spriteBatch, Vector2 center, Player player, float alpha)
         {
             var str = "player" + (player.IsAlive ? "" + player.PlayerSpriteIndex : "_dead") + "_portrait";
-            spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White*alpha, 0.0f,
+            spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White*alpha*(player.IsAlive ? 1.0f : 0.5f), 0.0f,
                              TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
         }
 
@@ -271,20 +271,24 @@ namespace Lumen.States
         {
             center -= new Vector2(GameVariables.CrystalRoundGoal(_gameManager.RoundNumber) * SpaceBetweenCrystalsUi*0.5f, 0);
 
-            for (var i = 0; i < GameVariables.CrystalRoundGoal(_gameManager.RoundNumber); i++) {
+            var idx = 0;
+            for (var i = GameVariables.CrystalRoundGoal(_gameManager.RoundNumber) - 1; i >= 0; i--)
+            {
                 if (i < _gameManager.CrystalsRemaining) {
-                    spriteBatch.Draw(TextureManager.GetTexture("ui_crystal"), center + new Vector2(SpaceBetweenCrystalsUi * i, 0), null,
+                    spriteBatch.Draw(TextureManager.GetTexture("ui_crystal"), center + new Vector2(SpaceBetweenCrystalsUi * idx, 0), null,
                                      Color.White * alpha, 0.0f, TextureManager.GetOrigin("ui_crystal"),
                                      GameVariables.UIScale*4,
                                      SpriteEffects.None, 0);
                 }
                 else
                 {
-                    spriteBatch.Draw(TextureManager.GetTexture("ui_crystal_dead"), center + new Vector2(SpaceBetweenCrystalsUi * i, 0), null,
+                    spriteBatch.Draw(TextureManager.GetTexture("ui_crystal_dead"), center + new Vector2(SpaceBetweenCrystalsUi * idx, 0), null,
                                      Color.White * 0.5f * alpha, 0.0f, TextureManager.GetOrigin("ui_crystal_dead"),
                                      GameVariables.UIScale*4,
                                      SpriteEffects.None, 0);
                 }
+
+                idx++;
             }
         }
     }
