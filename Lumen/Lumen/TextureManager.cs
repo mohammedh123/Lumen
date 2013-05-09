@@ -98,9 +98,6 @@ namespace Lumen
             _textureDetails.Add("crystal",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/crystal"),
                                                    new Vector2(16, 16)));
-            _textureDetails.Add("crystal_dead",
-                                new TextureDetails(contentManager.Load<Texture2D>("Textures/crystal_dead"),
-                                                   new Vector2(16, 16)));
             _textureDetails.Add("health",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/health"),
                                                    new Vector2(16, 16)));
@@ -115,6 +112,12 @@ namespace Lumen
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/white_player"),
                                                    new Vector2(16, 16)));
 
+            _textureDetails.Add("ui_crystal",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/ui_crystal"),
+                                                   new Vector2(16, 16)));
+            _textureDetails.Add("ui_crystal_dead",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/ui_crystal_dead"),
+                                                   new Vector2(16, 16)));
             //main menu state textures
             _textureDetails.Add("mainmenu_bg",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/mainmenu_bg"),

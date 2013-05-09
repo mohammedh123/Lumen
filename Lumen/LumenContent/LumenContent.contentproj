@@ -326,8 +326,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\crystal_dead.png">
-      <Name>crystal_dead</Name>
+    <Compile Include="Textures\ui_crystal.png">
+      <Name>ui_crystal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\ui_crystal_dead.png">
+      <Name>ui_crystal_dead</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

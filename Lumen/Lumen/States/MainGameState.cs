@@ -21,6 +21,7 @@ namespace Lumen.States
         private readonly LightManager _lightManager;
 
         private readonly List<PlayerIndex> _playerOrder;
+        private const float SpaceBetweenCrystalsUi = 24.0f;
 
         private RenderTarget2D _sceneRt;
 #if DEBUG
@@ -236,7 +237,7 @@ namespace Lumen.States
             var allPlayers =
                 _gameManager.Players.Union(_gameManager.DeadPlayers.Keys).OrderBy(p => p.ControllerIndex).ToList();
 
-            crystalCenter += new Vector2(32 + GameVariables.CrystalRoundGoal(_gameManager.RoundNumber) * 8, 0);
+            crystalCenter += new Vector2(16 + GameVariables.CrystalRoundGoal(_gameManager.RoundNumber) * SpaceBetweenCrystalsUi*0.5f, 0);
             var offset = Vector2.Zero;
             
             for (var i = 0; i < allPlayers.Count(); i++) {
@@ -268,20 +269,20 @@ namespace Lumen.States
 
         private void DrawCrystalsRemainingInformation(SpriteBatch spriteBatch, Vector2 center, float alpha)
         {
-            center -= new Vector2(GameVariables.CrystalRoundGoal(_gameManager.RoundNumber)*8, 0);
+            center -= new Vector2(GameVariables.CrystalRoundGoal(_gameManager.RoundNumber) * SpaceBetweenCrystalsUi*0.5f, 0);
 
             for (var i = 0; i < GameVariables.CrystalRoundGoal(_gameManager.RoundNumber); i++) {
                 if (i < _gameManager.CrystalsRemaining) {
-                    spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(16*i, 0), null,
-                                     Color.White*alpha, 0.0f, TextureManager.GetOrigin("crystal"),
-                                     GameVariables.UIScale*2,
+                    spriteBatch.Draw(TextureManager.GetTexture("ui_crystal"), center + new Vector2(SpaceBetweenCrystalsUi * i, 0), null,
+                                     Color.White * alpha, 0.0f, TextureManager.GetOrigin("ui_crystal"),
+                                     GameVariables.UIScale*4,
                                      SpriteEffects.None, 0);
                 }
                 else
                 {
-                    spriteBatch.Draw(TextureManager.GetTexture("crystal_dead"), center + new Vector2(16 * i, 0), null,
-                                     Color.White * 0.5f * alpha, 0.0f, TextureManager.GetOrigin("crystal_dead"),
-                                     GameVariables.UIScale * 2,
+                    spriteBatch.Draw(TextureManager.GetTexture("ui_crystal_dead"), center + new Vector2(SpaceBetweenCrystalsUi * i, 0), null,
+                                     Color.White * 0.5f * alpha, 0.0f, TextureManager.GetOrigin("ui_crystal_dead"),
+                                     GameVariables.UIScale*4,
                                      SpriteEffects.None, 0);
                 }
             }
