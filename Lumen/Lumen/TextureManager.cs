@@ -156,6 +156,12 @@ namespace Lumen
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/guardian_win"),
                                                    new Vector2(0, 0)));
 
+            //blank
+            _textureDetails.Add("black",
+                    new TextureDetails(contentManager.Load<Texture2D>("Textures/black"),
+                                       new Vector2(0, 0)));
+            
+
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("Fonts/debug_font"));
             _fontDetails.Add("big", contentManager.Load<SpriteFont>("Fonts/bigFont"));
         }
