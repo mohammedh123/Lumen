@@ -81,7 +81,7 @@ namespace Lumen.States
                     throw new Exception("Error: a round count that is not between 5 and 9 (inclusive) was attempted.");
             }
 
-            _lumenBackground = TextureManager.GetTexture("background");
+            _lumenBackground = TextureManager.GetTexture("black");
         }
 
         public override void Shutdown()
