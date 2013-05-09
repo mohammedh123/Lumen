@@ -83,7 +83,6 @@ namespace Lumen.States
 
             _lumenBackground = TextureManager.GetTexture("black");
 
-            SoundManager.GetSoundInstance("round_change").Play();
         }
 
         public override void Shutdown()
@@ -103,6 +102,8 @@ namespace Lumen.States
             else if (TotalTime > FadeInDuration && TotalTime <= FadeInDuration + Duration)
             {
                 _state = ScreenState.FadingOut;
+                SoundManager.GetSoundInstance("round_change").Play();
+
             }
             else if (TotalTime > FadeInDuration +Duration && TotalTime <= FadeInDuration + Duration + FadeOutDuration)
             {

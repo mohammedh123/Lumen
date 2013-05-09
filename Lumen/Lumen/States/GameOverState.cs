@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Lumen.States
 {
@@ -22,9 +23,11 @@ namespace Lumen.States
             switch(winner) {
                 case GameState.PlayersWin:
                     playersWin = true;
+                    SoundManager.GetSoundInstance("player_light").Play();
                     break;
                 case GameState.EnemyWins:
                     playersWin = false;
+                    SoundManager.GetSoundInstance("guardian_release").Play();
                     break;
                 default:
                     throw new Exception("Invalid winner passed to GameOverState.");
