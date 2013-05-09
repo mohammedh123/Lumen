@@ -298,6 +298,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\pause_screen.png">
+      <Name>pause_screen</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Textures\players_win.png">
       <Name>players_win</Name>
       <Importer>TextureImporter</Importer>

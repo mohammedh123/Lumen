@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Lumen.States
 {
@@ -63,6 +64,16 @@ namespace Lumen.States
 
         public override void Update(GameTime gameTime)
         {
+            var song = SoundManager.GetSong("main_bgm");
+
+            if (MediaPlayer.State == MediaState.Stopped)
+            {
+                MediaPlayer.Play(song);
+            }
+            else if(MediaPlayer.State == MediaState.Paused) {
+                MediaPlayer.Resume();
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
                 Game.Exit();
             }

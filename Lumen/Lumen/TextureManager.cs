@@ -143,6 +143,18 @@ namespace Lumen
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/tutorial_overlay"),
                                                    new Vector2(0, 0)));
 
+            //pause screen
+            _textureDetails.Add("pause_screen",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/pause_screen"),
+                                                   new Vector2(0, 0)));
+
+            //game over screens
+            _textureDetails.Add("players_win",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/players_win"),
+                                                   new Vector2(0, 0)));
+            _textureDetails.Add("guardian_win",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/guardian_win"),
+                                                   new Vector2(0, 0)));
 
             _fontDetails.Add("debug", contentManager.Load<SpriteFont>("Fonts/debug_font"));
             _fontDetails.Add("big", contentManager.Load<SpriteFont>("Fonts/bigFont"));
