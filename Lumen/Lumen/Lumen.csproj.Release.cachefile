@@ -1,0 +1,47 @@
+Content\Textures\player.xnb
+Content\Textures\background.xnb
+Content\Textures\crystal.xnb
+Content\Textures\blank.xnb
+Content\Textures\guardian.xnb
+Content\Textures\player1.xnb
+Content\Textures\player1_mini.xnb
+Content\Textures\player2.xnb
+Content\Textures\player2_mini.xnb
+Content\Textures\player3.xnb
+Content\Textures\player3_mini.xnb
+Content\Textures\player_portrait.xnb
+Content\Textures\health.xnb
+Content\Textures\player_orb.xnb
+Content\Textures\hit_particle.xnb
+Content\Textures\player_dead.xnb
+Content\Textures\mainmenu_bg.xnb
+Content\Textures\white_player.xnb
+Content\Textures\mainmenu_logo.xnb
+Content\Textures\Round Tally\eight.xnb
+Content\Textures\Round Tally\five.xnb
+Content\Textures\Round Tally\nine.xnb
+Content\Textures\Round Tally\seven.xnb
+Content\Textures\Round Tally\six.xnb
+Content\Textures\tutorial_overlay.xnb
+Content\Textures\player4_mini.xnb
+Content\Textures\pause_screen.xnb
+Content\Textures\players_win.xnb
+Content\Textures\guardian_win.xnb
+Content\Textures\ui_crystal.xnb
+Content\Textures\ui_crystal_dead.xnb
+Content\Shaders\LightDrawer.xnb
+Content\Shaders\Combiner.xnb
+Content\Fonts\debug_font.xnb
+Content\Fonts\bigFont.xnb
+Content\Sounds\death_sound.xnb
+Content\Sounds\footstep.xnb
+Content\Sounds\crystal_get.xnb
+Content\Sounds\player_hit.xnb
+Content\Sounds\guardian_charge.xnb
+Content\Sounds\guardian_release.xnb
+Content\Sounds\player_light.xnb
+Content\Sounds\crystal_charge.xnb
+Content\Sounds\crystal_hit.xnb
+Content\Sounds\round_change.xnb
+Content\Sounds\main_bgm.xnb
+Content\Sounds\main_bgm.wma

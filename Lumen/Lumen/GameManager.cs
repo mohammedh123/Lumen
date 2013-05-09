@@ -27,7 +27,7 @@ namespace Lumen
         private readonly Vector2 _gameResolution;
         public GameState State = GameState.StillGoing;
         private GameState _lastPlayerState;
-        private List<PlayerIndex> _playerOrder; 
+        private List<PlayerIndex> _playerOrder;
 
         public GameManager(Vector2 gameResolution, IEnumerable<PlayerIndex> playerOrder)
         {
@@ -60,7 +60,7 @@ namespace Lumen
         {
             get { return FadeoutTimer >= 0.0f; }
         }
-        
+
         private bool IsWinnerDecided
         {
             get { return RoundNumber < 5 || RoundNumber > 9; }
@@ -167,8 +167,7 @@ namespace Lumen
 
                 ResetVibration();
 
-                if (!IsFadingOut)
-                {
+                if (!IsFadingOut) {
                     ResetFadeoutTimer();
                     RoundNumber--;
                     StartNextRound();
@@ -194,7 +193,8 @@ namespace Lumen
 
         private void StartNextRound()
         {
-            if(IsWinnerDecided) {
+            if (IsWinnerDecided) {
+                MediaPlayer.Stop();
                 StateManager.Instance.PushState(new GameOverState(State));
                 return;
             }
@@ -215,7 +215,7 @@ namespace Lumen
 
                 _lastPlayerState = GameState.EnemyWins;
             }
-            
+
             State = GameState.StillGoing;
 
             foreach (var kvp in DeadPlayers) {
@@ -311,20 +311,15 @@ namespace Lumen
         {
             var screenBounds = new Rectangle(0, 0, (int) _gameResolution.X, (int) _gameResolution.Y);
 
-            if (GameVariables.IsScreenWrapping) {
-                entity.ApplyVelocity();
-                entity.WrapPositionAround();
-            }
-            else {
-                if (screenBounds.Contains((int) (entity.Position.X + entity.Velocity.X),
-                                          (int) (entity.Position.Y))) {
-                    entity.ApplyVelocity(true, false);
-                }
 
-                if (screenBounds.Contains((int) (entity.Position.X),
-                                          (int) (entity.Position.Y + entity.Velocity.Y))) {
-                    entity.ApplyVelocity(false, true);
-                }
+            if (screenBounds.Contains((int) (entity.Position.X + entity.Velocity.X),
+                                      (int) (entity.Position.Y))) {
+                entity.ApplyVelocity(true, false);
+            }
+
+            if (screenBounds.Contains((int) (entity.Position.X),
+                                      (int) (entity.Position.Y + entity.Velocity.Y))) {
+                entity.ApplyVelocity(false, true);
             }
         }
 
@@ -468,7 +463,7 @@ namespace Lumen
             sb.End();
         }
 
-        public void DrawBackground(SpriteBatch sb)
+        private void DrawBackground(SpriteBatch sb)
         {
             //sb MUST have been Begin'd
 
@@ -490,7 +485,7 @@ namespace Lumen
             }
         }
 
-        public bool AddPlayer(Player p)
+        private bool AddPlayer(Player p)
         {
             if (Players.Contains(p)) {
                 return false;
@@ -507,7 +502,7 @@ namespace Lumen
             return true;
         }
 
-        public bool AddEnemy(Guardian e)
+        private bool AddEnemy(Guardian e)
         {
             if (Guardian != null) {
                 return false;
@@ -519,7 +514,7 @@ namespace Lumen
             return true;
         }
 
-        public void AddCrystal(Vector2 position)
+        private void AddCrystal(Vector2 position)
         {
             Props.Add(new Crystal(position));
         }
