@@ -152,6 +152,8 @@ namespace Lumen.Props
 
             if (IsSomeoneCollectingThis) {
                 SoundManager.GetSoundInstance("crystal_charge").Play();
+                ParticleSystemManager.Instance.FireParticleSystem("crystal_charge", Position.X, Position.Y);
+
 
                 _collectionTimeLeft -= dt*_collectorCount;
 
