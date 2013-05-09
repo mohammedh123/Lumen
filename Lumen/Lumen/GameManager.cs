@@ -245,9 +245,10 @@ namespace Lumen
                 player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32 + 32*player.PlayerSpriteIndex);
                 player.ResetOrbs();
                 player.ResetRecentlyHitTimer();
+                player.ResetBlinkingTimer();
                 player.AttachedLight.IsVisible = false;
                 player.AttachedLight.AbruptlyTurnOff();
-                player.AttachedBlinkingLight.IsVisible = true;
+                player.AttachedBlinkingLight.IsVisible = false;
                 player.AttachedBlinkingLight.ResetFrequency();
             }
 

@@ -21,6 +21,7 @@ namespace Lumen.Entities
 
         private float _lightModulationSoundTimer;
         private float _recentlyHitTimer = -1.0f;
+        private float _blinkingTimer = -1.0f;
 
         public Player(string textureKey, Vector2 position) : base(textureKey, position)
         {
@@ -33,6 +34,11 @@ namespace Lumen.Entities
         public void ResetRecentlyHitTimer()
         {
             _recentlyHitTimer = -1.0f;
+        }
+
+        public void ResetBlinkingTimer()
+        {
+            _blinkingTimer = -1.0f;
         }
 
         private bool IsLightOn
@@ -50,6 +56,11 @@ namespace Lumen.Entities
             get { return _recentlyHitTimer >= 0.0f; }
         }
 
+        private bool IsBlinking
+        {
+            get { return _blinkingTimer >= 0.0f; }
+        }
+
         #region IControllerCapable Members
 
         public PlayerIndex ControllerIndex { get; set; }
@@ -65,10 +76,6 @@ namespace Lumen.Entities
             var speedToUse = GameVariables.PlayerSpeed;
 
             AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
-
-            if (AttachedBlinkingLight.IsVisible) {
-                AttachedBlinkingLight.IsVisible = Velocity != Vector2.Zero;
-            }
 
             if (InputManager.GamepadButtonDown(ControllerIndex, Buttons.A)) {
                 TurnOnLight();
@@ -169,6 +176,24 @@ namespace Lumen.Entities
                     GamePad.SetVibration(ControllerIndex, 0, 0);
                 }
             }
+
+            if(IsBlinking) {
+                _blinkingTimer -= dt;
+
+                if (_blinkingTimer <= 1.0f) {
+                    AttachedBlinkingLight.Duration = GameVariables.BlinkingDuration*5;
+                }
+                else if (_blinkingTimer <= 2.0f)
+                    AttachedBlinkingLight.Duration = GameVariables.BlinkingDuration * 2.5f;
+                else if (_blinkingTimer <= 3.0f)
+                    AttachedBlinkingLight.Duration = GameVariables.BlinkingDuration * 1;
+
+                AttachedBlinkingLight.IsVisible = true;
+            }
+            else {
+                _blinkingTimer = -1.0f;
+                AttachedBlinkingLight.IsVisible = false;
+            }
         }
 
         private void TurnOnLight()
@@ -197,6 +222,7 @@ namespace Lumen.Entities
             Health -= n;
 
             _recentlyHitTimer = GameVariables.PlayerHitVibrationDuration;
+            _blinkingTimer = GameVariables.PlayerHitBlinkingDuration;
 
             var count = 0;
             foreach (var orb in OrbitRing.Satellites) {
@@ -217,7 +243,6 @@ namespace Lumen.Entities
         public void IncrementCrystalCount()
         {
             CrystalCount++;
-            AttachedBlinkingLight.IncreaseFrequency(1.2f);
         }
     }
 }

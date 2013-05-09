@@ -114,6 +114,7 @@ namespace Lumen.States
                                            new Vector2(64, GameDriver.DisplayResolution.Y/2 - 96 + 32*playerNum)),
                                 playerIndex);
                             _gameManager.Players.Last().PlayerSpriteIndex = playerNum - 1;
+                            _gameManager.Players.Last().AttachedBlinkingLight.IsVisible = false;
                         }
                     }
                 }

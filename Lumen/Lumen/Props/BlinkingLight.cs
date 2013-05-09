@@ -1,6 +1,7 @@
 ﻿using System;
 using Lumen.Entities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Lumen.Props
 {
@@ -13,11 +14,14 @@ namespace Lumen.Props
         private float _frequency = 1.0f;
         private float _timer;
 
+        public float Duration;
+        
         public BlinkingLight(string textureKeyName, Entity owner, float lightRadius)
             : base(textureKeyName, lightRadius, owner.Position, owner)
         {
+            var invFreq = (1.0f / _frequency);
+            Duration = GameVariables.BlinkingDuration*invFreq;
             _timer = (float) GameDriver.RandomGen.NextDouble()*0.25f;
-            IsVisible = true;
             LightRadius = 0;
             LightIntensity = 1.0f;
             _lightRadius = lightRadius;
@@ -54,6 +58,10 @@ namespace Lumen.Props
             _frequency = 1.0f;
         }
 
+        public override void Draw(SpriteBatch sb)
+        {
+        }
+
         public override void Update(float dt)
         {
             Position = EntityAttachedTo.Position;
@@ -61,7 +69,7 @@ namespace Lumen.Props
             if (CanBeginBlink) //begin fading in
             {
                 _timer = GameVariables.BlinkingPeriod*invFreq;
-                _durationTimer = GameVariables.BlinkingDuration*invFreq;
+                _durationTimer = Duration*invFreq;
                 _fadeTimer = 0.0f;
                 _fadeState = BlinkingLightFadeState.FadingIn;
             }
