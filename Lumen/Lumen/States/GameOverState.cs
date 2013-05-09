@@ -64,7 +64,7 @@ namespace Lumen.States
             {
                 if (GamePad.GetState(idx).IsConnected)
                 {
-                    if (InputManager.GamepadButtonDown(idx, Buttons.A)) {
+                    if (InputManager.GamepadButtonPressed(idx, Buttons.A)) {
                         TransitionBackToMainMenu();
                     }
                 }
@@ -92,10 +92,7 @@ namespace Lumen.States
             _lightManager.DrawLightDarkness(graphicsDevice, spriteBatch, _sceneRt);
 
             spriteBatch.Begin();
-            if (!playersWin)
-                spriteBatch.Draw(_guardianWin, Vector2.Zero, Color.White);
-            if (playersWin)
-                spriteBatch.Draw(_playersWin, Vector2.Zero, Color.White);
+            spriteBatch.Draw(playersWin ? _playersWin : _guardianWin, Vector2.Zero, Color.White);
 
             spriteBatch.End();
         }
