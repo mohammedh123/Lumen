@@ -202,7 +202,7 @@ namespace Lumen
             if (State == GameState.PlayersWin) {
                 if (_lastPlayerState == GameState.EnemyWins) {
                     //reset back to 7
-                    RoundNumber = 1;
+                    RoundNumber = 7;
                 }
 
                 _lastPlayerState = GameState.PlayersWin;
@@ -210,7 +210,7 @@ namespace Lumen
             else if (State == GameState.EnemyWins) {
                 if (_lastPlayerState == GameState.PlayersWin) {
                     //reset back to 7
-                    RoundNumber = 1;
+                    RoundNumber = 7;
                 }
 
                 _lastPlayerState = GameState.EnemyWins;
