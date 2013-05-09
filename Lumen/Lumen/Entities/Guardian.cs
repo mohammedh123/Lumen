@@ -16,6 +16,7 @@ namespace Lumen.Entities
         private float _attackTimer = -1.0f;
         private float _chargeCooldown;
         private float _chargingTimer;
+        public float SpeedWhileCharging;
 
         public Guardian(Vector2 position) : base("guardian", position)
         {
@@ -25,6 +26,9 @@ namespace Lumen.Entities
 
             OrbitRing = new OrbitingRing(0, 10, 1.0f, 0.5f, "hit_particle", new Rectangle(0, 0, 2, 2), this)
                         {IsVisible = false};
+            
+            Speed = GameVariables.EnemySpeed;
+            SpeedWhileCharging = GameVariables.EnemySpeedWhileCharging;
         }
 
         public float EnergyRemaining { private get; set; }
@@ -48,7 +52,7 @@ namespace Lumen.Entities
         {
             get
             {
-                return MathHelper.Lerp(GameVariables.EnemySpeedWhileCharging, GameVariables.EnemySpeed,
+                return MathHelper.Lerp(SpeedWhileCharging, Speed,
                                        (1 - Math.Min(4*InternalAttackRadius/GameVariables.EnemyAttackMaxRadius, 1.0f)));
             }
         }
@@ -89,7 +93,7 @@ namespace Lumen.Entities
 
             var changeLeft = InputManager.GamepadLeft(ControllerIndex);
 
-            var speedToUse = !IsChargingUp ? GameVariables.EnemySpeed : ChargingSpeed;
+            var speedToUse = !IsChargingUp ? Speed : ChargingSpeed;
 
             AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
         }
@@ -100,7 +104,7 @@ namespace Lumen.Entities
 
         public void ProcessKeyDownAction(float dt)
         {
-            var speedToUse = GameVariables.EnemySpeed;
+            var speedToUse = Speed;
 
             if (InputManager.KeyDown(Keys.Left)) {
                 AdjustVelocity(-speedToUse*dt, 0);

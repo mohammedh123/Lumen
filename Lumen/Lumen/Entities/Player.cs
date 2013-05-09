@@ -29,6 +29,8 @@ namespace Lumen.Entities
 
             OrbitRing = new OrbitingRing(GameVariables.PlayerOrbsDistance, Health, 0.5f, GameVariables.PlayerOrbsPeriod,
                                          textureKey, new Rectangle(0, 0, 32, 32), this);
+
+            Speed = GameVariables.PlayerSpeed;
         }
 
         public void ResetRecentlyHitTimer()
@@ -73,7 +75,7 @@ namespace Lumen.Entities
 
             var changeLeft = InputManager.GamepadLeft(ControllerIndex);
 
-            var speedToUse = GameVariables.PlayerSpeed;
+            var speedToUse = Speed;
 
             AdjustVelocity(changeLeft.X*speedToUse*dt, -changeLeft.Y*speedToUse*dt);
 
@@ -90,7 +92,7 @@ namespace Lumen.Entities
 
         public void ProcessKeyDownAction(float dt)
         {
-            var speedToUse = GameVariables.PlayerSpeed;
+            var speedToUse = Speed;
 
             if (InputManager.KeyDown(Keys.Left)) {
                 AdjustVelocity(-speedToUse*dt, 0);

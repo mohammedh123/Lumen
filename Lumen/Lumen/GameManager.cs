@@ -28,6 +28,7 @@ namespace Lumen
         public GameState State = GameState.StillGoing;
         private GameState _lastPlayerState;
         private List<PlayerIndex> _playerOrder;
+        private float _playerBonusSpeed, _guardianBonusSpeed;
 
         public GameManager(Vector2 gameResolution, IEnumerable<PlayerIndex> playerOrder)
         {
@@ -202,7 +203,7 @@ namespace Lumen
             if (State == GameState.PlayersWin) {
                 if (_lastPlayerState == GameState.EnemyWins) {
                     //reset back to 7
-                    RoundNumber = 7;
+                    ResetBackToInitialRound(State);
                 }
 
                 _lastPlayerState = GameState.PlayersWin;
@@ -210,7 +211,7 @@ namespace Lumen
             else if (State == GameState.EnemyWins) {
                 if (_lastPlayerState == GameState.PlayersWin) {
                     //reset back to 7
-                    RoundNumber = 7;
+                    ResetBackToInitialRound(State);
                 }
 
                 _lastPlayerState = GameState.EnemyWins;
@@ -230,6 +231,7 @@ namespace Lumen
                 CrystalsCollected = 0;
                 player.Health = GameVariables.PlayerStartingHealth;
                 player.Position = new Vector2(64, _gameResolution.Y/2 - 96 + 32 + 32*player.PlayerSpriteIndex);
+                player.Speed = GameVariables.PlayerSpeed + _playerBonusSpeed;
                 player.ResetOrbs();
                 player.ResetRecentlyHitTimer();
                 player.ResetBlinkingTimer();
@@ -245,6 +247,8 @@ namespace Lumen
 
             Guardian.Position = new Vector2(_gameResolution.X - 64, _gameResolution.Y/2);
             Guardian.EnergyRemaining = GameVariables.EnemyAttackMaxRadius;
+            Guardian.Speed = GameVariables.EnemySpeed + _guardianBonusSpeed;
+            Guardian.SpeedWhileCharging = GameVariables.EnemySpeedWhileCharging + _guardianBonusSpeed;
             Guardian.ResetAllAttackData();
 
             Props.RemoveAll(p => p is Crystal);
@@ -257,6 +261,20 @@ namespace Lumen
             ParticleSystemManager.Instance.KillAllParticles();
 
             StateManager.Instance.PushState(new NextRoundState(CrystalsRemaining, _playerOrder));
+        }
+
+        private void ResetBackToInitialRound(GameState state)
+        {
+            if(state == GameState.PlayersWin)
+            {
+                _guardianBonusSpeed += 15;
+            }
+            else if(state == GameState.EnemyWins)
+            {
+                _playerBonusSpeed += 10;
+            }
+
+            RoundNumber = 7;
         }
 
         public void SpawnCrystalUniformly()

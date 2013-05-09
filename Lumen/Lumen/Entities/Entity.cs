@@ -21,6 +21,7 @@ namespace Lumen.Entities
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
         public int Health { get; set; }
+        public float Speed { get; set; }
 
         public bool IsVisible { get; set; }
 
