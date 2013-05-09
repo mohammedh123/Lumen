@@ -158,8 +158,8 @@ namespace Lumen
 
             var crystalCollectParticleSystemInfo = new ParticleSystemInfo
                                                     {
-                                                        FiringDuration = 0.2f,
-                                                        NumberOfParticlesPerSecond = 200.0f,
+                                                        FiringDuration = 0.1f,
+                                                        NumberOfParticlesPerSecond = 500.0f,
                                                         ParticleAngle = 0.0f,
                                                         ParticleAngleSpread = MathHelper.TwoPi,
                                                         ParticleAngularVelocityMin = 0.0f,
@@ -179,6 +179,30 @@ namespace Lumen
                                                     };
             var crystalCollectParticleSystem = new ParticleSystem(crystalCollectParticleSystemInfo);
 
+            var crystalChargeParticleSystemInfo = new ParticleSystemInfo
+                                                    {
+                                                        FiringDuration = 0.1f,
+                                                        NumberOfParticlesPerSecond = 10.0f,
+                                                        ParticleAngle = 0.0f,
+                                                        ParticleAngleSpread = MathHelper.TwoPi,
+                                                        ParticleAngularVelocityMin = 0.0f,
+                                                        ParticleAngularVelocityMax = 0.0f,
+                                                        ParticleColorStart = Color.LawnGreen,
+                                                        ParticleColorEnd = Color.Green,
+                                                        ParticleColorVariation = 0.6f,
+                                                        ParticleLifetimeMin = 0.5f,
+                                                        ParticleLifetimeMax = 1.0f,
+                                                        ParticleScaleMin = 0.5f,
+                                                        ParticleScaleMax = 0.7f,
+                                                        ParticleVelocityMin = 45.0f,
+                                                        ParticleVelocityMax = 85.0f,
+                                                        Texture = TextureManager.GetTexture("hit_particle"),
+                                                        TextureOrigin = new Vector2(1, 1),
+                                                        TextureRect = new Rectangle(0, 0, 2, 2)
+                                                    };
+            var crystalChargeParticleSystem = new ParticleSystem(crystalChargeParticleSystemInfo);
+
+            psm.RegisterParticleSystem("crystal_charge", crystalChargeParticleSystem);
             psm.RegisterParticleSystem("sample", sampleParticleSystem);
             psm.RegisterParticleSystem("player_hit", playerHitParticleSystem);
             psm.RegisterParticleSystem("guardian_attack", guardianAttackParticleSystem);
