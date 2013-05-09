@@ -10,17 +10,78 @@ namespace Lumen.Props
 {
     internal class Crystal : Prop, ILightProvider
     {
+        private enum FadingLightState
+        {
+            FadingIn,
+            FadingOut,
+            On,
+            Off
+        }
+
+        private FadingLightState _fadeState = FadingLightState.Off;
+
         private readonly List<Player> _collectors = new List<Player>();
         public Player Collector;
 
+        private float _fadeRadius = 0.0f;
         public float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
+        private float _fadeTimer = -1.0f;
+
+        private bool IsDoneFadingIn
+        {
+            get { return _fadeTimer >= GameVariables.CrystalFadeInDuration; }
+        }
+
+        private bool IsDoneFadingOut
+        {
+            get { return _fadeTimer >= GameVariables.CrystalFadeOutDuration; }
+        }
+
+        public void TurnOn()
+        {
+            if (_fadeState == FadingLightState.Off)
+            {
+                _fadeTimer = 0.0f;
+            }
+            else if (_fadeState == FadingLightState.FadingOut)
+            {
+                _fadeTimer = GameVariables.CrystalFadeInDuration - _fadeTimer;
+            }
+
+            if (_fadeState == FadingLightState.FadingOut || _fadeState == FadingLightState.Off)
+            {
+                _fadeState = FadingLightState.FadingIn;
+            }
+        }
+
+        public void TurnOff()
+        {
+            if (_fadeState == FadingLightState.FadingIn)
+            {
+                _fadeTimer = GameVariables.CrystalFadeOutDuration - _fadeTimer;
+            }
+
+            if (_fadeState == FadingLightState.FadingIn || _fadeState == FadingLightState.On)
+            {
+                _fadeState = FadingLightState.FadingOut;
+            }
+        }
+
+        public void AbruptlyTurnOff()
+        {
+            _fadeTimer = -1.0f;
+            _fadeState = FadingLightState.Off;
+            IsVisible = true;
+            LightIntensity = 0.0f;
+        }
 
         private int _collectorCount;
 
         public Crystal(Vector2 position)
             : base("crystal", position)
         {
-            LightIntensity = 1.0f;
+            IsVisible = true;
+            LightIntensity = 0.0f;
             PropType = PropTypeEnum.Crystal;
 
             Health = GameVariables.CrystalHarvestRequirement;
@@ -44,6 +105,9 @@ namespace Lumen.Props
         {
             get
             {
+                if (_fadeState == FadingLightState.FadingOut)
+                    return _fadeRadius;
+
                 if (!IsSomeoneCollectingThis) {
                     return 0;
                 }
@@ -60,6 +124,11 @@ namespace Lumen.Props
 
         public void DecrementCollectorCount(Player p)
         {
+            if (_collectorCount == 1) {
+                _fadeRadius = (1 - (_collectionTimeLeft / GameVariables.CrystalCollectionTime)) *
+                       GameVariables.CrystalGlowRadius;
+                TurnOff();   
+            }
             _collectorCount = Math.Max(_collectorCount - 1, 0);
             _collectors.Remove(p);
         }
@@ -68,6 +137,8 @@ namespace Lumen.Props
         {
             _collectorCount++;
             _collectors.Add(p);
+            if(_collectorCount == 1)
+                TurnOn();
         }
 
         public override void OnCollide(Entity collider)
@@ -93,6 +164,46 @@ namespace Lumen.Props
             else {
                 _collectionTimeLeft = GameVariables.CrystalCollectionTime;
             }
+
+            UpdateLightProperties(dt);
+        }
+
+        private void UpdateLightProperties(float dt)
+        {
+            if (_fadeState == FadingLightState.FadingIn)
+            {
+                LightIntensity = MathHelper.SmoothStep(0.0f, 1.0f, _fadeTimer / (GameVariables.CrystalFadeInDuration));
+
+                _fadeTimer = Math.Min(_fadeTimer + dt, GameVariables.CrystalFadeInDuration);
+
+                if (IsDoneFadingIn)
+                {
+                    _fadeState = FadingLightState.On;
+                    _fadeTimer = 0.0f;
+                }
+            }
+            else if (_fadeState == FadingLightState.On)
+            {
+                LightIntensity = 1.0f;
+            }
+            else if (_fadeState == FadingLightState.FadingOut)
+            {
+                IsVisible = true;
+                LightIntensity = MathHelper.SmoothStep(1.0f, 0.0f, _fadeTimer / (GameVariables.CrystalFadeOutDuration));
+
+                _fadeTimer = Math.Min(_fadeTimer + dt, GameVariables.CrystalFadeOutDuration);
+
+                if (IsDoneFadingOut)
+                {
+                    _fadeState = FadingLightState.Off;
+                    _fadeTimer = -1.0f;
+                    LightIntensity = 0;
+                }
+            }
+            else if (_fadeState == FadingLightState.Off)
+            {
+                LightIntensity = 0.0f;
+            }
         }
 
         public void DecrementCount()
@@ -105,7 +216,6 @@ namespace Lumen.Props
 
             LightSpawner.Instance.AddStaticLight(Position, 1.0f, GameVariables.CrystalGlowRadius, 1);
             ParticleSystemManager.Instance.FireParticleSystem("crystal_collect", Position.X, Position.Y);
-
         }
     }
 }

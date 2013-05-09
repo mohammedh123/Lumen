@@ -45,12 +45,16 @@ namespace Lumen
         public static float CrystalCollectionTime = 3.0f;
         public static int CrystalHarvestRequirement = 1;
         public static float CrystalGlowRadius = 120.0f;
+        public static float CrystalFadeInDuration = 0.3f;
+        public static float CrystalFadeOutDuration = 0.3f;
 
         public static float CrystalMinimumSpawnDistanceBetween = 180.0f;
         public static int CrystalSpawningMaxAttempts = 100;
 
         public static int RoundOneGoal = 1;
         public static int FinalCrystalBuffer = 2;
+
+        public static float RoundOverFadeOutDuration = 0.5f;
 
         public static float ScreenShakeAmount = 0.0f;
 

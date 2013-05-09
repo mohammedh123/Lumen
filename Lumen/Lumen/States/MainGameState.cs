@@ -197,25 +197,6 @@ namespace Lumen.States
             _lightManager.DrawLightDarkness(graphicsDevice, spriteBatch, _sceneRt);
 
             spriteBatch.Begin();
-#if DEBUG
-            if (IsShowingDebugInformation) {
-                spriteBatch.DrawString(TextureManager.GetFont("debug"), String.Format("{0}", GameVariables.CameraZoom),
-                                       Vector2.Zero, Color.White);
-            }
-#endif
-            string s = null;
-            if (_gameManager.State == GameState.PlayersWin) {
-                s = "Wisps win round " + _gameManager.RoundNumber.ToString("0") + "!\nNext round in: " +
-                    _gameManager.TimeTillNextRound.ToString("0.0");
-            }
-            else if (_gameManager.State == GameState.EnemyWins) {
-                //s = "The guardian has won.\n(Start) Retry?\n(Back) Restart?";
-                s = "Guardian wins!\nNext round in: " + _gameManager.TimeTillNextRound.ToString("0.0");
-            }
-
-            if (s != null) {
-                spriteBatch.DrawString(TextureManager.GetFont("big"), s, new Vector2(0, 300), Color.White);
-            }
 
             var alphaToUse = 1.0f;
 
@@ -227,6 +208,11 @@ namespace Lumen.States
             //}
 
             DrawUI(spriteBatch, alphaToUse);
+
+            if(_gameManager.IsFadingOut) {
+                spriteBatch.Draw(TextureManager.GetTexture("blank"),new Rectangle(0,0,(int) GameDriver.DisplayResolution.X, (int) GameDriver.DisplayResolution.Y),Color.Black*MathHelper.Lerp(1.0f, 0.0f, _gameManager.FadeoutTimer/GameVariables.RoundOverFadeOutDuration));
+            }
+
             spriteBatch.End();
         }
 

@@ -36,7 +36,7 @@ namespace Lumen
             PropsToBeAdded = new List<Prop>();
             RoundNumber = 7;
             _playerOrder = playerOrder.ToList();
-
+            FadeoutTimer = -1.0f;
             _gameResolution = gameResolution;
         }
 
@@ -54,8 +54,13 @@ namespace Lumen
         }
 
         public int RoundNumber { get; private set; }
-        public float TimeTillNextRound { get; private set; }
+        public float FadeoutTimer { get; private set; }
 
+        public bool IsFadingOut
+        {
+            get { return FadeoutTimer >= 0.0f; }
+        }
+        
         private bool IsWinnerDecided
         {
             get { return RoundNumber < 5 || RoundNumber > 9; }
@@ -152,27 +157,33 @@ namespace Lumen
                 LightSpawner.Instance.Update(dt);
             }
             else if (State == GameState.PlayersWin) {
-                TimeTillNextRound -= dt;
+                FadeoutTimer -= dt;
 
                 ResetVibration();
 
-                if (TimeTillNextRound <= 0.0f) {
-                    TimeTillNextRound = 0.0f;
+                if (!IsFadingOut) {
+                    ResetFadeoutTimer();
                     RoundNumber++;
                     StartNextRound();
                 }
             }
             else if (State == GameState.EnemyWins) {
-                TimeTillNextRound -= dt;
+                FadeoutTimer -= dt;
 
                 ResetVibration();
 
-                if (TimeTillNextRound <= 0.0f) {
-                    TimeTillNextRound = 0.0f;
+                if (!IsFadingOut)
+                {
+                    ResetFadeoutTimer();
                     RoundNumber--;
                     StartNextRound();
                 }
             }
+        }
+
+        private void ResetFadeoutTimer()
+        {
+            FadeoutTimer = -1.0f;
         }
 
         private void ResetVibration()
@@ -183,25 +194,6 @@ namespace Lumen
             }
             if (Guardian != null) {
                 GamePad.SetVibration(Guardian.ControllerIndex, 0, 0);
-            }
-        }
-
-        private void HandleRestartInput()
-        {
-            for (var i = PlayerIndex.One; i <= PlayerIndex.Four; i++) {
-                if (GamePad.GetState(i).IsConnected) {
-                    if (InputManager.GamepadButtonDown(i, Buttons.Start)) {
-                        RoundNumber--;
-                        StartNextRound();
-                        return;
-                    }
-                    if (InputManager.GamepadButtonDown(i, Buttons.Back)) {
-                        //restart
-                        RoundNumber = 0;
-                        StartNextRound();
-                        return;
-                    }
-                }
             }
         }
 
@@ -426,7 +418,7 @@ namespace Lumen
         {
             if (CrystalsRemaining == 0) {
                 State = GameState.PlayersWin;
-                TimeTillNextRound = 0.0f;
+                BeginFadeout();
 
                 foreach (var player in Players) {
                     GamePad.SetVibration(player.ControllerIndex, 0, 0);
@@ -549,11 +541,16 @@ namespace Lumen
             return lights;
         }
 
+        private void BeginFadeout()
+        {
+            FadeoutTimer = GameVariables.RoundOverFadeOutDuration;
+        }
+
         public void KillPlayer(Player player)
         {
             if (Players.Count == 1) {
                 State = GameState.EnemyWins;
-                TimeTillNextRound = 0.0f;
+                BeginFadeout();
             }
 
             if (player.CollectionTarget != null) {

@@ -14,6 +14,7 @@ namespace Lumen.States
     {
         private enum ScreenState
         {
+            FadingIn,
             DisplayingInFull,
             FadingOut,
             FinishedFading
@@ -25,11 +26,12 @@ namespace Lumen.States
         private RenderTarget2D _sceneRt;
         private readonly int _count;
         private readonly List<PlayerIndex> _playerOrder;
-        private ScreenState _state = ScreenState.DisplayingInFull;
+        private ScreenState _state = ScreenState.FadingIn;
 
         private const float Duration = 1.0f;
-        private const float FadeOutDuration = 0.5f;
-        private float _numAlpha = 1.0f;
+        private const float FadeOutDuration = 0.25f;
+        private const float FadeInDuration = 0.25f;
+        private float _numAlpha = 0.0f;
         
         public NextRoundState(int count, List<PlayerIndex> playerOrder)
         {
@@ -93,21 +95,31 @@ namespace Lumen.States
                 Game.Exit();
             }
 
-            if (TotalTime <= Duration) {
-                _state = ScreenState.DisplayingInFull;
+            if (TotalTime <= FadeInDuration) {
+                _state = ScreenState.FadingIn;
             }
-            else if(TotalTime > Duration && TotalTime < Duration + FadeOutDuration){
+            else if (TotalTime > FadeInDuration && TotalTime <= FadeInDuration + Duration)
+            {
                 _state = ScreenState.FadingOut;
             }
-            else if(TotalTime >= Duration + FadeOutDuration) {
+            else if (TotalTime > FadeInDuration +Duration && TotalTime <= FadeInDuration + Duration + FadeOutDuration)
+            {
+                _state = ScreenState.FadingOut;
+            }
+            else if (TotalTime >= FadeInDuration + Duration + FadeOutDuration)
+            {
                 _state = ScreenState.FinishedFading;
             }
 
-            if (_state == ScreenState.DisplayingInFull) {
+            if (_state == ScreenState.FadingIn)
+            {
+                _numAlpha = MathHelper.Lerp(0.0f, 1.0f, (float)(TotalTime) / FadeInDuration);
+            }
+            else if (_state == ScreenState.DisplayingInFull) {
                 _numAlpha = 1.0f;
             }
             else if (_state == ScreenState.FadingOut) {
-                _numAlpha = MathHelper.Lerp(1.0f, 0.0f, (float) (TotalTime - Duration)/FadeOutDuration);
+                _numAlpha = MathHelper.Lerp(1.0f, 0.0f, (float) (TotalTime - Duration - FadeInDuration)/FadeOutDuration);
             }
             else if (_state == ScreenState.FinishedFading) {
                 TransitionBackToGame();

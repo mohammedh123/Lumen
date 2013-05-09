@@ -34,7 +34,7 @@ namespace Lumen.Light_System
                 sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None,
                          RasterizerState.CullCounterClockwise, _lightAccumulatorFx, GameVariables.CameraZoomMatrix);
                 foreach (var light in lights) {
-                    if (!light.IsVisible) {
+                    if (!light.IsVisible || light.LightIntensity <= 0.0f || light.LightRadius <= 0.0f) {
                         continue;
                     }
 
