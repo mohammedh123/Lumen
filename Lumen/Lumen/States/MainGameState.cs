@@ -85,6 +85,14 @@ namespace Lumen.States
                 IsShowingDebugInformation = false;
             }
 #endif
+            foreach(var player in _playerOrder) {
+                if(GamePad.GetState(player).IsConnected) {
+                    if(InputManager.GamepadButtonPressed(player, Buttons.Start)) {
+                        StateManager.Instance.PushState(new PauseState(player));
+                        return;
+                    }
+                }
+            }
 
             _gameManager.Update(gameTime);
         }

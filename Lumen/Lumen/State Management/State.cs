@@ -9,6 +9,11 @@ namespace Lumen.State_Management
         protected GameDriver Game;
         public double TotalTime = 0;
 
+        public virtual bool IsPassthrough()
+        {
+            return false;
+        }
+
         public virtual void Initialize(GameDriver g)
         {
             Game = g;
