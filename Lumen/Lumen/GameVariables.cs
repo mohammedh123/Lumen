@@ -47,6 +47,7 @@ namespace Lumen
         public const float CrystalFadeInDuration = 0.3f;
         public const float CrystalFadeOutDuration = 0.3f;
 
+
         public const float CrystalMinimumSpawnDistanceBetween = 180.0f;
         public const int CrystalSpawningMaxAttempts = 100;
 

@@ -29,6 +29,7 @@ Content\Textures\players_win.xnb
 Content\Textures\guardian_win.xnb
 Content\Textures\ui_crystal.xnb
 Content\Textures\ui_crystal_dead.xnb
+Content\Textures\black.xnb
 Content\Shaders\LightDrawer.xnb
 Content\Shaders\Combiner.xnb
 Content\Fonts\debug_font.xnb
