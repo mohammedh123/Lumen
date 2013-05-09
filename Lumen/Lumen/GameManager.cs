@@ -201,7 +201,7 @@ namespace Lumen
             }
 
             if (State == GameState.PlayersWin) {
-                if (_lastPlayerState == GameState.EnemyWins) {
+                if (_lastPlayerState == GameState.EnemyWins && RoundNumber-1 != 7) {
                     //reset back to 7
                     ResetBackToInitialRound(State);
                 }
@@ -209,7 +209,7 @@ namespace Lumen
                 _lastPlayerState = GameState.PlayersWin;
             }
             else if (State == GameState.EnemyWins) {
-                if (_lastPlayerState == GameState.PlayersWin) {
+                if (_lastPlayerState == GameState.PlayersWin && RoundNumber+1 != 7) {
                     //reset back to 7
                     ResetBackToInitialRound(State);
                 }
@@ -267,11 +267,11 @@ namespace Lumen
         {
             if(state == GameState.PlayersWin)
             {
-                _guardianBonusSpeed += 15;
+                _playerBonusSpeed += 10;
             }
             else if(state == GameState.EnemyWins)
             {
-                _playerBonusSpeed += 10;
+                _guardianBonusSpeed += 15;
             }
 
             RoundNumber = 7;

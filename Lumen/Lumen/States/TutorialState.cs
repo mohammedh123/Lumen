@@ -67,7 +67,7 @@ namespace Lumen.States
 
             for(var idx = PlayerIndex.One; idx <= PlayerIndex.Four; idx++) {
                 if(GamePad.GetState(idx).IsConnected && _playersPlaying.ContainsKey(idx)) {
-                    if (InputManager.GamepadButtonDown(idx, Buttons.A))
+                    if (InputManager.GamepadButtonPressed(idx, Buttons.A))
                         _playersPlaying[idx] = true;
                 }
             }
