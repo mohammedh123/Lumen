@@ -112,7 +112,9 @@ namespace Lumen.States
         private void ResetRound(bool recreatePlayers = true, bool reloadVariables = true)
         {
             if (reloadVariables) {
+#if DEBUG
                 LoadVariables();
+#endif
             }
 
             if (recreatePlayers) {
