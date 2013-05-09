@@ -82,6 +82,8 @@ namespace Lumen.States
             }
 
             _lumenBackground = TextureManager.GetTexture("background");
+
+            SoundManager.GetSoundInstance("round_change").Play();
         }
 
         public override void Shutdown()
