@@ -159,7 +159,7 @@ namespace Lumen.Entities
 
         public void Update(float dt)
         {
-            SpriteAngle += (float) Math.PI*2*dt;
+            SpriteAngle -= (float) Math.PI*2*dt/4;
 #if DEBUG
             if (ControllerIndex <= PlayerIndex.Two && !GamePad.GetState(ControllerIndex).IsConnected) {
                 ProcessKeyDownAction(dt);

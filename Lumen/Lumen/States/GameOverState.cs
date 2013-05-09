@@ -10,9 +10,10 @@ namespace Lumen.States
 {
     internal class GameOverState : State
     {
-        private Texture2D _tutorialOverlay, _lumenBackground;
+        private Texture2D _playersWin, _guardianWin, _lumenBackground;
         private readonly LightManager _lightManager;
         private RenderTarget2D _sceneRt;
+        private bool playersWin;
 
         public GameOverState(GameState winner)
         {
@@ -20,8 +21,10 @@ namespace Lumen.States
 
             switch(winner) {
                 case GameState.PlayersWin:
+                    playersWin = true;
                     break;
                 case GameState.EnemyWins:
+                    playersWin = false;
                     break;
                 default:
                     throw new Exception("Invalid winner passed to GameOverState.");
@@ -36,7 +39,9 @@ namespace Lumen.States
         public override void LoadContent(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             _lumenBackground = TextureManager.GetTexture("background");
-            _tutorialOverlay = TextureManager.GetTexture("tutorial_overlay");
+            //_tutorialOverlay = TextureManager.GetTexture("tutorial_overlay");
+            _playersWin = TextureManager.GetTexture("players_win");
+            _guardianWin = TextureManager.GetTexture("guardian_win");
             _sceneRt = new RenderTarget2D(graphicsDevice, (int)GameDriver.DisplayResolution.X,
                                           (int)GameDriver.DisplayResolution.Y);
 
@@ -87,8 +92,10 @@ namespace Lumen.States
             _lightManager.DrawLightDarkness(graphicsDevice, spriteBatch, _sceneRt);
 
             spriteBatch.Begin();
-
-            spriteBatch.Draw(_tutorialOverlay, Vector2.Zero, Color.White);
+            if (!playersWin)
+                spriteBatch.Draw(_guardianWin, Vector2.Zero, Color.White);
+            if (playersWin)
+                spriteBatch.Draw(_playersWin, Vector2.Zero, Color.White);
 
             spriteBatch.End();
         }
