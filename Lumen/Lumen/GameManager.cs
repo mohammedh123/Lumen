@@ -69,11 +69,6 @@ namespace Lumen
         public void Update(GameTime gameTime)
         {
             var dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
-            var song = SoundManager.GetSong("main_bgm");
-
-            if (MediaPlayer.State == MediaState.Stopped) {
-                MediaPlayer.Play(song);
-            }
 
             if (State == GameState.StillGoing) {
                 //iterate through all entities and update them (their deltas will be set at the end of update)

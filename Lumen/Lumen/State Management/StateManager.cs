@@ -66,8 +66,6 @@ namespace Lumen.State_Management
         public void Draw(SpriteBatch g, GraphicsDevice gd)
         {
             if (_states.Count > 0) {
-                if(_states[_states.Count-1].IsPassthrough() && _states.Count > 1)
-                    _states[_states.Count-2].Draw(g,gd);
                 _states[_states.Count - 1].Draw(g, gd);
             }
         }

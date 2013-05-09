@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Lumen.States
 {
@@ -16,11 +17,6 @@ namespace Lumen.States
         {
             _controllingIndex = idx;
         }
-
-        public override bool IsPassthrough()
-        {
-            return true;
-        } 
 
         public override void Initialize(GameDriver g)
         {
@@ -37,19 +33,33 @@ namespace Lumen.States
 
         public override void Update(GameTime delta)
         {
+            MediaPlayer.Pause();
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Game.Exit();
             }
 
             if(GamePad.GetState(_controllingIndex).IsConnected) {
-                
+                if(InputManager.GamepadButtonPressed(_controllingIndex, Buttons.Start)) {
+                    Exit();
+                }
+                else if(InputManager.GamepadButtonPressed(_controllingIndex, Buttons.Back)) {
+                    ReturnToMainMenu();
+                }
             }
             else {
                 Exit();
             }
             
             TotalTime += delta.ElapsedGameTime.TotalSeconds;
+        }
+
+        private static void ReturnToMainMenu()
+        {
+            MediaPlayer.Stop();
+            StateManager.Instance.PopAll();
+            StateManager.Instance.PushState(new MainMenuState());
         }
 
         private void Exit()
@@ -61,7 +71,7 @@ namespace Lumen.States
         {
             spriteBatch.Begin();
 
-            spriteBatch.Draw(TextureManager.GetTexture("mainmenu_logo"), Vector2.One*300,Color.White);
+            spriteBatch.Draw(TextureManager.GetTexture("pause_screen"), Vector2.Zero,Color.White);
 
             spriteBatch.End();
         }

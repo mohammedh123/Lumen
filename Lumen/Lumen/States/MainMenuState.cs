@@ -95,12 +95,6 @@ namespace Lumen.States
 
         public override void Update(GameTime delta)
         {
-            var song = SoundManager.GetSong("main_bgm");
-
-            if (MediaPlayer.State == MediaState.Stopped) {
-                MediaPlayer.Play(song);
-            }
-
             if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
                 Game.Exit();
             }
