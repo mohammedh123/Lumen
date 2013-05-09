@@ -194,7 +194,9 @@ namespace Lumen
 
         private void StartNextRound()
         {
-            if(IsWinnerDecided) {
+            if (IsWinnerDecided)
+            {
+                MediaPlayer.Stop();
                 StateManager.Instance.PushState(new GameOverState(State));
                 return;
             }

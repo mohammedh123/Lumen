@@ -218,14 +218,7 @@ namespace Lumen.States
             spriteBatch.Begin();
 
             var alphaToUse = 1.0f;
-
-            //var uiRect = new Rectangle(128, 48, (int)GameDriver.DisplayResolution.X - 128 - 100, (int)GameDriver.DisplayResolution.Y - 48);
-
-            //if (!_gameManager.Players.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)) || !uiRect.Contains((int)_gameManager.Guardian.Position.X, (int)_gameManager.Guardian.Position.Y) || !_gameManager.Props.All(p => uiRect.Contains((int)p.Position.X, (int)p.Position.Y)))
-            //{
-            //    //alphaToUse = 0.25f;
-            //}
-
+            
             DrawUI(spriteBatch, alphaToUse);
 
             if(_gameManager.IsFadingOut) {
@@ -237,45 +230,60 @@ namespace Lumen.States
 
         private void DrawUI(SpriteBatch spriteBatch, float alpha = 1)
         {
+            var crystalCenter = new Vector2(GameDriver.DisplayResolution.X / 2, 800);
+            DrawCrystalsRemainingInformation(spriteBatch, crystalCenter, alpha);
+
             var allPlayers =
                 _gameManager.Players.Union(_gameManager.DeadPlayers.Keys).OrderBy(p => p.ControllerIndex).ToList();
 
+            crystalCenter += new Vector2(32 + GameVariables.CrystalRoundGoal(_gameManager.RoundNumber) * 8, 0);
+            var offset = Vector2.Zero;
+            
             for (var i = 0; i < allPlayers.Count(); i++) {
                 var player = allPlayers[i];
 
-                DrawPlayerInformation(spriteBatch, new Vector2(66 + 360*i, GameDriver.DisplayResolution.Y - 64), player,
+                if(player.PlayerSpriteIndex == 1) {
+                    offset = new Vector2(0,16);
+                }
+                else if (player.PlayerSpriteIndex == 2)
+                {
+                    offset = new Vector2(16, -16);
+                }
+                else if (player.PlayerSpriteIndex == 3)
+                {
+                    offset = new Vector2(32, 16);
+                }
+                
+                DrawPlayerInformation(spriteBatch, crystalCenter + offset, player,
                                       alpha);
             }
-
-            DrawEnemyInformation(spriteBatch,
-                                 new Vector2(_gameManager.Guardian.Position.X - 16,
-                                             _gameManager.Guardian.Position.Y - 32), alpha);
-
-            DrawCrystalsRemainingInformation(spriteBatch, new Vector2(GameDriver.DisplayResolution.X/2, 800), alpha);
-        }
-
-        private void DrawEnemyInformation(SpriteBatch spriteBatch, Vector2 topLeft, float alpha)
-        {
-            //DrawingHelper.DrawHorizontalFilledBar(topLeft, spriteBatch, Color.White * alpha, Color.Blue * alpha, 32, 8, 1, _gameManager.Guardian.EnergyRemaining / GameVariables.EnemyAttackMaxRadius);
         }
 
         private void DrawPlayerInformation(SpriteBatch spriteBatch, Vector2 center, Player player, float alpha)
         {
             var str = "player" + (player.IsAlive ? "" + player.PlayerSpriteIndex : "_dead") + "_portrait";
-            spriteBatch.Draw(TextureManager.GetTexture("player_portrait"), center, null, Color.White*alpha, 0.0f,
-                             TextureManager.GetOrigin("player_portrait"), GameVariables.UIScale, SpriteEffects.None, 0);
             spriteBatch.Draw(TextureManager.GetTexture(str), center, null, Color.White*alpha, 0.0f,
                              TextureManager.GetOrigin(str), GameVariables.UIScale, SpriteEffects.None, 0);
         }
 
         private void DrawCrystalsRemainingInformation(SpriteBatch spriteBatch, Vector2 center, float alpha)
         {
-            center -= new Vector2(_gameManager.CrystalsRemaining*8, 0);
+            center -= new Vector2(GameVariables.CrystalRoundGoal(_gameManager.RoundNumber)*8, 0);
 
-            for (var i = 0; i < _gameManager.CrystalsRemaining; i++) {
-                spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(16*i, 0), null,
-                                 Color.White*alpha, 0.0f, TextureManager.GetOrigin("crystal"), GameVariables.UIScale*2,
-                                 SpriteEffects.None, 0);
+            for (var i = 0; i < GameVariables.CrystalRoundGoal(_gameManager.RoundNumber); i++) {
+                if (i < _gameManager.CrystalsRemaining) {
+                    spriteBatch.Draw(TextureManager.GetTexture("crystal"), center + new Vector2(16*i, 0), null,
+                                     Color.White*alpha, 0.0f, TextureManager.GetOrigin("crystal"),
+                                     GameVariables.UIScale*2,
+                                     SpriteEffects.None, 0);
+                }
+                else
+                {
+                    spriteBatch.Draw(TextureManager.GetTexture("crystal_dead"), center + new Vector2(16 * i, 0), null,
+                                     Color.White * 0.5f * alpha, 0.0f, TextureManager.GetOrigin("crystal_dead"),
+                                     GameVariables.UIScale * 2,
+                                     SpriteEffects.None, 0);
+                }
             }
         }
     }

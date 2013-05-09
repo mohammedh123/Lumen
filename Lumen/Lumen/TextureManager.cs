@@ -98,6 +98,9 @@ namespace Lumen
             _textureDetails.Add("crystal",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/crystal"),
                                                    new Vector2(16, 16)));
+            _textureDetails.Add("crystal_dead",
+                                new TextureDetails(contentManager.Load<Texture2D>("Textures/crystal_dead"),
+                                                   new Vector2(16, 16)));
             _textureDetails.Add("health",
                                 new TextureDetails(contentManager.Load<Texture2D>("Textures/health"),
                                                    new Vector2(16, 16)));
