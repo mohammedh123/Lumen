@@ -97,6 +97,10 @@ namespace Lumen
             var crystalHitSound = contentManager.Load<SoundEffect>("Sounds/crystal_hit");
             _soundDetails.Add("crystal_hit", crystalHitSound);
             _soundInstances.Add("crystal_hit", crystalHitSound.CreateInstance());
+
+            var roundChangeSound = contentManager.Load<SoundEffect>("Sounds/round_change");
+            _soundDetails.Add("round_change", roundChangeSound);
+            _soundInstances.Add("round_change", roundChangeSound.CreateInstance());
         }
     }
 }

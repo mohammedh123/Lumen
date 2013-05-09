@@ -319,6 +319,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sounds\round_change.wav">
+      <Name>round_change</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Textures\black.png">
       <Name>black</Name>
       <Importer>TextureImporter</Importer>
