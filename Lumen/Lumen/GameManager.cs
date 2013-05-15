@@ -267,11 +267,11 @@ namespace Lumen
         {
             if(state == GameState.PlayersWin)
             {
-                _playerBonusSpeed += 10;
+                _playerBonusSpeed += GameVariables.PlayerComebackBonusSpeed;
             }
             else if(state == GameState.EnemyWins)
             {
-                _guardianBonusSpeed += 15;
+                _guardianBonusSpeed += GameVariables.EnemyComebackBonusSpeed;
             }
 
             RoundNumber = 7;

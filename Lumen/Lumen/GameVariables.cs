@@ -17,6 +17,9 @@ namespace Lumen
         public const float PlayerHitVibrationDuration = 0.25f;
         public const float PlayerHitBlinkingDuration = 3.0f;
 
+        public const float PlayerComebackBonusSpeed = 10.0f;
+        public const float EnemyComebackBonusSpeed = 15.0f;
+
         public const float EnemySpeed = 300.0f;
         public const float EnemyCollisionRadius = 24.0f;
         public const float EnemyAttackCooldown = 1.0f;
