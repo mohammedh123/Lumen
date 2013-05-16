@@ -20,6 +20,10 @@ namespace Lumen
         public const float PlayerComebackBonusSpeed = 10.0f;
         public const float EnemyComebackBonusSpeed = 15.0f;
 
+        public static float OnePlayerCollectionRate = 1.0f; //meaning when there is  1 player  left alive, he finishes collecting in 1.0 seconds
+        public static float TwoPlayersCollectionRate = 2.0f; //meaning when there are 2 players left alive, he finishes collecting in 2.0 seconds
+        public static float ThreePlayersCollectionRate = 3.0f; //meaning when there are 3 players left alive, he finishes collecting in 3.0 seconds
+
         public const float EnemySpeed = 300.0f;
         public const float EnemyCollisionRadius = 24.0f;
         public const float EnemyAttackCooldown = 1.0f;

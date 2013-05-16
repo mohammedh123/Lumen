@@ -99,7 +99,7 @@ namespace Lumen
 
                     if (crystal != null) {
                         if (!crystal.IsSomeoneCollectingThis) {
-                            crystal._collectionTimeLeft = GameVariables.CrystalCollectionTime/(4 - Players.Count);
+                            crystal.ResetCollectionTimeLeft(Players.Count);
                         }
 
                         if (crystal.Collector != null) {

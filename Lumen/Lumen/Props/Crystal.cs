@@ -24,7 +24,7 @@ namespace Lumen.Props
         public Player Collector;
 
         private float _fadeRadius = 0.0f;
-        public float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
+        private float _collectionTimeLeft = GameVariables.CrystalCollectionTime;
         private float _fadeTimer = -1.0f;
 
         private bool IsDoneFadingIn
@@ -154,7 +154,6 @@ namespace Lumen.Props
                 SoundManager.GetSoundInstance("crystal_charge").Play();
                 ParticleSystemManager.Instance.FireParticleSystem("crystal_charge", Position.X, Position.Y);
 
-
                 _collectionTimeLeft -= dt*_collectorCount;
 
                 if (_collectionTimeLeft <= 0) {
@@ -162,9 +161,6 @@ namespace Lumen.Props
                     Collector = _collectors.First();
                     _collectors.ForEach(p => p.ResetCollecting());
                 }
-            }
-            else {
-                _collectionTimeLeft = GameVariables.CrystalCollectionTime;
             }
 
             UpdateLightProperties(dt);
@@ -205,6 +201,23 @@ namespace Lumen.Props
             else if (_fadeState == FadingLightState.Off)
             {
                 LightIntensity = 0.0f;
+            }
+        }
+
+        public void ResetCollectionTimeLeft(int numPlayersRemaining)
+        {
+            switch(numPlayersRemaining) {
+                case 1:
+                    _collectionTimeLeft = GameVariables.OnePlayerCollectionRate;
+                    break;
+                case 2:
+                    _collectionTimeLeft = GameVariables.TwoPlayersCollectionRate;
+                    break;
+                case 3:
+                    _collectionTimeLeft = GameVariables.ThreePlayersCollectionRate;
+                    break;
+                default:
+                    throw new Exception("How the hell did you reach this part of the code?");
             }
         }
 
