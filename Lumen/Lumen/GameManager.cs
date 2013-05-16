@@ -99,7 +99,7 @@ namespace Lumen
 
                     if (crystal != null) {
                         if (!crystal.IsSomeoneCollectingThis) {
-                            crystal.ResetCollectionTimeLeft(Players.Count);
+                            crystal.ResetCollectionTimeLeft(Players.Count, RoundNumber);
                         }
 
                         if (crystal.Collector != null) {
@@ -534,7 +534,9 @@ namespace Lumen
 
         private void AddCrystal(Vector2 position)
         {
-            Props.Add(new Crystal(position));
+            var crystal = new Crystal(position);
+            Props.Add(crystal);
+            crystal.ResetCollectionTimeLeft(Players.Count, RoundNumber);
         }
 
         private List<Light> RemovePlayersLight(Player player)

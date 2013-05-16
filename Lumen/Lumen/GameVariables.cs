@@ -24,6 +24,25 @@ namespace Lumen
         public static float TwoPlayersCollectionRate = 2.0f; //meaning when there are 2 players left alive, he finishes collecting in 2.0 seconds
         public static float ThreePlayersCollectionRate = 3.0f; //meaning when there are 3 players left alive, he finishes collecting in 3.0 seconds
 
+        public static float GetCollectionRateScale(int roundNum)
+        {
+            switch (roundNum)
+            {
+                case 5:
+                    return 0.85f;
+                case 6:
+                    return 0.95f;
+                case 7:
+                    return 1.00f;
+                case 8:
+                    return 1.05f;
+                case 9:
+                    return 1.15f;
+                default:
+                    return 1.0f;
+            }
+        }
+
         public const float EnemySpeed = 300.0f;
         public const float EnemyCollisionRadius = 24.0f;
         public const float EnemyAttackCooldown = 1.0f;

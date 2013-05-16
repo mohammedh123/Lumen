@@ -204,17 +204,20 @@ namespace Lumen.Props
             }
         }
 
-        public void ResetCollectionTimeLeft(int numPlayersRemaining)
+        public void ResetCollectionTimeLeft(int numPlayersRemaining, int roundNumber)
         {
             switch(numPlayersRemaining) {
                 case 1:
-                    _collectionTimeLeft = GameVariables.OnePlayerCollectionRate;
+                    _collectionTimeLeft = GameVariables.OnePlayerCollectionRate*
+                                          GameVariables.GetCollectionRateScale(roundNumber);
                     break;
                 case 2:
-                    _collectionTimeLeft = GameVariables.TwoPlayersCollectionRate;
+                    _collectionTimeLeft = GameVariables.TwoPlayersCollectionRate*
+                                          GameVariables.GetCollectionRateScale(roundNumber);
                     break;
                 case 3:
-                    _collectionTimeLeft = GameVariables.ThreePlayersCollectionRate;
+                    _collectionTimeLeft = GameVariables.ThreePlayersCollectionRate*
+                                          GameVariables.GetCollectionRateScale(roundNumber);
                     break;
                 default:
                     throw new Exception("How the hell did you reach this part of the code?");
