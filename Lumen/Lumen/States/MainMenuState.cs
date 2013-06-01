@@ -144,7 +144,7 @@ namespace Lumen.States
 
         public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            const string pressAStr = "Press (X)";
+            const string pressAStr = "Press A";
 
             graphicsDevice.SetRenderTarget(_sceneRt);
             DrawScene(spriteBatch);

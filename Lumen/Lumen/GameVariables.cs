@@ -13,14 +13,14 @@ namespace Lumen
         public const float PlayerLightDuration = 0.5f;
         public const float PlayerLightRadius = 120.0f;
         public const float PlayerLightFadeInDuration = 0.125f;
-        public const float PlayerLightFadeOutDuration = 0.125f;
+        public const float PlayerLightFadeOutDuration = 0.5f;
         public const float PlayerHitVibrationDuration = 0.25f;
         public const float PlayerHitBlinkingDuration = 3.0f;
 
         public const float PlayerComebackBonusSpeed = 10.0f;
-        public const float EnemyComebackBonusSpeed = 15.0f;
+        public const float EnemyComebackBonusSpeed = 20.0f;
 
-        public static float OnePlayerCollectionRate = 1.0f; //meaning when there is  1 player  left alive, he finishes collecting in 1.0 seconds
+        public static float OnePlayerCollectionRate = 1.25f; //meaning when there is  1 player  left alive, he finishes collecting in 1.0 seconds
         public static float TwoPlayersCollectionRate = 2.0f; //meaning when there are 2 players left alive, he finishes collecting in 2.0 seconds
         public static float ThreePlayersCollectionRate = 3.0f; //meaning when there are 3 players left alive, he finishes collecting in 3.0 seconds
 
@@ -43,16 +43,16 @@ namespace Lumen
             }
         }
 
-        public const float EnemySpeed = 300.0f;
+        public const float EnemySpeed = 330.0f;
         public const float EnemyCollisionRadius = 24.0f;
-        public const float EnemyAttackCooldown = 1.0f;
-        public const float EnemyAttackMaxRadius = 80.0f;
+        public const float EnemyAttackCooldown = 0.5f;
+        public const float EnemyAttackMaxRadius = 100.0f;
         public const float EnemyAttackRadiusGrowth = 160.0f;
-        public const float EnemyAttackRadiusAcceleration = 40.0f;
+        public const float EnemyAttackRadiusAcceleration = 60.0f;
         public const float EnemyLightRadiusWhileCharging = 20.0f;
         public const float EnemyAttackTotalDuration = 0.067f;
         public const float EnemyEnergyRegeneration = 2000.0f;
-        public const float EnemySpeedWhileCharging = 250.0f;
+        public const float EnemySpeedWhileCharging = 275.0f;
 
         public const bool IsScreenWrapping = false;
 
